@@ -12,12 +12,12 @@ import { TokenNotExistsException } from '../exceptions/token-not-exists.exceptio
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(
-    @Inject(jwtConfig.KEY) private readonly jwtConfig: ConfigType<typeof jwtConfig>,
+    @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
     private readonly refreshTokenService: RefreshTokenService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: jwtConfig.refreshTokenSecret,
+      secretOrKey: jwtOptions.refreshTokenSecret,
       passReqToCallback: true,
     });
   }

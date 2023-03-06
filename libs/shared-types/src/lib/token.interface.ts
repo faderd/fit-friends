@@ -1,7 +1,7 @@
 export interface TokenInterface {
-  id?: string;
+  id?: number;
   tokenId: string;
   createdAt: Date;
-  userId: string;
+  userId: number;
   expiresIn: Date;
 }

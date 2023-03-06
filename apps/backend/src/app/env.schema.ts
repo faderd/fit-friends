@@ -5,12 +5,12 @@ export default Joi.object({
     .string()
     .required(),
   JWT_AT_EXPIRES_IN: Joi
-    .number()
+    .string()
     .required(),
   JWT_RT_SECRET: Joi
     .string()
     .required(),
   JWT_RT_EXPIRES_IN: Joi
-    .number()
+    .string()
     .required(),
 });

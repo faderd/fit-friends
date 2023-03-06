@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  email                String
+  avatar               String
+  passwordHash         String
+  gender               String
+  birthDate            DateTime
+  role                 String
+  location             String
+  createdAt            DateTime
+  RefreshSessions      RefreshSessions[]
+  UserQuestionnaire    UserQuestionnaire[]
+  TrainerQuestionnaire TrainerQuestionnaire[]
+}
+
+model UserQuestionnaire {
+  id                  Int     @id @default(autoincrement())
+  user                User    @relation(fields: [userId], references: [id])
+  userId              Int
+  trainingLevel       String
+  trainingType        String
+  trainingDuration    String
+  caloriesLoss        Int
+  burnsCaloriesPerDay Int
+  isReadyToTrain      Boolean
+}
+
+model TrainerQuestionnaire {
+  id             Int     @id @default(autoincrement())
+  user           User    @relation(fields: [userId], references: [id])
+  userId         Int
+  trainingLevel  String
+  trainingType   String
+  certificate    String
+  merits         String
+  isReadyToTrain Boolean
+}
+
+model RefreshSessions {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  tokenId   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  expiresIn DateTime
+}

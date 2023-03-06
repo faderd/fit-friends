@@ -1,31 +1,40 @@
-import { InjectModel } from '@nestjs/mongoose';
-import { RefreshTokenModel } from './refresh-token.model';
-import { Model } from 'mongoose';
 import { RefreshTokenEntity } from './refresh-token.entity';
 import { TokenInterface } from '@fit-friends/shared-types';
+import { PrismaService } from '../prisma/prisma.service';
+import { Injectable } from '@nestjs/common/decorators';
 
+@Injectable()
 export class RefreshTokenRepository {
   constructor(
-    @InjectModel(RefreshTokenModel.name) private readonly refreshTokenModel: Model<RefreshTokenModel>) {
-  }
+    private readonly prisma: PrismaService) { }
 
   public async create(item: RefreshTokenEntity): Promise<TokenInterface> {
-    return new this.refreshTokenModel(item).save();
+    const entityData = item.toObject();
+
+    return this.prisma.refreshSessions.create({
+      data: entityData
+    });
   }
 
   public async deleteByTokenId(tokenId: string) {
-    return this.refreshTokenModel
-      .deleteOne({ tokenId });
+    return this.prisma.refreshSessions.deleteMany({
+      where: { tokenId }
+    });
   }
 
   public async findByTokenId(tokenId: string): Promise<TokenInterface | null> {
-    return this.refreshTokenModel
-      .findOne({ tokenId })
-      .exec();
+    return this.prisma.refreshSessions.findFirst({
+      where: { tokenId }
+    });
   }
 
   public async deleteExpiredTokens() {
-    return this.refreshTokenModel
-      .deleteMany({ expiresIn: { $lt: new Date()}})
+    return this.prisma.refreshSessions.deleteMany({
+      where: {
+        expiresIn: {
+          lt: new Date()
+        }
+      }
+    });
   }
 }

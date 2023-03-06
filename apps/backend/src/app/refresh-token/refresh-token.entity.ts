@@ -1,19 +1,19 @@
 import { EntityInterface } from '@fit-friends/core';
-import { Token } from '@fit-friends/shared-types';
+import { TokenInterface } from '@fit-friends/shared-types';
 
-export class RefreshTokenEntity implements EntityInterface<RefreshTokenEntity>, Token {
-  public id: string;
+export class RefreshTokenEntity implements EntityInterface<RefreshTokenEntity>, TokenInterface {
+  public id: number;
   public tokenId: string;
-  public userId: string;
+  public userId: number;
   public createdAt: Date;
   public expiresIn: Date;
 
-  constructor(refreshToken: Token) {
+  constructor(refreshToken: TokenInterface) {
     this.createdAt = new Date();
     this.fillEntity(refreshToken);
   }
 
-  public fillEntity(entity: Token): void {
+  public fillEntity(entity: TokenInterface): void {
     this.userId = entity.userId;
     this.id = entity.id;
     this.tokenId = entity.tokenId;

@@ -40,3 +40,6 @@ Thumbs.db
 
 # ENV Files
 *.env
+
+# Database folder
+db

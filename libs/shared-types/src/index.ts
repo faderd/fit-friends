@@ -2,4 +2,10 @@ export * from './lib/token-payload.interface';
 export * from './lib/request-with-user.interface';
 export * from './lib/refresh-token-payload.interface';
 export * from './lib/token.interface';
-export * from './lib/request-with-token-payload.interface'
+export * from './lib/request-with-token-payload.interface';
+export * from './lib/user-role.enum';
+export * from './lib/user.interface';
+export * from './lib/gender.enum';
+export * from './lib/user-location.enum';
+export * from './lib/validate-range';
+export * from './lib/api-route.enum';

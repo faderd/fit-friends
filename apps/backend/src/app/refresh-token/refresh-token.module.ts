@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common';
 import { RefreshTokenService } from './refresh-token.service';
 import { RefreshTokenRepository } from './refresh-token.repository';
-import { MongooseModule } from '@nestjs/mongoose';
-import { RefreshTokenModel, RefreshTokenSchema } from './refresh-token.model';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([
-    { name: RefreshTokenModel.name, schema: RefreshTokenSchema }
-  ])],
+  imports: [PrismaModule],
   providers: [
     RefreshTokenService,
     RefreshTokenRepository
