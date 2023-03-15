@@ -8,9 +8,23 @@ import LoginPage from '../../pages/login-page/login-page';
 import PrivateRouteQuestionnaire from '../private-route-questionnaire/private-route-questionnaire';
 import QuestionnaireCoachPage from '../../pages/questionnaire-coach-page/questionnaire-coach-page';
 import QuestionnaireUserPage from '../../pages/questionnaire-user-page/questionnaire-user-page';
+import PrivateRoute from '../private-route/private-route';
+import IndexPage from '../../pages/index-page/index-page';
+import LoadingPage from '../loading-page/loading-page';
+import PrivateRouteUser from '../private-route-user/private-route-user';
+import PrivateRouteCoach from '../private-route-coach/private-route-coach';
+import PersonalAccountCoachPage from '../../pages/personal-account-coach-page/personal-account-coach-page';
+import PersonalAccountUserPage from '../../pages/personal-account-user-page/personal-account-user-page';
 
 function App(): JSX.Element {
   const isAuthStatusUnknown = useAppSelector(isAuthUnknown);
+
+  if (isAuthStatusUnknown) {
+    // Чтобы не мелькала страница логина, пока идет проверка авторизации отобразим страницу загрузки
+    return (
+      <LoadingPage />
+    );
+  }
 
   return (
     <Routes>
@@ -40,6 +54,30 @@ function App(): JSX.Element {
           <PrivateRouteQuestionnaire>
             <QuestionnaireUserPage />
           </PrivateRouteQuestionnaire>
+        }
+      />
+      <Route
+        path={AppRoute.Index}
+        element={
+          <PrivateRoute>
+            <IndexPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path={AppRoute.PersonalAccountCoach}
+        element={
+          <PrivateRouteCoach>
+            <PersonalAccountCoachPage />
+          </PrivateRouteCoach>
+        }
+      />
+      <Route
+        path={AppRoute.PersonalAccountUser}
+        element={
+          <PrivateRouteUser>
+            <PersonalAccountUserPage />
+          </PrivateRouteUser>
         }
       />
     </Routes>

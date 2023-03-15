@@ -1,10 +1,28 @@
 import { AppRoute, PageTitle } from '../../../const';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../hooks';
+import { getUserRole, isUserAuthorized } from '../../store/user-process/selectors';
+import { useEffect } from 'react';
+import { UserRole } from '@fit-friends/shared-types';
 
 function IntroPage(): JSX.Element {
   document.title = PageTitle.Intro;
 
   const navigate = useNavigate();
+
+  const isUserAuth = useAppSelector(isUserAuthorized);
+  const userRole = useAppSelector(getUserRole);
+  console.log('userRole: ', userRole);
+
+  useEffect(() => {
+    if (isUserAuth) {
+      if (userRole === UserRole.User) {
+        navigate(AppRoute.Index);
+      } else if (userRole === UserRole.Coach) {
+        navigate(AppRoute.PersonalAccountCoach)
+      }
+    }
+  });
 
   return (
     <>

@@ -1,8 +1,9 @@
 import { CoachMeritsLengthRange, TrainingType } from '@fit-friends/shared-types';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { DEFAULT_IS_READY_TO_TRAIN, DEFAULT_TRAINING_LEVEL, PageTitle } from '../../../const';
+import { AppRoute, DEFAULT_IS_READY_TO_TRAIN, DEFAULT_TRAINING_LEVEL, PageTitle } from '../../../const';
 import TrainingLevelCheckbox from '../../components/training-level-checkbox/training-level-checkbox';
 import TrainingTypesCheckbox from '../../components/training-types-checkbox/training-types-checkbox';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -17,6 +18,7 @@ type ReactHookFormData = {
 function QuestionnaireCoachPage(): JSX.Element {
   document.title = PageTitle.Questionaire;
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [trainingTypes, setTrainingType] = useState<TrainingType[]>([]);
   const [trainingLevel, setTrainingLevel] = useState(DEFAULT_TRAINING_LEVEL);
@@ -43,6 +45,8 @@ function QuestionnaireCoachPage(): JSX.Element {
     if (registerDataUser !== null) {
       const registerData = { registerDataUser, registerDataQuestionnaire };
       dispatch(registerUser(registerData));
+      toast.info('Пользователь успешно зарегистрирован');
+      navigate(AppRoute.Login)
     }
   };
 

@@ -7,6 +7,9 @@ import HistoryRouter from './app/components/history-router/history-router';
 import { store } from './app/store';
 import browserHistory from './browser-history';
 import 'react-toastify/dist/ReactToastify.css';
+import { checkAuth } from './app/store/api-actions';
+
+store.dispatch(checkAuth());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

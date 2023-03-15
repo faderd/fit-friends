@@ -27,7 +27,7 @@ export const register = createAsyncThunk<
 
     const formData = new FormData();
     try {
-      const { data } = await api.post('/auth/register', userRegisterDto);
+      const { data } = await api.post('auth/register', userRegisterDto);
 
       if (registerData.registerDataUser.avatar) {
         formData.append('avatar', registerData.registerDataUser.avatar as File);
@@ -57,8 +57,7 @@ export const checkAuth = createAsyncThunk<void, undefined, {
 >(
   'user/checkAuth',
   async (_, { dispatch, extra: api }) => {
-    const { data } = await api.get('');
-
+    const { data } = await api.get('auth/login');
     dispatch(storeUser(data));
   }
 );
@@ -76,9 +75,12 @@ export const login = createAsyncThunk<void,
 >(
   'user/login',
   async (loginData, { dispatch, extra: api }) => {
-    const { data } = await api.post<UserData>('', loginData);
-    saveAccessToken(data.accessToken);
-    saveRefreshToken(data.refreshToken);
+    const { data } = await api.post<UserData>('auth/login', loginData);
+    if (data.access_token && data.refresh_token) {
+      saveAccessToken(data.access_token);
+      saveRefreshToken(data.refresh_token);
+    }
+
     dispatch(storeUser(data));
     dispatch(redirectToPrevious());
   }
@@ -92,10 +94,8 @@ export const logout = createAsyncThunk<void, undefined, {
 >(
   'user/logout',
   async (_, { dispatch, extra: api }) => {
-    const res = await api.get('');
-    if (res) {
-      dropAccessToken();
-      dropRefreshToken();
-    }
+    await api.get('auth/logout');
+    dropAccessToken();
+    dropRefreshToken();
   }
 );

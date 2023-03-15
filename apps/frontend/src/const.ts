@@ -15,16 +15,26 @@ export enum AppRoute {
   Intro = '/',
   Register = '/register',
   Login = '/login',
-  Main = '/main',
+  Index = '/index',
   QuestionaireCoach = '/questionnaire-coach',
   QuestionaireUser = '/questionnaire-user',
+  PersonalAccountCoach = '/personal-account-coach',
+  PersonalAccountUser = '/personal-account-user',
+  NotFound = '/not-found',
 }
 
 export enum PageTitle {
   Intro = 'Разводящая — FitFriends',
-  Register = 'Войти — FitFriends',
+  Register = 'Регистрация — FitFriends',
   Login = 'Войти — FitFriends',
   Questionaire = 'Опросник — FitFriends',
+  Index = 'FitFriends',
+  PersonalAccount = 'Личный кабинет — FitFriends',
+}
+
+export enum PageType {
+  PersonalAccount = 'PersonalAccount',
+  Index = 'Index',
 }
 
 export const DEFAULT_LOCATION = UserLocation.Petrogradskaya;

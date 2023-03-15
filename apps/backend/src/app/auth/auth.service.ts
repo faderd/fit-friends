@@ -117,4 +117,9 @@ export class AuthService {
       })
     };
   }
+
+  async logoutUser(refreshTokenId?: string) {
+    await this.refreshTokenService
+      .deleteRefreshSession(refreshTokenId);
+  }
 }

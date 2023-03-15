@@ -1,104 +1,8 @@
-import { Gender, UserLocation, UserNameLengthRange, UserPasswordLengthRange, UserRole } from '@fit-friends/shared-types';
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AppRoute, DEFAULT_GENDER, DEFAULT_LOCATION, DEFAULT_ROLE, PageTitle, RegisterDataUser } from '../../../const';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { isUserAuthorized } from '../../store/user-process/selectors';
-import { storeIsToQuestionnairePage, storeRegisterDataUser } from '../../store/user-process/user-process';
-import dayjs from 'dayjs';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { PageTitle, PageType } from '../../../const';
+import PageHeader from '../../components/page-header/page-header';
 
-type ReactHookFormData = {
-  name: string,
-  email: string,
-  password: string,
-  avatar: File,
-  birthDate: Date,
-}
-
-function RegisterPage(): JSX.Element {
-  document.title = PageTitle.Register;
-
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  const isUserAuth = useAppSelector(isUserAuthorized);
-
-  useEffect(() => {
-    if (isUserAuth) {
-      navigate(AppRoute.Index);
-    }
-  });
-
-  const { register, handleSubmit, formState: { errors } } = useForm<ReactHookFormData>();
-
-  const onSumbit: SubmitHandler<ReactHookFormData> = (reactHookFormData) => {
-    if (!agreement) {
-      toast.warn('Для продолжения необходимо согласиться с политикой конфиденциальности');
-      return;
-    }
-
-    const registerDataUser: RegisterDataUser = {
-      name: reactHookFormData.name,
-      email: reactHookFormData.email,
-      password: reactHookFormData.password,
-      gender: gender,
-      role: role,
-      location: location,
-      avatar: reactHookFormData.avatar,
-    };
-
-    if (reactHookFormData.birthDate) {
-      registerDataUser.birthDate = dayjs(reactHookFormData.birthDate).toDate();
-    }
-
-    dispatch(storeIsToQuestionnairePage(true));
-    dispatch(storeRegisterDataUser(registerDataUser));
-    if (role === UserRole.Coach) {
-      navigate(AppRoute.QuestionaireCoach);
-    }
-    if (role === UserRole.User) {
-      navigate(AppRoute.QuestionaireUser);
-    }
-  };
-
-  const locationWrapperRef = useRef<HTMLDivElement | null>(null);
-  const locationSelectTextRef = useRef<HTMLSpanElement | null>(null);
-
-  const [location, setLocation] = useState(DEFAULT_LOCATION);
-  const [gender, setGender] = useState(DEFAULT_GENDER);
-  const [role, setRole] = useState(DEFAULT_ROLE);
-  const [agreement, setAgreement] = useState(false);
-
-  const locationKeys = Object.keys(UserLocation);
-  type UserLocationStrings = keyof typeof UserLocation;
-
-  const handleLocationButtonClick = () => {
-    locationWrapperRef.current?.classList.toggle('is-open');
-  }
-
-  const handleLocatonItemClick = (locationValue: UserLocationStrings) => {
-    setLocation(UserLocation[locationValue]);
-    locationWrapperRef.current?.classList.toggle('is-open');
-
-    if (locationSelectTextRef.current) {
-      locationSelectTextRef.current.textContent = UserLocation[locationValue];
-    }
-
-    locationWrapperRef.current?.classList.add('not-empty');
-    locationWrapperRef.current?.classList.remove('custom-select--not-selected');
-  };
-
-  const getLocationsMarkup = () => {
-    return (
-      locationKeys.map((key) => {
-        return (
-          <li key={key} className="custom-select__item" onClick={() => handleLocatonItemClick(key as UserLocationStrings)}>{UserLocation[key as UserLocationStrings]}</li>
-        )
-      })
-    );
-  };
+function IndexPage(): JSX.Element {
+  document.title = PageTitle.Index;
 
   return (
     <>
@@ -108,226 +12,509 @@ function RegisterPage(): JSX.Element {
         </svg>
       </div>
       <div className="wrapper">
+        <PageHeader page={PageType.Index} />
         <main>
-          <div className="background-logo">
-            <svg className="background-logo__logo" width="750" height="284" aria-hidden="true">
-              <use xlinkHref="#logo-big"></use>
-            </svg>
-            <svg className="background-logo__icon" width="343" height="343" aria-hidden="true">
-              <use xlinkHref="#icon-logotype"></use>
-            </svg>
-          </div>
-          <div className="popup-form popup-form--sign-up">
-            <div className="popup-form__wrapper">
-              <div className="popup-form__content">
-                <div className="popup-form__title-wrapper">
-                  <h1 className="popup-form__title">Регистрация</h1>
+          <h1 className="visually-hidden">FitFriends — Время находить тренировки, спортзалы и друзей спортсменов</h1>
+          <section className="special-for-you">
+            <div className="container">
+              <div className="special-for-you__wrapper">
+                <div className="special-for-you__title-wrapper">
+                  <h2 className="special-for-you__title">Специально подобрано для вас</h2>
+                  <div className="special-for-you__controls">
+                    <button className="btn-icon special-for-you__control" type="button" aria-label="previous">
+                      <svg width="16" height="14" aria-hidden="true">
+                        <use xlinkHref="#arrow-left"></use>
+                      </svg>
+                    </button>
+                    <button className="btn-icon special-for-you__control" type="button" aria-label="next">
+                      <svg width="16" height="14" aria-hidden="true">
+                        <use xlinkHref="#arrow-right"></use>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-                <div className="popup-form__form">
-                  <form onSubmit={handleSubmit(onSumbit)}>
-                    <div className="sign-up">
-                      <div className="sign-up__load-photo">
-                        <div className="input-load-avatar">
-                          <label>
-                            <input
-                              className="visually-hidden"
-                              type="file"
-                              accept="image/png, image/jpeg"
-                              {...register('avatar')}
-                            /><span className="input-load-avatar__btn">
-                              <svg width="20" height="20" aria-hidden="true">
-                                <use xlinkHref="#icon-import"></use>
-                              </svg></span>
-                          </label>
-                        </div>
-                        <div className="sign-up__description">
-                          <h2 className="sign-up__legend">Загрузите фото профиля</h2><span className="sign-up__text">JPG, PNG, оптимальный размер 100&times;100&nbsp;px</span>
+                <ul className="special-for-you__list">
+                  <li className="special-for-you__item">
+                    <div className="thumbnail-preview">
+                      <div className="thumbnail-preview__image">
+                        <picture>
+                          <source type="image/webp" srcSet="img/content/thumbnails/preview-03.webp, img/content/thumbnails/preview-03@2x.webp 2x" />
+                          <img src="img/content/thumbnails/preview-03.jpg" srcSet="img/content/thumbnails/preview-03@2x.jpg 2x" width="452" height="191" alt="" />
+                        </picture>
+                      </div>
+                      <div className="thumbnail-preview__inner">
+                        <h3 className="thumbnail-preview__title">crossfit</h3>
+                        <div className="thumbnail-preview__button-wrapper">
+                          <a className="btn btn--small thumbnail-preview__button" href="#">Подробнее</a>
                         </div>
                       </div>
-                      <div className="sign-up__data">
-                        <div className={`custom-input ${errors.name && 'custom-input--error'}`}>
-                          <label>
-                            <span className="custom-input__label">Имя</span>
-                            <span className="custom-input__wrapper">
-                              <input
-                                type="text"
-                                {...register('name', {
-                                  required: true,
-                                  minLength: UserNameLengthRange.Min,
-                                  maxLength: UserNameLengthRange.Max,
-                                  pattern: /^[а-яёa-z]+$/iu
-                                })} />
-                            </span>
-                            {errors.name && (<span className='custom-input__error'>{`Длина от ${UserNameLengthRange.Min} до ${UserNameLengthRange.Max} символов`}</span>)}
-                          </label>
-                        </div>
-                        <div className={`custom-input ${errors.email && 'custom-input--error'}`}>
-                          <label>
-                            <span className="custom-input__label">E-mail</span>
-                            <span className="custom-input__wrapper">
-                              <input
-                                type="email"
-                                {...register('email', {
-                                  required: true,
-                                  pattern: /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i
-                                })}
-                              />
-                            </span>
-                            {errors.email && (<span className='custom-input__error'>Email не валидный</span>)}
-                          </label>
-                        </div>
-                        <div className="custom-input">
-                          <label><span className="custom-input__label">Дата рождения</span><span className="custom-input__wrapper">
-                            <input
-                              type="date"
-                              max="2099-12-31"
-                              {...register('birthDate')}
-                            /></span>
-                          </label>
-                        </div>
-                        <div
-                          className="custom-select custom-select--not-selected"
-                          ref={locationWrapperRef}
-                        ><span className="custom-select__label">Ваша локация</span>
-                          <button
-                            className="custom-select__button"
-                            type="button"
-                            aria-label="Выберите одну из опций"
-                            onClick={handleLocationButtonClick}
-                          >
-                            <span className="custom-select__text"
-                              ref={locationSelectTextRef}
-                            // {...register('location')}
-                            ></span>
-                            <span className="custom-select__icon">
-                              <svg width="15" height="6" aria-hidden="true">
-                                <use xlinkHref="#arrow-down"></use>
-                              </svg>
-                            </span>
-                          </button>
-                          <ul className="custom-select__list" role="listbox">
-                            {getLocationsMarkup()}
-                          </ul>
-                        </div>
-                        <div className={`custom-input ${errors.password && 'custom-input--error'}`}>
-                          <label>
-                            <span className="custom-input__label">Пароль</span>
-                            <span className="custom-input__wrapper">
-                              <input
-                                type="password"
-                                autoComplete="off"
-                                // name="password"
-                                // ref={passwordRef}
-                                {...register('password', {
-                                  required: true,
-                                  minLength: UserPasswordLengthRange.Min,
-                                  maxLength: UserPasswordLengthRange.Max,
-                                })}
-                              />
-                            </span>
-                            {errors.password && (<span className='custom-input__error'>{`Длина от ${UserPasswordLengthRange.Min} до ${UserPasswordLengthRange.Max} символов`}</span>)}
-                          </label>
-                        </div>
-                        <div className="sign-up__radio"><span className="sign-up__label">Пол</span>
-                          <div className="custom-toggle-radio custom-toggle-radio--big">
-                            <div className="custom-toggle-radio__block">
-                              <label>
-                                <input
-                                  type="radio"
-                                  name="sex"
-                                  checked={gender === Gender.Male ? true : false}
-                                  onChange={() => { setGender(Gender.Male) }}
-                                />
-                                <span className="custom-toggle-radio__icon"></span><span className="custom-toggle-radio__label">Мужской</span>
-                              </label>
-                            </div>
-                            <div className="custom-toggle-radio__block">
-                              <label>
-                                <input
-                                  type="radio"
-                                  name="sex"
-                                  checked={gender === Gender.Female ? true : false}
-                                  onChange={() => { setGender(Gender.Female) }}
-                                />
-                                <span className="custom-toggle-radio__icon"></span><span className="custom-toggle-radio__label">Женский</span>
-                              </label>
-                            </div>
-                            <div className="custom-toggle-radio__block">
-                              <label>
-                                <input
-                                  type="radio"
-                                  name="sex"
-                                  checked={gender === Gender.NotImportant ? true : false}
-                                  onChange={() => { setGender(Gender.NotImportant) }}
-                                />
-                                <span className="custom-toggle-radio__icon"></span><span className="custom-toggle-radio__label">Неважно</span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="sign-up__role">
-                        <h2 className="sign-up__legend">Выберите роль</h2>
-                        <div className="role-selector sign-up__role-selector">
-                          <div className="role-btn">
-                            <label>
-                              <input
-                                className="visually-hidden"
-                                type="radio"
-                                name="role"
-                                value="coach"
-                                checked={role === UserRole.Coach ? true : false}
-                                onChange={() => { setRole(UserRole.Coach) }}
-                              /><span className="role-btn__icon">
-                                <svg width="12" height="13" aria-hidden="true">
-                                  <use xlinkHref="#icon-cup"></use>
-                                </svg></span><span className="role-btn__btn">Я хочу тренировать</span>
-                            </label>
-                          </div>
-                          <div className="role-btn">
-                            <label>
-                              <input
-                                className="visually-hidden"
-                                type="radio"
-                                name="role"
-                                value="sportsman"
-                                checked={role === UserRole.User ? true : false}
-                                onChange={() => { setRole(UserRole.User) }}
-                              /><span className="role-btn__icon">
-                                <svg width="12" height="13" aria-hidden="true">
-                                  <use xlinkHref="#icon-weight"></use>
-                                </svg></span><span className="role-btn__btn">Я хочу тренироваться</span>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="sign-up__checkbox">
-                        <label>
-                          <input
-                            type="checkbox"
-                            value="user-agreement"
-                            checked={agreement}
-                            name="user-agreement"
-                            onChange={() => { setAgreement(!agreement) }}
-                          />
-                          <span className="sign-up__checkbox-icon">
-                            <svg width="9" height="6" aria-hidden="true">
-                              <use xlinkHref="#arrow-check"></use>
-                            </svg>
-                          </span>
-                          <span className="sign-up__checkbox-label">Я соглашаюсь с <span>политикой конфиденциальности</span> компании</span>
-                        </label>
-                      </div>
-                      <button
-                        className="btn sign-up__button"
-                        type="submit"
-                      >Продолжить</button>
                     </div>
-                  </form>
+                  </li>
+                  <li className="special-for-you__item">
+                    <div className="thumbnail-preview">
+                      <div className="thumbnail-preview__image">
+                        <picture>
+                          <source type="image/webp" srcSet="img/content/thumbnails/preview-02.webp, img/content/thumbnails/preview-02@2x.webp 2x" />
+                          <img src="img/content/thumbnails/preview-02.jpg" srcSet="img/content/thumbnails/preview-02@2x.jpg 2x" width="452" height="191" alt="" />
+                        </picture>
+                      </div>
+                      <div className="thumbnail-preview__inner">
+                        <h3 className="thumbnail-preview__title">power</h3>
+                        <div className="thumbnail-preview__button-wrapper">
+                          <a className="btn btn--small thumbnail-preview__button" href="#">Подробнее</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="special-for-you__item">
+                    <div className="thumbnail-preview">
+                      <div className="thumbnail-preview__image">
+                        <picture>
+                          <source type="image/webp" srcSet="img/content/thumbnails/preview-01.webp, img/content/thumbnails/preview-01@2x.webp 2x" />
+                          <img src="img/content/thumbnails/preview-01.jpg" srcSet="img/content/thumbnails/preview-01@2x.jpg 2x" width="452" height="191" alt="" />
+                        </picture>
+                      </div>
+                      <div className="thumbnail-preview__inner">
+                        <h3 className="thumbnail-preview__title">boxing</h3>
+                        <div className="thumbnail-preview__button-wrapper">
+                          <a className="btn btn--small thumbnail-preview__button" href="#">Подробнее</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          <section className="special-offers">
+            <div className="container">
+              <div className="special-offers__wrapper">
+                <h2 className="visually-hidden">Специальные предложения</h2>
+                <ul className="special-offers__list">
+                  <li className="special-offers__item is-active">
+                    <aside className="promo-slider">
+                      <div className="promo-slider__overlay"></div>
+                      <div className="promo-slider__image">
+                        <img src="img/content/promo-1.png" srcSet="img/content/promo-1@2x.png 2x" width="1040" height="469" alt="promo-photo" />
+                      </div>
+                      <div className="promo-slider__header">
+                        <h3 className="promo-slider__title">Fitball</h3>
+                        <div className="promo-slider__logo">
+                          <svg width="74" height="74" aria-hidden="true">
+                            <use xlinkHref="#logotype"></use>
+                          </svg>
+                        </div>
+                      </div><span className="promo-slider__text">Горячие предложения на тренировки на фитболе</span>
+                      <div className="promo-slider__bottom-container">
+                        <div className="promo-slider__slider-dots">
+                          <button className="promo-slider__slider-dot--active promo-slider__slider-dot" aria-label="первый слайд"></button>
+                          <button className="promo-slider__slider-dot" aria-label="второй слайд"></button>
+                          <button className="promo-slider__slider-dot" aria-label="третий слайд"></button>
+                        </div>
+                        <div className="promo-slider__price-container">
+                          <p className="promo-slider__price">1600 ₽</p>
+                          <p className="promo-slider__sup">за занятие</p>
+                          <p className="promo-slider__old-price">2000 ₽</p>
+                        </div>
+                      </div>
+                    </aside>
+                  </li>
+                  <li className="special-offers__item">
+                    <aside className="promo-slider">
+                      <div className="promo-slider__overlay"></div>
+                      <div className="promo-slider__image">
+                        <img src="img/content/promo-2.png" srcSet="img/content/promo-2@2x.png 2x" width="1040" height="469" alt="promo-photo" />
+                      </div>
+                      <div className="promo-slider__header">
+                        <h3 className="promo-slider__title">Fleksbend</h3>
+                        <div className="promo-slider__logo">
+                          <svg width="74" height="74" aria-hidden="true">
+                            <use xlinkHref="#logotype"></use>
+                          </svg>
+                        </div>
+                      </div><span className="promo-slider__text">Горячие предложения на&nbsp;Тренировки с&nbsp;резинкой для фитнеса</span>
+                      <div className="promo-slider__bottom-container">
+                        <div className="promo-slider__slider-dots">
+                          <button className="promo-slider__slider-dot" aria-label="первый слайд"></button>
+                          <button className="promo-slider__slider-dot--active promo-slider__slider-dot" aria-label="второй слайд"></button>
+                          <button className="promo-slider__slider-dot" aria-label="третий слайд"></button>
+                        </div>
+                        <div className="promo-slider__price-container">
+                          <p className="promo-slider__price">2400 ₽</p>
+                          <p className="promo-slider__sup">за занятие</p>
+                          <p className="promo-slider__old-price">2800 ₽</p>
+                        </div>
+                      </div>
+                    </aside>
+                  </li>
+                  <li className="special-offers__item">
+                    <aside className="promo-slider">
+                      <div className="promo-slider__overlay"></div>
+                      <div className="promo-slider__image">
+                        <img src="img/content/promo-3.png" srcSet="img/content/promo-3@2x.png 2x" width="1040" height="469" alt="promo-photo" />
+                      </div>
+                      <div className="promo-slider__header">
+                        <h3 className="promo-slider__title">Full Body Stretch</h3>
+                        <div className="promo-slider__logo">
+                          <svg width="74" height="74" aria-hidden="true">
+                            <use xlinkHref="#logotype"></use>
+                          </svg>
+                        </div>
+                      </div><span className="promo-slider__text">Горячие предложения на&nbsp;Комплекс упражнений на&nbsp;растяжку всего тела для новичков</span>
+                      <div className="promo-slider__bottom-container">
+                        <div className="promo-slider__slider-dots">
+                          <button className="promo-slider__slider-dot" aria-label="первый слайд"></button>
+                          <button className="promo-slider__slider-dot" aria-label="второй слайд"></button>
+                          <button className="promo-slider__slider-dot--active promo-slider__slider-dot" aria-label="третий слайд"></button>
+                        </div>
+                        <div className="promo-slider__price-container">
+                          <p className="promo-slider__price">1800 ₽</p>
+                          <p className="promo-slider__sup">за занятие</p>
+                          <p className="promo-slider__old-price">2200 ₽</p>
+                        </div>
+                      </div>
+                    </aside>
+                  </li>
+                </ul>
+                <div className="thumbnail-spec-gym">
+                  <div className="thumbnail-spec-gym__image">
+                    <picture>
+                      <source type="image/webp" srcSet="img/content/thumbnails/nearest-gym-01.webp, img/content/thumbnails/nearest-gym-01@2x.webp 2x" />
+                      <img src="img/content/thumbnails/nearest-gym-01.jpg" srcSet="img/content/thumbnails/nearest-gym-01@2x.jpg 2x" width="330" height="190" alt="" />
+                    </picture>
+                  </div>
+                  <p className="thumbnail-spec-gym__type">Ближайший зал</p>
+                  <div className="thumbnail-spec-gym__header">
+                    <h3 className="thumbnail-spec-gym__title">атлетика</h3>
+                    <div className="thumbnail-spec-gym__location">
+                      <svg width="14" height="16" aria-hidden="true">
+                        <use xlinkHref="#icon-location"></use>
+                      </svg>
+                      <address className="thumbnail-spec-gym__location-address">м. Московская</address>
+                    </div>
+                  </div>
+                  <div className="thumbnail-spec-gym__button-wrapper">
+                    <a className="btn btn--small thumbnail-spec-gym__button" href="#">Подробнее</a>
+                    <a className="btn btn--small btn--outlined thumbnail-spec-gym__button" href="#">Все залы</a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
+          <section className="popular-trainings">
+            <div className="container">
+              <div className="popular-trainings__wrapper">
+                <div className="popular-trainings__title-wrapper">
+                  <h2 className="popular-trainings__title">Популярные тренировки</h2>
+                  <button className="btn-flat popular-trainings__button" type="button"><span>Смотреть все</span>
+                    <svg width="14" height="10" aria-hidden="true">
+                      <use xlinkHref="#arrow-right"></use>
+                    </svg>
+                  </button>
+                  <div className="popular-trainings__controls">
+                    <button className="btn-icon popular-trainings__control" type="button" aria-label="previous">
+                      <svg width="16" height="14" aria-hidden="true">
+                        <use xlinkHref="#arrow-left"></use>
+                      </svg>
+                    </button>
+                    <button className="btn-icon popular-trainings__control" type="button" aria-label="next">
+                      <svg width="16" height="14" aria-hidden="true">
+                        <use xlinkHref="#arrow-right"></use>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <ul className="popular-trainings__list">
+                  <li className="popular-trainings__item">
+                    <div className="thumbnail-training">
+                      <div className="thumbnail-training__inner">
+                        <div className="thumbnail-training__image">
+                          <picture>
+                            <source type="image/webp" srcSet="img/content/thumbnails/training-06.webp, img/content/thumbnails/training-06@2x.webp 2x" />
+                            <img src="img/content/thumbnails/training-06.jpg" srcSet="img/content/thumbnails/training-06@2x.jpg 2x" width="330" height="190" alt="" />
+                          </picture>
+                        </div>
+                        <p className="thumbnail-training__price"><span className="thumbnail-training__price-value">1600</span><span>₽</span>
+                        </p>
+                        <h3 className="thumbnail-training__title">run, forrest, run</h3>
+                        <div className="thumbnail-training__info">
+                          <ul className="thumbnail-training__hashtags-list">
+                            <li className="thumbnail-training__hashtags-item">
+                              <div className="hashtag thumbnail-training__hashtag"><span>#бег</span></div>
+                            </li>
+                            <li className="thumbnail-training__hashtags-item">
+                              <div className="hashtag thumbnail-training__hashtag"><span>#500ккал</span></div>
+                            </li>
+                          </ul>
+                          <div className="thumbnail-training__rate">
+                            <svg width="16" height="16" aria-hidden="true">
+                              <use xlinkHref="#icon-star"></use>
+                            </svg><span className="thumbnail-training__rate-value">5</span>
+                          </div>
+                        </div>
+                        <div className="thumbnail-training__text-wrapper">
+                          <p className="thumbnail-training__text">Узнайте правильную технику бега, развивайте выносливость и&nbsp;откройте для себя все секреты длительных пробежек.</p>
+                        </div>
+                        <div className="thumbnail-training__button-wrapper">
+                          <a className="btn btn--small thumbnail-training__button-catalog" href="#">Подробнее</a>
+                          <a className="btn btn--small btn--outlined thumbnail-training__button-catalog" href="#">Отзывы</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="popular-trainings__item">
+                    <div className="thumbnail-training">
+                      <div className="thumbnail-training__inner">
+                        <div className="thumbnail-training__image">
+                          <picture>
+                            <source type="image/webp" srcSet="img/content/thumbnails/training-07.webp, img/content/thumbnails/training-07@2x.webp 2x" />
+                            <img src="img/content/thumbnails/training-07.jpg" srcSet="img/content/thumbnails/training-07@2x.jpg 2x" width="330" height="190" alt="" />
+                          </picture>
+                        </div>
+                        <p className="thumbnail-training__price"><span className="thumbnail-training__price-value">1600</span><span>₽</span>
+                        </p>
+                        <h3 className="thumbnail-training__title">fitball</h3>
+                        <div className="thumbnail-training__info">
+                          <ul className="thumbnail-training__hashtags-list">
+                            <li className="thumbnail-training__hashtags-item">
+                              <div className="hashtag thumbnail-training__hashtag"><span>#пилатес</span></div>
+                            </li>
+                            <li className="thumbnail-training__hashtags-item">
+                              <div className="hashtag thumbnail-training__hashtag"><span>#200ккал</span></div>
+                            </li>
+                          </ul>
+                          <div className="thumbnail-training__rate">
+                            <svg width="16" height="16" aria-hidden="true">
+                              <use xlinkHref="#icon-star"></use>
+                            </svg><span className="thumbnail-training__rate-value">5</span>
+                          </div>
+                        </div>
+                        <div className="thumbnail-training__text-wrapper">
+                          <p className="thumbnail-training__text">Тренировка на&nbsp;фитболе&nbsp;&mdash; отличном тренажере для развития чувства баланса и&nbsp;равновесия, улучшения координации.</p>
+                        </div>
+                        <div className="thumbnail-training__button-wrapper">
+                          <a className="btn btn--small thumbnail-training__button-catalog" href="#">Подробнее</a>
+                          <a className="btn btn--small btn--outlined thumbnail-training__button-catalog" href="#">Отзывы</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="popular-trainings__item">
+                    <div className="thumbnail-training">
+                      <div className="thumbnail-training__inner">
+                        <div className="thumbnail-training__image">
+                          <picture>
+                            <source type="image/webp" srcSet="img/content/thumbnails/training-11.webp, img/content/thumbnails/training-11@2x.webp 2x" />
+                            <img src="img/content/thumbnails/training-11.jpg" srcSet="img/content/thumbnails/training-11@2x.jpg 2x" width="330" height="190" alt="" />
+                          </picture>
+                        </div>
+                        <p className="thumbnail-training__price"><span className="thumbnail-training__price-value">2200</span><span>₽</span>
+                        </p>
+                        <h3 className="thumbnail-training__title">devil's cindy</h3>
+                        <div className="thumbnail-training__info">
+                          <ul className="thumbnail-training__hashtags-list">
+                            <li className="thumbnail-training__hashtags-item">
+                              <div className="hashtag thumbnail-training__hashtag"><span>#кроссфит</span></div>
+                            </li>
+                            <li className="thumbnail-training__hashtags-item">
+                              <div className="hashtag thumbnail-training__hashtag"><span>#950ккал</span></div>
+                            </li>
+                          </ul>
+                          <div className="thumbnail-training__rate">
+                            <svg width="16" height="16" aria-hidden="true">
+                              <use xlinkHref="#icon-star"></use>
+                            </svg><span className="thumbnail-training__rate-value">5</span>
+                          </div>
+                        </div>
+                        <div className="thumbnail-training__text-wrapper">
+                          <p className="thumbnail-training__text">Знаменитый кроссфит комплекс. Синди&nbsp;&mdash; универсальная тренировка для развития функциональной силы.</p>
+                        </div>
+                        <div className="thumbnail-training__button-wrapper">
+                          <a className="btn btn--small thumbnail-training__button-catalog" href="#">Подробнее</a>
+                          <a className="btn btn--small btn--outlined thumbnail-training__button-catalog" href="#">Отзывы</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="popular-trainings__item">
+                    <div className="thumbnail-training">
+                      <div className="thumbnail-training__inner">
+                        <div className="thumbnail-training__image">
+                          <picture>
+                            <source type="image/webp" srcSet="img/content/thumbnails/training-09.webp, img/content/thumbnails/training-09@2x.webp 2x" />
+                            <img src="img/content/thumbnails/training-09.jpg" srcSet="img/content/thumbnails/training-09@2x.jpg 2x" width="330" height="190" alt="" />
+                          </picture>
+                        </div>
+                        <p className="thumbnail-training__price"><span className="thumbnail-training__price-value">1800</span><span>₽</span>
+                        </p>
+                        <h3 className="thumbnail-training__title">full body stretch</h3>
+                        <div className="thumbnail-training__info">
+                          <ul className="thumbnail-training__hashtags-list">
+                            <li className="thumbnail-training__hashtags-item">
+                              <div className="hashtag thumbnail-training__hashtag"><span>#стретчинг</span></div>
+                            </li>
+                            <li className="thumbnail-training__hashtags-item">
+                              <div className="hashtag thumbnail-training__hashtag"><span>#400ккал</span></div>
+                            </li>
+                          </ul>
+                          <div className="thumbnail-training__rate">
+                            <svg width="16" height="16" aria-hidden="true">
+                              <use xlinkHref="#icon-star"></use>
+                            </svg><span className="thumbnail-training__rate-value">5</span>
+                          </div>
+                        </div>
+                        <div className="thumbnail-training__text-wrapper">
+                          <p className="thumbnail-training__text">Комплекс упражнений на&nbsp;растяжку всего тела для новичков. Плавное погружение в&nbsp;стретчинг и&nbsp;умеренная нагрузка.</p>
+                        </div>
+                        <div className="thumbnail-training__button-wrapper">
+                          <a className="btn btn--small thumbnail-training__button-catalog" href="#">Подробнее</a>
+                          <a className="btn btn--small btn--outlined thumbnail-training__button-catalog" href="#">Отзывы</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          <section className="look-for-company">
+            <div className="container">
+              <div className="look-for-company__wrapper">
+                <div className="look-for-company__title-wrapper">
+                  <h2 className="look-for-company__title">Ищут компанию для тренировки</h2>
+                  <button className="btn-flat btn-flat--light look-for-company__button" type="button"><span>Смотреть все</span>
+                    <svg width="14" height="10" aria-hidden="true">
+                      <use xlinkHref="#arrow-right"></use>
+                    </svg>
+                  </button>
+                  <div className="look-for-company__controls">
+                    <button className="btn-icon btn-icon--outlined look-for-company__control" type="button" aria-label="previous">
+                      <svg width="16" height="14" aria-hidden="true">
+                        <use xlinkHref="#arrow-left"></use>
+                      </svg>
+                    </button>
+                    <button className="btn-icon btn-icon--outlined look-for-company__control" type="button" aria-label="next">
+                      <svg width="16" height="14" aria-hidden="true">
+                        <use xlinkHref="#arrow-right"></use>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <ul className="look-for-company__list">
+                  <li className="look-for-company__item">
+                    <div className="thumbnail-user thumbnail-user--role-user thumbnail-user--dark">
+                      <div className="thumbnail-user__image">
+                        <picture>
+                          <source type="image/webp" srcSet="img/content/thumbnails/user-04.webp, img/content/thumbnails/user-04@2x.webp 2x" />
+                          <img src="img/content/thumbnails/user-04.jpg" srcSet="img/content/thumbnails/user-04@2x.jpg 2x" width="82" height="82" alt="" />
+                        </picture>
+                      </div>
+                      <div className="thumbnail-user__top-status thumbnail-user__top-status--role-user">
+                        <svg width="12" height="12" aria-hidden="true">
+                          <use xlinkHref="#icon-crown"></use>
+                        </svg>
+                      </div>
+                      <div className="thumbnail-user__header">
+                        <h3 className="thumbnail-user__name">Диана</h3>
+                        <div className="thumbnail-user__location">
+                          <svg width="14" height="16" aria-hidden="true">
+                            <use xlinkHref="#icon-location"></use>
+                          </svg>
+                          <address className="thumbnail-user__location-address">Невский проспект</address>
+                        </div>
+                      </div>
+                      <ul className="thumbnail-user__hashtags-list">
+                        <li className="thumbnail-user__hashtags-item">
+                          <div className="hashtag thumbnail-user__hashtag"><span>#пилатес</span></div>
+                        </li>
+                      </ul>
+                      <a className="btn btn--outlined btn--dark-bg btn--medium thumbnail-user__button" href="#">Подробнее</a>
+                    </div>
+                  </li>
+                  <li className="look-for-company__item">
+                    <div className="thumbnail-user thumbnail-user--role-user thumbnail-user--dark">
+                      <div className="thumbnail-user__image">
+                        <picture>
+                          <source type="image/webp" srcSet="img/content/thumbnails/user-05.webp, img/content/thumbnails/user-05@2x.webp 2x" />
+                          <img src="img/content/thumbnails/user-05.jpg" srcSet="img/content/thumbnails/user-05@2x.jpg 2x" width="82" height="82" alt="" />
+                        </picture>
+                      </div>
+                      <div className="thumbnail-user__header">
+                        <h3 className="thumbnail-user__name">Константин</h3>
+                        <div className="thumbnail-user__location">
+                          <svg width="14" height="16" aria-hidden="true">
+                            <use xlinkHref="#icon-location"></use>
+                          </svg>
+                          <address className="thumbnail-user__location-address">Комендантский проспект</address>
+                        </div>
+                      </div>
+                      <ul className="thumbnail-user__hashtags-list">
+                        <li className="thumbnail-user__hashtags-item">
+                          <div className="hashtag thumbnail-user__hashtag"><span>#силовые</span></div>
+                        </li>
+                      </ul>
+                      <a className="btn btn--outlined btn--dark-bg btn--medium thumbnail-user__button" href="#">Подробнее</a>
+                    </div>
+                  </li>
+                  <li className="look-for-company__item">
+                    <div className="thumbnail-user thumbnail-user--role-user thumbnail-user--dark">
+                      <div className="thumbnail-user__image">
+                        <picture>
+                          <source type="image/webp" srcSet="img/content/thumbnails/user-06.webp, img/content/thumbnails/user-06@2x.webp 2x" />
+                          <img src="img/content/thumbnails/user-06.jpg" srcSet="img/content/thumbnails/user-06@2x.jpg 2x" width="82" height="82" alt="" />
+                        </picture>
+                      </div>
+                      <div className="thumbnail-user__header">
+                        <h3 className="thumbnail-user__name">Иван</h3>
+                        <div className="thumbnail-user__location">
+                          <svg width="14" height="16" aria-hidden="true">
+                            <use xlinkHref="#icon-location"></use>
+                          </svg>
+                          <address className="thumbnail-user__location-address">Чёрная речка</address>
+                        </div>
+                      </div>
+                      <ul className="thumbnail-user__hashtags-list">
+                        <li className="thumbnail-user__hashtags-item">
+                          <div className="hashtag thumbnail-user__hashtag"><span>#бег</span></div>
+                        </li>
+                      </ul>
+                      <a className="btn btn--outlined btn--dark-bg btn--medium thumbnail-user__button" href="#">Подробнее</a>
+                    </div>
+                  </li>
+                  <li className="look-for-company__item">
+                    <div className="thumbnail-user thumbnail-user--role-user thumbnail-user--dark">
+                      <div className="thumbnail-user__image">
+                        <picture>
+                          <source type="image/webp" srcSet="img/content/thumbnails/user-07.webp, img/content/thumbnails/user-07@2x.webp 2x" />
+                          <img src="img/content/thumbnails/user-07.jpg" srcSet="img/content/thumbnails/user-07@2x.jpg 2x" width="82" height="82" alt="" />
+                        </picture>
+                      </div>
+                      <div className="thumbnail-user__top-status thumbnail-user__top-status--role-user">
+                        <svg width="12" height="12" aria-hidden="true">
+                          <use xlinkHref="#icon-crown"></use>
+                        </svg>
+                      </div>
+                      <div className="thumbnail-user__header">
+                        <h3 className="thumbnail-user__name">Яна</h3>
+                        <div className="thumbnail-user__location">
+                          <svg width="14" height="16" aria-hidden="true">
+                            <use xlinkHref="#icon-location"></use>
+                          </svg>
+                          <address className="thumbnail-user__location-address">Крестовский остров</address>
+                        </div>
+                      </div>
+                      <ul className="thumbnail-user__hashtags-list">
+                        <li className="thumbnail-user__hashtags-item">
+                          <div className="hashtag thumbnail-user__hashtag"><span>#пилатес</span></div>
+                        </li>
+                      </ul>
+                      <a className="btn btn--outlined btn--dark-bg btn--medium thumbnail-user__button" href="#">Подробнее</a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
         </main>
       </div>
       <script src="js/vendor.min.js"></script>
@@ -336,4 +523,4 @@ function RegisterPage(): JSX.Element {
   );
 }
 
-export default RegisterPage;
+export default IndexPage;

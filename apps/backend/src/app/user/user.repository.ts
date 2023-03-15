@@ -1,6 +1,7 @@
 import { CRUDRepositoryInterface } from '@fit-friends/core';
 import { UserInterface } from '@fit-friends/shared-types';
 import { Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserEntity } from './user.entity';
 
@@ -12,7 +13,7 @@ export class UserRepository implements CRUDRepositoryInterface<UserEntity, numbe
     const entityData = item.toObject();
 
     return this.prisma.user.create({
-      data: entityData
+      data: entityData as User
     }) as unknown as UserInterface;
   }
 
@@ -37,7 +38,7 @@ export class UserRepository implements CRUDRepositoryInterface<UserEntity, numbe
       where: {
         id,
       },
-      data: item,
+      data: item as User,
     }) as unknown as UserInterface;
   }
 

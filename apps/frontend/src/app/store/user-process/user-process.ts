@@ -48,6 +48,8 @@ export const userProcess = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.authorizationStatus = AuthorizationStatus.NoAuth;
         state.role = null;
+        state.email = null;
+        state.name = null;
       });
   }
 });

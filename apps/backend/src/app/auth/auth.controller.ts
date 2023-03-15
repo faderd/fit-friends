@@ -1,7 +1,7 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser } from '@fit-friends/shared-types';
 import { Body, Controller, Get, HttpCode, HttpStatus, NotImplementedException, Param, ParseIntPipe, Post, Req, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UserRdo } from '../rdo/user.rdo';
 import { AuthService } from './auth.service';
@@ -63,8 +63,13 @@ export class AuthController {
     return this.authService.loginUser(user);
   }
 
-  @UseGuards(JwtRefreshGuard)
   @Post(APIRouteAuth.Refresh)
+  @UseGuards(JwtRefreshGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: 'Получены новые access/refresh токены'
@@ -84,7 +89,45 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(APIRouteAuth.Login)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  async verifyAuth(
+    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+  ) {
+    const { user: tokenPayload } = request;
+    console.log('tokenPayload: ', tokenPayload);
+    const user = await this.authService.getUser(tokenPayload.sub);
+
+    return fillObject(UserRdo, user);
+  }
+
+  @Get(APIRouteAuth.Logout)
+  @UseGuards(JwtAuthGuard)
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  @ApiOkResponse({
+    description: 'JWT сессия удалена'
+  })
+  async logout(@Req() request: RequestWithTokenPayload<RefreshTokenPayload>) {
+    const { user: tokenPayload } = request;
+    return this.authService.logoutUser(tokenPayload.refreshTokenId);
+  }
+
   @Get(APIRouteAuth.Get)
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
   @ApiOkResponse({
     type: UserRdo,
     description: 'Пользователь найден'
