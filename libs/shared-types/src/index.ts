@@ -9,3 +9,8 @@ export * from './lib/gender.enum';
 export * from './lib/user-location.enum';
 export * from './lib/validate-range';
 export * from './lib/api-route.enum';
+export * from './lib/training-type.enum';
+export * from './lib/training-duration.enum';
+export * from './lib/training-level.enum';
+export * from './lib/coach-questionnaire.interface';
+export * from './lib/user-questionnaire.interface';

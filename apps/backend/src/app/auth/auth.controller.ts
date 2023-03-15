@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Req, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, NotImplementedException, Param, ParseIntPipe, Post, Req, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UserRdo } from '../rdo/user.rdo';
@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { HttpExceptionFilter } from './http.exception-filter';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteAuth.Prefix)
@@ -33,6 +34,18 @@ export class AuthController {
   async create(@Body() dto: CreateUserDto) {
     const newUser = await this.authService.register(dto);
     return fillObject(UserRdo, newUser);
+  }
+
+  @Post(APIRouteAuth.Upload)
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'avatar', maxCount: 1 },
+    { name: 'certificate', maxCount: 1 }
+  ]))
+  async upload(
+    @UploadedFiles() files,
+  ) {
+    console.log('uploaded files: ', files);
+    new NotImplementedException(files);
   }
 
   @UseGuards(LocalAuthGuard)

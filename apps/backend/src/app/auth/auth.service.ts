@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { RefreshTokenPayload, TokenPayload, UserInterface } from '@fit-friends/shared-types';
+import { RefreshTokenPayload, TokenPayload, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import {
@@ -16,11 +16,19 @@ import { UserRepository } from '../user/user.repository';
 import { UserEntity } from '../user/user.entity';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { UserQuestionnaireRepository } from '../questionnaire/user-questionnaire.repository';
+import { CoachQuestionnaireRepository } from '../questionnaire/coach-questionnaire.repository';
+import { CoachQuestionnaireEntity } from '../questionnaire/coach-questionnaire.entity';
+import { CoachQuestionnaireDto } from '../dto/questionnaire/coach-questionnaire.dto';
+import { UserQuestionnaireDto } from '../dto/questionnaire/user-questionnaire.dto';
+import { UserQuestionnaireEntity } from '../questionnaire/user-questionnaire.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly userQuestionnaireRepository: UserQuestionnaireRepository,
+    private readonly coachQuestionnaireRepository: CoachQuestionnaireRepository,
     private readonly jwtService: JwtService,
     private readonly refreshTokenService: RefreshTokenService,
     @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
@@ -29,8 +37,7 @@ export class AuthService {
   async register(dto: CreateUserDto) {
     const { name, email, gender, birthDate, role, location, password } = dto;
     const user = {
-      email, avatar: '', birthDate: dayjs(birthDate).toDate(),
-      passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(),
+      email, avatar: '', passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : ''
     };
 
     const existUser = await this.userRepository
@@ -45,6 +52,15 @@ export class AuthService {
 
     const createdUser = await this.userRepository
       .create(userEntity);
+
+    if (role === UserRole.Coach) {
+      const questionnaireEntity = new CoachQuestionnaireEntity({ ...dto.questionnaire as CoachQuestionnaireDto, userId: createdUser.id, certificate: '' });
+      await this.coachQuestionnaireRepository.create(questionnaireEntity);
+
+    } else if (role === UserRole.User) {
+      const questionnaireEntity = new UserQuestionnaireEntity({ ...dto.questionnaire as UserQuestionnaireDto, userId: createdUser.id, isReadyToTrain: false });
+      await this.userQuestionnaireRepository.create(questionnaireEntity);
+    }
 
     return createdUser;
   }

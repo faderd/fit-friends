@@ -1,7 +1,9 @@
 import { EMAIL_NOT_VALID } from '@fit-friends/core';
 import { Gender, UserLocation, UserNameLengthRange, UserPasswordLengthRange, UserRole } from '@fit-friends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsEmail, IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsDate, IsEmail, IsEnum, IsOptional, IsString, MaxLength, MinLength, ValidateNested } from 'class-validator';
+import { QuestionnaireDto } from './questionnaire/questionnaire.dto';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -31,7 +33,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Пол',
-    example: '',
+    example: 'мужчина',
   })
   @IsEnum(Gender)
   public gender: Gender;
@@ -42,19 +44,30 @@ export class CreateUserDto {
   })
   @IsOptional()
   @IsDate()
+  @Transform(({ value }) => new Date(value))
   public birthDate: Date;
 
   @ApiProperty({
     description: 'Роль пользователя в системе',
-    example: '',
+    example: 'user',
   })
   @IsEnum(UserRole)
   public role: UserRole;
 
   @ApiProperty({
     description: 'Станция метро',
-    example: '',
+    example: 'Пионерская',
   })
   @IsEnum(UserLocation)
   public location: UserLocation;
+
+  public avatar: File;
+
+  @ApiProperty({
+    description: 'Опросник, заполняемый при регистрации пользователя',
+    example: {},
+    required: true
+  })
+  @ValidateNested()
+  public questionnaire: QuestionnaireDto;
 }

@@ -13,3 +13,7 @@ export const isUserAuthorized = (state: State) => state[NameSpace.User].authoriz
 export const isAuthUnknown = (state: State) => state[NameSpace.User].authorizationStatus === AuthorizationStatus.Unknown;
 
 export const getUserRole = (state: State) => state[NameSpace.User].role;
+
+export const getIsToQuestionnairePage = (state: State) => state[NameSpace.User].isToQuestionnairePage;
+
+export const getRegisterDataUser = (state: State) => state[NameSpace.User].registerDataUser;

@@ -4,4 +4,5 @@ export enum APIRouteAuth {
   Login = '/login',
   Refresh = '/refresh',
   Get = '/:id',
+  Upload = '/upload/:id',
 }

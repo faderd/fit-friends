@@ -6,6 +6,7 @@ import App from './app/components/app/app';
 import HistoryRouter from './app/components/history-router/history-router';
 import { store } from './app/store';
 import browserHistory from './browser-history';
+import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -1490,17 +1490,17 @@ input:disabled ~ .role-btn__btn,
 }
 
 .custom-input--with-text-right label input,
-.custom-textarea--with-text-right label input {
+.custom-textarea--with-text-right label textarea {
   padding: 14px 60px 14px 20px;
 }
 
 .custom-input--with-text-left label input,
-.custom-textarea--with-text-left label input {
+.custom-textarea--with-text-left label textarea {
   padding: 14px 20px 14px 60px;
 }
 
 .custom-input--error label input,
-.custom-textarea--error label input {
+.custom-textarea--error label textarea {
   border: 1px solid #e4001b;
   background-color: transparent;
 }

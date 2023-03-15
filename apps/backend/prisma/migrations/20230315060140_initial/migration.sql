@@ -6,7 +6,7 @@ CREATE TABLE "User" (
     "avatar" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
     "gender" TEXT NOT NULL,
-    "birthDate" TIMESTAMP(3) NOT NULL,
+    "birthDate" TEXT NOT NULL,
     "role" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE "UserQuestionnaire" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "trainingLevel" TEXT NOT NULL,
-    "trainingType" TEXT NOT NULL,
+    "trainingTypes" TEXT[],
     "trainingDuration" TEXT NOT NULL,
     "caloriesLoss" INTEGER NOT NULL,
     "burnsCaloriesPerDay" INTEGER NOT NULL,
@@ -29,16 +29,16 @@ CREATE TABLE "UserQuestionnaire" (
 );
 
 -- CreateTable
-CREATE TABLE "TrainerQuestionnaire" (
+CREATE TABLE "CoachQuestionnaire" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "trainingLevel" TEXT NOT NULL,
-    "trainingType" TEXT NOT NULL,
+    "trainingTypes" TEXT[],
     "certificate" TEXT NOT NULL,
     "merits" TEXT NOT NULL,
     "isReadyToTrain" BOOLEAN NOT NULL,
 
-    CONSTRAINT "TrainerQuestionnaire_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "CoachQuestionnaire_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -56,7 +56,7 @@ CREATE TABLE "RefreshSessions" (
 ALTER TABLE "UserQuestionnaire" ADD CONSTRAINT "UserQuestionnaire_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TrainerQuestionnaire" ADD CONSTRAINT "TrainerQuestionnaire_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "CoachQuestionnaire" ADD CONSTRAINT "CoachQuestionnaire_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RefreshSessions" ADD CONSTRAINT "RefreshSessions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

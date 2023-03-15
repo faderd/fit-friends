@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AuthorizationStatus, NameSpace } from '../../../const';
+import { AuthorizationStatus, NameSpace, RegisterDataUser } from '../../../const';
 import { UserProcess } from '../../types/state';
 import { UserData } from '../../types/userData';
 import { checkAuth, login, logout } from '../api-actions';
@@ -9,6 +9,10 @@ export const getInitialStateUserProcess = (): UserProcess => ({
   email: null,
   name: null,
   role: null,
+
+  // флаг означает, что первый этап регистрации пройден и можно переходить к опроснику, если нет то страница с опросником недоступна
+  isToQuestionnairePage: false,
+  registerDataUser: null,
 });
 
 export const userProcess = createSlice({
@@ -17,8 +21,14 @@ export const userProcess = createSlice({
   reducers: {
     storeUser: (state, action: PayloadAction<UserData>) => {
       state.email = action.payload.email;
-      state.isAdmin = action.payload.isAdmin;
       state.name = action.payload.name;
+      state.role = action.payload.role;
+    },
+    storeIsToQuestionnairePage: (state, action: PayloadAction<boolean>) => {
+      state.isToQuestionnairePage = action.payload;
+    },
+    storeRegisterDataUser: (state, action: PayloadAction<RegisterDataUser>) => {
+      state.registerDataUser = action.payload;
     },
   },
   extraReducers(builder) {
@@ -42,4 +52,4 @@ export const userProcess = createSlice({
   }
 });
 
-export const { storeUser } = userProcess.actions;
+export const { storeUser, storeIsToQuestionnairePage, storeRegisterDataUser } = userProcess.actions;

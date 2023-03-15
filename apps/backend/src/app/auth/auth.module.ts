@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { getJwtConfig } from '../../config/jwt.config';
+import { QuestionnaireModule } from '../questionnaire/questionnaire.module';
 import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
@@ -14,6 +15,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 @Module({
   imports: [
     UserModule,
+    QuestionnaireModule,
     PassportModule,
     RefreshTokenModule,
     JwtModule.registerAsync({

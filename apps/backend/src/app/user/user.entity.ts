@@ -10,7 +10,7 @@ export class UserEntity implements EntityInterface<UserEntity>, UserInterface {
   public avatar: string;
   public passwordHash: string;
   public gender: Gender;
-  public birthDate: Date;
+  public birthDate: Date | string;
   public role: UserRole;
   public location: UserLocation;
   public createdAt: Date;

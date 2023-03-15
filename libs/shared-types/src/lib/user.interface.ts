@@ -9,7 +9,7 @@ export interface UserInterface {
   avatar: string;
   passwordHash: string;
   gender: Gender;
-  birthDate: Date;
+  birthDate: Date | string;
   role: UserRole;
   location: UserLocation;
   createdAt: Date;

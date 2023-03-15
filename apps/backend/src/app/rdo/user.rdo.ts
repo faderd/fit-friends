@@ -47,7 +47,7 @@ export class UserRdo {
 
   @ApiProperty({
     description: 'Роль пользователя в системе',
-    example: 'trainer'
+    example: 'coach'
   })
   @Expose()
   public role: UserRole;
