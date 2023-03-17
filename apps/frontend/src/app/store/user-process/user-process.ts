@@ -1,14 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AuthorizationStatus, NameSpace, RegisterDataUser } from '../../../const';
+import { AuthorizationStatus, NameSpace } from '../../../const';
+import { QuestionnaireData } from '../../types/questionnaire-data';
+import { RegisterDataUser } from '../../types/register-data-user.dto';
 import { UserProcess } from '../../types/state';
-import { UserData } from '../../types/userData';
+import { UserData } from '../../types/user-data';
 import { checkAuth, login, logout } from '../api-actions';
 
 export const getInitialStateUserProcess = (): UserProcess => ({
   authorizationStatus: AuthorizationStatus.Unknown,
-  email: null,
-  name: null,
-  role: null,
+  user: null,
+  questionnaire: null,
 
   // флаг означает, что первый этап регистрации пройден и можно переходить к опроснику, если нет то страница с опросником недоступна
   isToQuestionnairePage: false,
@@ -20,9 +21,10 @@ export const userProcess = createSlice({
   initialState: getInitialStateUserProcess(),
   reducers: {
     storeUser: (state, action: PayloadAction<UserData>) => {
-      state.email = action.payload.email;
-      state.name = action.payload.name;
-      state.role = action.payload.role;
+      state.user = action.payload;
+    },
+    storeQuestionnaire(state, action: PayloadAction<QuestionnaireData>) {
+      state.questionnaire = action.payload;
     },
     storeIsToQuestionnairePage: (state, action: PayloadAction<boolean>) => {
       state.isToQuestionnairePage = action.payload;
@@ -47,11 +49,10 @@ export const userProcess = createSlice({
       })
       .addCase(logout.fulfilled, (state) => {
         state.authorizationStatus = AuthorizationStatus.NoAuth;
-        state.role = null;
-        state.email = null;
-        state.name = null;
+        state.user = null;
+        state.questionnaire = null;
       });
   }
 });
 
-export const { storeUser, storeIsToQuestionnairePage, storeRegisterDataUser } = userProcess.actions;
+export const { storeUser, storeIsToQuestionnairePage, storeRegisterDataUser, storeQuestionnaire } = userProcess.actions;

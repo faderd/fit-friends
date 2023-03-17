@@ -2,7 +2,7 @@ import { UserRole } from '@fit-friends/shared-types';
 import { AppRoute, PageType } from '../../../const';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getUserRole } from '../../store/user-process/selectors';
+import { getUser } from '../../store/user-process/selectors';
 import { logout } from '../../store/api-actions';
 
 type MainNavProps = {
@@ -11,7 +11,7 @@ type MainNavProps = {
 
 function MainNav({page}: MainNavProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const userRole = useAppSelector(getUserRole);
+  const userRole = useAppSelector(getUser)?.role;
   const navigate = useNavigate();
 
   return (

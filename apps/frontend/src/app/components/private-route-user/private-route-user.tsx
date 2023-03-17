@@ -1,7 +1,7 @@
 import { AppRoute } from '../../../const';
 import { Navigate } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
-import { getUserRole, isUserAuthorized } from '../../store/user-process/selectors';
+import { getUser, isUserAuthorized } from '../../store/user-process/selectors';
 import { UserRole } from '@fit-friends/shared-types';
 
 type PrivateRouteProps = {
@@ -10,7 +10,7 @@ type PrivateRouteProps = {
 
 function PrivateRouteUser({ children }: PrivateRouteProps): JSX.Element {
   const isAuthorized = useAppSelector(isUserAuthorized);
-  const userRole = useAppSelector(getUserRole);
+  const userRole = useAppSelector(getUser)?.role;
 
   return (
     (isAuthorized && userRole === UserRole.User)

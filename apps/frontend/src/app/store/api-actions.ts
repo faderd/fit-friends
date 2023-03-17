@@ -2,12 +2,15 @@ import { UserInterface, UserRole } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
-import { RegisterDataUser, RegisterDataQuestionnaireUser, RegisterDataQuestionnaireCoach } from '../../const';
+import { RegisterDataQuestionnaireUser, RegisterDataQuestionnaireCoach } from '../../const';
 import { dropAccessToken, dropRefreshToken, saveAccessToken, saveRefreshToken } from '../../services/token';
+import { QuestionnaireData } from '../types/questionnaire-data';
+import { RegisterDataUser } from '../types/register-data-user.dto';
 import { AppDispatch, State } from '../types/state';
-import { UserData } from '../types/userData';
+import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
-import { storeUser } from './user-process/user-process';
+import { storeIsDataLoadedStatus } from './app-data/app-data';
+import { storeQuestionnaire, storeUser } from './user-process/user-process';
 
 export const register = createAsyncThunk<
   UserInterface,
@@ -38,7 +41,9 @@ export const register = createAsyncThunk<
         formData.append('certificate', questionnaireData.certificate as File);
       }
 
+      dispatch(storeIsDataLoadedStatus(false));
       await api.post(`auth/upload/${data.id}`, formData);
+      dispatch(storeIsDataLoadedStatus(true));
 
       return data;
     } catch (err) {
@@ -57,8 +62,10 @@ export const checkAuth = createAsyncThunk<void, undefined, {
 >(
   'user/checkAuth',
   async (_, { dispatch, extra: api }) => {
+    dispatch(storeIsDataLoadedStatus(false));
     const { data } = await api.get('auth/login');
     dispatch(storeUser(data));
+    dispatch(storeIsDataLoadedStatus(true));
   }
 );
 
@@ -75,6 +82,7 @@ export const login = createAsyncThunk<void,
 >(
   'user/login',
   async (loginData, { dispatch, extra: api }) => {
+    dispatch(storeIsDataLoadedStatus(false));
     const { data } = await api.post<UserData>('auth/login', loginData);
     if (data.access_token && data.refresh_token) {
       saveAccessToken(data.access_token);
@@ -82,6 +90,7 @@ export const login = createAsyncThunk<void,
     }
 
     dispatch(storeUser(data));
+    dispatch(storeIsDataLoadedStatus(true));
     dispatch(redirectToPrevious());
   }
 );
@@ -97,5 +106,40 @@ export const logout = createAsyncThunk<void, undefined, {
     await api.get('auth/logout');
     dropAccessToken();
     dropRefreshToken();
+  }
+);
+
+export const fetchQuestionnaire = createAsyncThunk<void, number,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'user/fetchQuestionnaire',
+  async (userId, { dispatch, extra: api }) => {
+    dispatch(storeIsDataLoadedStatus(false));
+    const { data } = await api.get<QuestionnaireData>(`auth/questionnaire/${userId}`);
+
+    dispatch(storeQuestionnaire(data));
+    dispatch(storeIsDataLoadedStatus(true));
+  }
+);
+
+export const updateQuestionnaire = createAsyncThunk<void, QuestionnaireData,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'user/updateQuestionnaire',
+  async (updateData, { dispatch, extra: api }) => {
+    dispatch(storeIsDataLoadedStatus(false));
+
+    const { data } = await api.post<QuestionnaireData>('auth/questionnaire', updateData);
+
+    dispatch(storeQuestionnaire(data));
+    dispatch(storeIsDataLoadedStatus(true));
   }
 );

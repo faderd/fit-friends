@@ -1,16 +1,19 @@
-import { AuthorizationStatus, RegisterDataUser } from '../../const';
+import { AuthorizationStatus } from '../../const';
 import { store } from '../store';
-import { UserRole } from '@fit-friends/shared-types';
+import { QuestionnaireData } from './questionnaire-data';
+import { RegisterDataUser } from './register-data-user.dto';
+import { UserData } from './user-data';
 
 export type AppDispatch = typeof store.dispatch;
 
-export type AppData = {}
+export type AppData = {
+  isDataLoaded: boolean,
+}
 
 export type UserProcess = {
   authorizationStatus: AuthorizationStatus,
-  email: string | null,
-  name: string | null,
-  role: UserRole | null,
+  user: UserData | null;
+  questionnaire: QuestionnaireData | null;
   isToQuestionnairePage: boolean,
   registerDataUser: RegisterDataUser | null,
 }

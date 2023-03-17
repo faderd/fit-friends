@@ -4,8 +4,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AppRoute, DEFAULT_IS_READY_TO_TRAIN, DEFAULT_TRAINING_LEVEL, PageTitle } from '../../../const';
+import SpecializationCheckbox from '../../components/specialization-checkbox/specialization-checkbox';
 import TrainingLevelCheckbox from '../../components/training-level-checkbox/training-level-checkbox';
-import TrainingTypesCheckbox from '../../components/training-types-checkbox/training-types-checkbox';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { register as registerUser } from '../../store/api-actions';
 import { getRegisterDataUser } from '../../store/user-process/selectors';
@@ -75,7 +75,10 @@ function QuestionnaireCoachPage(): JSX.Element {
                     <div className="questionnaire-coach">
                       <h1 className="visually-hidden">Опросник</h1>
                       <div className="questionnaire-coach__wrapper">
-                        <TrainingTypesCheckbox setTrainingType={setTrainingType} trainingTypes={trainingTypes} className='questionnaire-coach__block' />
+                        <div className="questionnaire-coach__block">
+                          <span className="questionnaire-user__legend">Ваша специализация (тип) тренировок</span>
+                          <SpecializationCheckbox trainingTypes={trainingTypes} setTrainingType={setTrainingType} className='questionnaire-user__specializations' />
+                        </div>
                         <TrainingLevelCheckbox className='questionnaire-coach__block' trainingLevel={trainingLevel} setTrainingLevel={setTrainingLevel} />
                         <div className="questionnaire-coach__block"><span className="questionnaire-coach__legend">Ваши дипломы и сертификаты</span>
                           <div className="drag-and-drop questionnaire-coach__drag-and-drop">
@@ -109,7 +112,7 @@ function QuestionnaireCoachPage(): JSX.Element {
                             <label>
                               <input type="checkbox" value="individual-training" name="individual-training"
                                 checked={isReadyToTrain}
-                                onChange={() => {setIsReadyToTrain(!isReadyToTrain)}}
+                                onChange={() => { setIsReadyToTrain(!isReadyToTrain) }}
                               /><span className="questionnaire-coach__checkbox-icon">
                                 <svg width="9" height="6" aria-hidden="true">
                                   <use xlinkHref="#arrow-check"></use>

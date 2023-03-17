@@ -1,13 +1,14 @@
 import { Gender, UserLocation, UserNameLengthRange, UserPasswordLengthRange, UserRole } from '@fit-friends/shared-types';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppRoute, DEFAULT_GENDER, DEFAULT_LOCATION, DEFAULT_ROLE, PageTitle, RegisterDataUser } from '../../../const';
+import { AppRoute, DEFAULT_GENDER, DEFAULT_LOCATION, DEFAULT_ROLE, PageTitle } from '../../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { isUserAuthorized } from '../../store/user-process/selectors';
 import { storeIsToQuestionnairePage, storeRegisterDataUser } from '../../store/user-process/user-process';
 import dayjs from 'dayjs';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { RegisterDataUser } from '../../types/register-data-user.dto';
 
 type ReactHookFormData = {
   name: string,

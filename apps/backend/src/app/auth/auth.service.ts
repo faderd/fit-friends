@@ -22,6 +22,8 @@ import { CoachQuestionnaireEntity } from '../questionnaire/coach-questionnaire.e
 import { CoachQuestionnaireDto } from '../dto/questionnaire/coach-questionnaire.dto';
 import { UserQuestionnaireDto } from '../dto/questionnaire/user-questionnaire.dto';
 import { UserQuestionnaireEntity } from '../questionnaire/user-questionnaire.entity';
+import { QuestionnaireDto } from '../dto/questionnaire/questionnaire.dto';
+import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
 
 @Injectable()
 export class AuthService {
@@ -121,5 +123,36 @@ export class AuthService {
   async logoutUser(refreshTokenId?: string) {
     await this.refreshTokenService
       .deleteRefreshSession(refreshTokenId);
+  }
+
+  async getQuestionnaire(userId: number, userRole: UserRole) {
+    if (userRole === UserRole.Coach) {
+      return this.coachQuestionnaireRepository.findByUserId(userId);
+    }
+
+    if (userRole === UserRole.User) {
+      return this.userQuestionnaireRepository.findByUserId(userId);
+    }
+  }
+
+  async updateQuestionnaire(userId: number, dto: UpdateQuestionnaire) {
+    const existUser = await this.userRepository.findById(userId);
+    if (!existUser) {
+      throw new UserNotFoundException(userId);
+    }
+
+    if (existUser.role === UserRole.Coach) {
+      const existQuestionnaire = await this.coachQuestionnaireRepository.findByUserId(userId);
+      const questionnaireEntity = new CoachQuestionnaireEntity({ ...existQuestionnaire, ...dto });
+
+      return this.coachQuestionnaireRepository.update(existQuestionnaire.id, questionnaireEntity);
+    }
+
+    if (existUser.role === UserRole.User) {
+      const existQuestionnaire = await this.userQuestionnaireRepository.findByUserId(userId);
+      const questionnaireEntity = new UserQuestionnaireEntity({ ...existQuestionnaire, ...dto });
+
+      return this.userQuestionnaireRepository.update(existQuestionnaire.id, questionnaireEntity);
+    }
   }
 }

@@ -40,4 +40,12 @@ export class CoachQuestionnaireRepository implements CRUDRepositoryInterface<Coa
       data: item,
     }) as unknown as CoachQuestionnaireInterface;
   }
+
+  public async findByUserId(id: number): Promise<CoachQuestionnaireInterface> {
+    return this.prisma.coachQuestionnaire.findFirst({
+      where: {
+        userId: id,
+      }
+    }) as unknown as CoachQuestionnaireInterface;
+  }
 }

@@ -6,4 +6,6 @@ export enum APIRouteAuth {
   Refresh = '/refresh',
   Get = '/:id',
   Upload = '/upload/:id',
+  GetQuestionnaire = '/questionnaire/:userId',
+  UpdateQuestionnaire = '/questionnaire',
 }

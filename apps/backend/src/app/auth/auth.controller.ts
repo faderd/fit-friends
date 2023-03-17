@@ -1,7 +1,7 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser } from '@fit-friends/shared-types';
+import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser, TokenPayload } from '@fit-friends/shared-types';
 import { Body, Controller, Get, HttpCode, HttpStatus, NotImplementedException, Param, ParseIntPipe, Post, Req, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UserRdo } from '../rdo/user.rdo';
 import { AuthService } from './auth.service';
@@ -10,6 +10,9 @@ import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { HttpExceptionFilter } from './http.exception-filter';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { QuestionnaireRdo } from '../rdo/questionnaire.rdo';
+import { QuestionnaireDto } from '../dto/questionnaire/questionnaire.dto';
+import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
 
 @UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteAuth.Prefix)
@@ -70,12 +73,12 @@ export class AuthController {
     description: 'Bearer token',
     required: true,
   })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: 'Получены новые access/refresh токены'
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Пользователь не авторизован',
   })
   async refresh(@Req() request: RequestWithTokenPayload<RefreshTokenPayload>) {
     const { user: tokenPayload } = request;
@@ -88,8 +91,8 @@ export class AuthController {
     }, tokenPayload.refreshTokenId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(APIRouteAuth.Login)
+  @UseGuards(JwtAuthGuard)
   @ApiHeader({
     name: 'Authorization',
     description: 'Bearer token',
@@ -110,15 +113,56 @@ export class AuthController {
 
   @Get(APIRouteAuth.Logout)
   @UseGuards(JwtAuthGuard)
-  @ApiUnauthorizedResponse({
-    description: 'Пользователь не авторизован',
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
   })
+  @ApiUnauthorizedResponse({ description: 'Пользователь не авторизован' })
   @ApiOkResponse({
     description: 'JWT сессия удалена'
   })
   async logout(@Req() request: RequestWithTokenPayload<RefreshTokenPayload>) {
     const { user: tokenPayload } = request;
     return this.authService.logoutUser(tokenPayload.refreshTokenId);
+  }
+
+  @Get(APIRouteAuth.GetQuestionnaire)
+  @UseGuards(JwtAuthGuard)
+  @ApiUnauthorizedResponse({ description: 'Пользователь не авторизован' })
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
+  @ApiOkResponse({
+    type: QuestionnaireRdo,
+    description: 'Данные получены'
+  })
+  async getQuestionnaire(
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
+    const existUser = await this.authService.getUser(userId);
+    const questionnaire = await this.authService.getQuestionnaire(existUser.id, existUser.role);
+
+    return fillObject(QuestionnaireRdo, questionnaire);
+  }
+
+  @Post(APIRouteAuth.UpdateQuestionnaire)
+  @UseGuards(JwtAuthGuard)
+  @ApiUnauthorizedResponse({ description: 'Пользователь не авторизован' })
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
+  @ApiOkResponse({
+    type: QuestionnaireRdo,
+    description: 'Данные обновлены'
+  })
+  async updateQuestionnaire(
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
+    @Body() dto: UpdateQuestionnaire,
+  ) {
+    const { user: TokenPayload } = request;
+    console.log('dto: ', dto);
+    const questionnaire = await this.authService.updateQuestionnaire(TokenPayload.sub, dto);
+    console.log('questionnaire: ', questionnaire);
+    return fillObject(QuestionnaireRdo, questionnaire);
   }
 
   @Get(APIRouteAuth.Get)

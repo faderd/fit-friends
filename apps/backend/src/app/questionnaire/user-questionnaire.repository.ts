@@ -40,4 +40,12 @@ export class UserQuestionnaireRepository implements CRUDRepositoryInterface<User
       data: item,
     }) as unknown as UserQuestionnaireInterface;
   }
+
+  public async findByUserId(id: number): Promise<UserQuestionnaireInterface> {
+    return this.prisma.userQuestionnaire.findFirst({
+      where: {
+        userId: id,
+      }
+    }) as unknown as UserQuestionnaireInterface;
+  }
 }

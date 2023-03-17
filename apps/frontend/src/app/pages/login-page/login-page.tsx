@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppRoute, PageTitle } from '../../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getUserRole, isUserAuthorized } from '../../store/user-process/selectors';
+import { getUser, isUserAuthorized } from '../../store/user-process/selectors';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { login } from '../../store/api-actions';
 import { UserRole } from '@fit-friends/shared-types';
@@ -19,7 +19,7 @@ function LoginPage(): JSX.Element {
   const navigate = useNavigate();
 
   const isUserAuth = useAppSelector(isUserAuthorized);
-  const userRole = useAppSelector(getUserRole);
+  const userRole = useAppSelector(getUser)?.role;
 
   useEffect(() => {
     if (isUserAuth) {

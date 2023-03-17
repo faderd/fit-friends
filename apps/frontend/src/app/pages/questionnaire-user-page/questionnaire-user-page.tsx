@@ -6,9 +6,9 @@ import { getRegisterDataUser } from '../../store/user-process/selectors';
 import { register as registerUser } from '../../store/api-actions';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import TrainingTypesCheckbox from '../../components/training-types-checkbox/training-types-checkbox';
 import TrainingLevelCheckbox from '../../components/training-level-checkbox/training-level-checkbox';
 import { useNavigate } from 'react-router-dom';
+import SpecializationCheckbox from '../../components/specialization-checkbox/specialization-checkbox';
 
 type ReactHookFormData = {
   caloriesLoss: string;
@@ -75,7 +75,10 @@ function QuestionnaireUserPage(): JSX.Element {
                     <div className="questionnaire-user">
                       <h1 className="visually-hidden">Опросник</h1>
                       <div className="questionnaire-user__wrapper">
-                        <TrainingTypesCheckbox setTrainingType={setTrainingType} trainingTypes={trainingTypes} className='questionnaire-user__block' />
+                        <div className="questionnaire-coach__block">
+                          <span className="questionnaire-user__legend">Ваша специализация (тип) тренировок</span>
+                          <SpecializationCheckbox setTrainingType={setTrainingType} trainingTypes={trainingTypes} className='questionnaire-user__specializations' />
+                        </div>
                         <div className="questionnaire-user__block"><span className="questionnaire-user__legend">Сколько времени вы готовы уделять на тренировку в день</span>
                           <div className="custom-toggle-radio custom-toggle-radio--big questionnaire-user__radio">
                             <div className="custom-toggle-radio__block">

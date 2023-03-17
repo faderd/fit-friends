@@ -44,23 +44,12 @@ export const DEFAULT_TRAINING_DURATION = TrainingDuration.Range30to50;
 export const DEFAULT_TRAINING_LEVEL = TrainingLevel.Amateur;
 export const DEFAULT_IS_READY_TO_TRAIN = true;
 
-export type RegisterDataUser = {
-  name: string,
-  email: string,
-  password: string,
-  gender: Gender,
-  birthDate?: Date,
-  role: UserRole,
-  location: UserLocation,
-  avatar: null | File,
-}
-
 export type RegisterDataQuestionnaireUser = {
-  trainingLevel: TrainingLevel,
-  trainingTypes: TrainingType[],
-  trainingDuration: TrainingDuration,
-  caloriesLoss: number,
-  burnsCaloriesPerDay: number,
+  trainingLevel: TrainingLevel;
+  trainingTypes: TrainingType[];
+  trainingDuration: TrainingDuration;
+  caloriesLoss: number;
+  burnsCaloriesPerDay: number;
 }
 
 export type RegisterDataQuestionnaireCoach = {
