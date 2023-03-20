@@ -13,6 +13,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { QuestionnaireRdo } from '../rdo/questionnaire.rdo';
 import { QuestionnaireDto } from '../dto/questionnaire/questionnaire.dto';
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
+import { UpdateUserDto } from '../dto/questionnaire/update-user.dto';
 
 @UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteAuth.Prefix)
@@ -159,10 +160,26 @@ export class AuthController {
     @Body() dto: UpdateQuestionnaire,
   ) {
     const { user: TokenPayload } = request;
-    console.log('dto: ', dto);
     const questionnaire = await this.authService.updateQuestionnaire(TokenPayload.sub, dto);
-    console.log('questionnaire: ', questionnaire);
     return fillObject(QuestionnaireRdo, questionnaire);
+  }
+
+  @Post(APIRouteAuth.UpdateUser)
+  @UseGuards(JwtAuthGuard)
+  @ApiUnauthorizedResponse({ description: 'Пользователь не авторизован' })
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
+  @ApiOkResponse({
+    type: UserRdo,
+    description: 'Данные обновлены'
+  })
+  async updateUser(
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
+    @Body() dto: UpdateUserDto,
+  ) {
+    const { user: TokenPayload } = request;
+    const updatedUser = await this.authService.updateUser(TokenPayload.sub, dto);
+    return fillObject(UserRdo, updatedUser);
   }
 
   @Get(APIRouteAuth.Get)

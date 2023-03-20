@@ -8,4 +8,5 @@ export enum APIRouteAuth {
   Upload = '/upload/:id',
   GetQuestionnaire = '/questionnaire/:userId',
   UpdateQuestionnaire = '/questionnaire',
+  UpdateUser = '/update',
 }

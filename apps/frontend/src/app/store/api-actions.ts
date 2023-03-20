@@ -7,6 +7,7 @@ import { dropAccessToken, dropRefreshToken, saveAccessToken, saveRefreshToken } 
 import { QuestionnaireData } from '../types/questionnaire-data';
 import { RegisterDataUser } from '../types/register-data-user.dto';
 import { AppDispatch, State } from '../types/state';
+import { UpdateUserDto } from '../types/update-user.dto';
 import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
 import { storeIsDataLoadedStatus } from './app-data/app-data';
@@ -141,5 +142,22 @@ export const updateQuestionnaire = createAsyncThunk<void, QuestionnaireData,
 
     dispatch(storeQuestionnaire(data));
     dispatch(storeIsDataLoadedStatus(true));
+  }
+);
+
+export const updateUser = createAsyncThunk<void, UpdateUserDto,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'user/updateUser',
+  async (updateData, { dispatch, extra: api }) => {
+    dispatch(storeIsDataLoadedStatus(false));
+
+      const { data } = await api.post<UserData>('auth/update', updateData);
+      dispatch(storeUser(data));
+      dispatch(storeIsDataLoadedStatus(true));
   }
 );

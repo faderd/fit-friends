@@ -22,8 +22,8 @@ import { CoachQuestionnaireEntity } from '../questionnaire/coach-questionnaire.e
 import { CoachQuestionnaireDto } from '../dto/questionnaire/coach-questionnaire.dto';
 import { UserQuestionnaireDto } from '../dto/questionnaire/user-questionnaire.dto';
 import { UserQuestionnaireEntity } from '../questionnaire/user-questionnaire.entity';
-import { QuestionnaireDto } from '../dto/questionnaire/questionnaire.dto';
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
+import { UpdateUserDto } from '../dto/questionnaire/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -154,5 +154,15 @@ export class AuthService {
 
       return this.userQuestionnaireRepository.update(existQuestionnaire.id, questionnaireEntity);
     }
+  }
+
+  async updateUser(userId: number, dto: UpdateUserDto) {
+    const existUser = await this.userRepository.findById(userId);
+    if (!existUser) {
+      throw new UserNotFoundException(userId);
+    }
+
+    const userEntity = new UserEntity({ ...existUser, ...dto });
+    return this.userRepository.update(existUser.id, userEntity);
   }
 }
