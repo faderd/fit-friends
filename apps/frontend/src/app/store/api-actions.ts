@@ -11,7 +11,7 @@ import { UpdateUserDto } from '../types/update-user.dto';
 import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
 import { storeIsDataLoadedStatus } from './app-data/app-data';
-import { storeQuestionnaire, storeUser } from './user-process/user-process';
+import { storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 
 export const register = createAsyncThunk<
   UserInterface,
@@ -156,8 +156,26 @@ export const updateUser = createAsyncThunk<void, UpdateUserDto,
   async (updateData, { dispatch, extra: api }) => {
     dispatch(storeIsDataLoadedStatus(false));
 
-      const { data } = await api.post<UserData>('auth/update', updateData);
-      dispatch(storeUser(data));
-      dispatch(storeIsDataLoadedStatus(true));
+    const { data } = await api.post<UserData>('auth/update', updateData);
+    dispatch(storeUser(data));
+    dispatch(storeIsDataLoadedStatus(true));
+  }
+);
+
+export const fetchUsers = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'user/fetchUsers',
+  async (_, { dispatch, extra: api }) => {
+    console.log('fetchUsers');
+    dispatch(storeIsDataLoadedStatus(false));
+
+    const { data } = await api.get<UserData[]>('user/');
+    dispatch(storeUsers(data));
+    dispatch(storeIsDataLoadedStatus(true));
   }
 );

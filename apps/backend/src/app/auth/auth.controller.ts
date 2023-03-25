@@ -11,7 +11,6 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { HttpExceptionFilter } from './http.exception-filter';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { QuestionnaireRdo } from '../rdo/questionnaire.rdo';
-import { QuestionnaireDto } from '../dto/questionnaire/questionnaire.dto';
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
 import { UpdateUserDto } from '../dto/questionnaire/update-user.dto';
 
@@ -106,7 +105,6 @@ export class AuthController {
     @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
   ) {
     const { user: tokenPayload } = request;
-    console.log('tokenPayload: ', tokenPayload);
     const user = await this.authService.getUser(tokenPayload.sub);
 
     return fillObject(UserRdo, user);

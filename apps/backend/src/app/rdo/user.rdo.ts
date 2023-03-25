@@ -1,6 +1,7 @@
 import { Gender, UserLocation, UserRole } from '@fit-friends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
+import { QuestionnaireRdo } from './questionnaire.rdo';
 
 export class UserRdo {
   @ApiProperty({
@@ -65,4 +66,14 @@ export class UserRdo {
   })
   @Expose()
   public createdAt: Date;
+
+  @Transform((value) => {
+    if (value.obj.UserQuestionnaire && value.obj.UserQuestionnaire.length !== 0) {
+      return value.obj.UserQuestionnaire[0];
+    } else if (value.obj.CoachQuestionnaire && value.obj.CoachQuestionnaire.length !== 0) {
+      return value.obj.CoachQuestionnaire[0];
+    }
+  })
+  @Expose()
+  public questionnaire?: QuestionnaireRdo;
 }

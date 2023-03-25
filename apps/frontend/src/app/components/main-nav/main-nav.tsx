@@ -6,7 +6,7 @@ import { getUser } from '../../store/user-process/selectors';
 import { logout } from '../../store/api-actions';
 
 type MainNavProps = {
-  page: PageType,
+  page?: PageType,
 }
 
 function MainNav({page}: MainNavProps): JSX.Element {

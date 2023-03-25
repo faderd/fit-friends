@@ -21,6 +21,8 @@ export enum AppRoute {
   PersonalAccountCoach = '/personal-account-coach',
   PersonalAccountUser = '/personal-account-user',
   NotFound = '/not-found',
+  UsersCatalog = '/users-catalog',
+  UserCard = '/user-card/:id',
 }
 
 export enum PageTitle {
@@ -30,6 +32,7 @@ export enum PageTitle {
   Questionaire = 'Опросник — FitFriends',
   Index = 'FitFriends',
   PersonalAccount = 'Личный кабинет — FitFriends',
+  UsersCatalog = 'Каталог пользователей — FitFriends',
 }
 
 export enum PageType {
@@ -43,6 +46,7 @@ export const DEFAULT_ROLE = UserRole.User;
 export const DEFAULT_TRAINING_DURATION = TrainingDuration.Range30to50;
 export const DEFAULT_TRAINING_LEVEL = TrainingLevel.Amateur;
 export const DEFAULT_IS_READY_TO_TRAIN = true;
+export const DEFAULT_FILTER_TRAINING_LEVEL = TrainingLevel.Amateur;
 
 export type RegisterDataQuestionnaireUser = {
   trainingLevel: TrainingLevel;
@@ -58,4 +62,11 @@ export type RegisterDataQuestionnaireCoach = {
   certificate: File;
   merits: string;
   isReadyToTrain: boolean;
+}
+
+export enum SearchParam {
+  UserRoleSorting = 'userRoleSorting',
+  LocationFilter = 'locationFilter',
+  Specialization = 'specialization',
+  TrainingLevel = 'trainingLevel',
 }

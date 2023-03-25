@@ -3,12 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { RefreshTokenPayload, TokenPayload, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
-import {
-  UserNotFoundException,
-  UserExistsException,
-  UserNotRegisteredException,
-  UserPasswordWrongException
-} from './exceptions';
+import { UserNotFoundException, UserExistsException, UserNotRegisteredException, UserPasswordWrongException } from './exceptions';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import dayjs from 'dayjs';
 import { jwtConfig } from '../../config/jwt.config';

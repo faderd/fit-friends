@@ -1,7 +1,12 @@
 import { AuthorizationStatus, NameSpace } from '../../../const';
 import { State } from '../../types/state';
+import { UserData } from '../../types/user-data';
 
 export const getUser = (state: State) => state[NameSpace.User].user;
+
+export const getUsers = (state: State) => state[NameSpace.User].users;
+
+export const getUserById = (id: number) => (state: State) => state[NameSpace.User].users.find((user: UserData) => user.id === id);
 
 export const getQuestionnaire = (state: State) => state[NameSpace.User].questionnaire;
 

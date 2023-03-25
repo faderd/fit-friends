@@ -2,7 +2,7 @@ import { PageType } from '../../../const';
 import MainNav from '../main-nav/main-nav';
 
 type PageHeaderProps = {
-  page: PageType,
+  page?: PageType,
 }
 
 function PageHeader({ page }: PageHeaderProps): JSX.Element {

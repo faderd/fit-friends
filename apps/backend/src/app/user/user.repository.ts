@@ -49,4 +49,13 @@ export class UserRepository implements CRUDRepositoryInterface<UserEntity, numbe
       }
     }) as unknown as UserInterface;
   }
+
+  public async findAll(): Promise<UserInterface[]> {
+    return this.prisma.user.findMany({
+      include: {
+        UserQuestionnaire: true,
+        CoachQuestionnaire: true,
+      }
+    }) as unknown as UserInterface[];
+  }
 }

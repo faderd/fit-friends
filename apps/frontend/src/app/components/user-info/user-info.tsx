@@ -238,7 +238,7 @@ function UserInfo(): JSX.Element {
               /><span className={`custom-toggle__icon ${!isDataLoaded ? 'is-disabled' : ''}`}>
                 <svg width="9" height="6" aria-hidden="true">
                   <use xlinkHref="#arrow-check"></use>
-                </svg></span><span className="custom-toggle__label">Готов тренировать</span>
+                </svg></span><span className="custom-toggle__label">{user?.role === UserRole.Coach ? 'Готов тренировать' : 'Готов к тренировке' }</span>
             </label>
           </div>
         </div>

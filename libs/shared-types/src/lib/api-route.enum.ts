@@ -10,3 +10,8 @@ export enum APIRouteAuth {
   UpdateQuestionnaire = '/questionnaire',
   UpdateUser = '/update',
 }
+
+export enum APIRouteUser {
+  Prefix = '/user',
+  GetAll = '/',
+}

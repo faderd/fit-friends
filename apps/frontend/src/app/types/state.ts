@@ -13,6 +13,7 @@ export type AppData = {
 export type UserProcess = {
   authorizationStatus: AuthorizationStatus,
   user: UserData | null;
+  users: UserData[];
   questionnaire: QuestionnaireData | null;
   isToQuestionnairePage: boolean,
   registerDataUser: RegisterDataUser | null,

@@ -9,6 +9,7 @@ import { checkAuth, login, logout } from '../api-actions';
 export const getInitialStateUserProcess = (): UserProcess => ({
   authorizationStatus: AuthorizationStatus.Unknown,
   user: null,
+  users: [],
   questionnaire: null,
 
   // флаг означает, что первый этап регистрации пройден и можно переходить к опроснику, если нет то страница с опросником недоступна
@@ -22,6 +23,9 @@ export const userProcess = createSlice({
   reducers: {
     storeUser: (state, action: PayloadAction<UserData>) => {
       state.user = action.payload;
+    },
+    storeUsers: (state, action: PayloadAction<UserData[]>) => {
+      state.users = action.payload;
     },
     storeQuestionnaire(state, action: PayloadAction<QuestionnaireData>) {
       state.questionnaire = action.payload;
@@ -55,4 +59,4 @@ export const userProcess = createSlice({
   }
 });
 
-export const { storeUser, storeIsToQuestionnairePage, storeRegisterDataUser, storeQuestionnaire } = userProcess.actions;
+export const { storeUser, storeUsers, storeIsToQuestionnairePage, storeRegisterDataUser, storeQuestionnaire } = userProcess.actions;

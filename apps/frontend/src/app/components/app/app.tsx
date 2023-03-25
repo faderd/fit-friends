@@ -15,6 +15,8 @@ import PrivateRouteUser from '../private-route-user/private-route-user';
 import PrivateRouteCoach from '../private-route-coach/private-route-coach';
 import PersonalAccountCoachPage from '../../pages/personal-account-coach-page/personal-account-coach-page';
 import PersonalAccountUserPage from '../../pages/personal-account-user-page/personal-account-user-page';
+import UsersCatalogPage from '../../pages/users-catalog-page/users-catalog-page';
+import UserCardPage from '../../pages/user-card-page/user-card-page';
 
 function App(): JSX.Element {
   const isAuthStatusUnknown = useAppSelector(isAuthUnknown);
@@ -78,6 +80,22 @@ function App(): JSX.Element {
           <PrivateRouteUser>
             <PersonalAccountUserPage />
           </PrivateRouteUser>
+        }
+      />
+      <Route
+        path={AppRoute.UsersCatalog}
+        element={
+          <PrivateRoute>
+            <UsersCatalogPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path={AppRoute.UserCard}
+        element={
+          <PrivateRoute>
+            <UserCardPage />
+          </PrivateRoute>
         }
       />
     </Routes>
