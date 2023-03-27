@@ -25,6 +25,7 @@ model User {
   RefreshSessions    RefreshSessions[]
   UserQuestionnaire  UserQuestionnaire[]
   CoachQuestionnaire CoachQuestionnaire[]
+  friends            Int[]
 }
 
 model UserQuestionnaire {

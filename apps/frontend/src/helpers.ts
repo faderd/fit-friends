@@ -44,3 +44,17 @@ export const applyFilters = (users: UserData[], filters: UserFilters) => {
 
   return filteredUsers;
 }
+
+export const makeNewFriendsList = (action: 'add' | 'remove', id: number, userFriends: number[]): number[] => {
+  const newUserFriends = [...userFriends];
+
+  if (action === 'add') {
+    newUserFriends.push(id);
+    return newUserFriends;
+  }
+
+  const index = newUserFriends.findIndex((friendId) => friendId === id);
+  newUserFriends.splice(index, 1);
+
+  return newUserFriends;
+};

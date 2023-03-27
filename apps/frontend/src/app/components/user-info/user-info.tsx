@@ -1,7 +1,6 @@
 import { CoachMeritsLengthRange, Gender, TrainingLevel, TrainingType, UserLocation, UserNameLengthRange, UserRole } from '@fit-friends/shared-types';
 import { useEffect, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchQuestionnaire, updateQuestionnaire, updateUser } from '../../store/api-actions';
 import { getIsDataLoaded } from '../../store/app-data/selectors';

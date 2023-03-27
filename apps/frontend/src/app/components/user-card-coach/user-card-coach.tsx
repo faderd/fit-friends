@@ -1,11 +1,12 @@
 import { TrainingLevel } from '@fit-friends/shared-types';
 import { UserData } from '../../types/user-data';
+import ButtonAddRemoveFriend from '../button-add-remove-friend/button-add-remove-friend';
 
-type UserCardCoachPageProps = {
+type UserCardCoachProps = {
   user: UserData;
 }
 
-function UserCardCoachPage({ user }: UserCardCoachPageProps): JSX.Element {
+function UserCardCoach({ user }: UserCardCoachProps): JSX.Element {
   const trainingTypes = user.questionnaire?.trainingTypes || [];
 
   return (
@@ -53,7 +54,7 @@ function UserCardCoachPage({ user }: UserCardCoachPageProps): JSX.Element {
                   </li>
                 ))}
               </ul>
-              <button className="btn user-card-coach__btn" type="button">Добавить в друзья</button>
+              <ButtonAddRemoveFriend friendId={user.id} />
             </div>
             <div className="user-card-coach__gallary">
               <ul className="user-card-coach__gallary-list">
@@ -227,7 +228,15 @@ function UserCardCoachPage({ user }: UserCardCoachPageProps): JSX.Element {
               </li>
             </ul>
             <form className="user-card-coach__training-form">
-              <button className="btn user-card-coach__btn-training" type="button">Хочу персональную тренировку</button>
+              {user.questionnaire?.isReadyToTrain && (
+                <button
+                  className="btn user-card-coach__btn-training"
+                  type="button"
+                  onClick={() => {
+                    //
+                  }}
+                >Хочу персональную тренировку
+                </button>)}
               <div className="user-card-coach__training-check">
                 <div className="custom-toggle custom-toggle--checkbox">
                   <label>
@@ -246,4 +255,4 @@ function UserCardCoachPage({ user }: UserCardCoachPageProps): JSX.Element {
   );
 }
 
-export default UserCardCoachPage;
+export default UserCardCoach;

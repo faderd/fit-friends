@@ -13,4 +13,5 @@ export interface UserInterface {
   role: UserRole;
   location: UserLocation;
   createdAt: Date;
+  friends: number[];
 }

@@ -10,6 +10,7 @@ export type UserData = {
   birthDate: Date | string;
   role: UserRole;
   location: UserLocation;
+  friends: number[];
   questionnaire?: QuestionnaireData;
   access_token?: string;
   refresh_token?: string;

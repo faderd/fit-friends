@@ -34,7 +34,7 @@ export class AuthService {
   async register(dto: CreateUserDto) {
     const { name, email, gender, birthDate, role, location, password } = dto;
     const user = {
-      email, avatar: '', passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : ''
+      email, avatar: '', passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [],
     };
 
     const existUser = await this.userRepository
@@ -43,7 +43,6 @@ export class AuthService {
     if (existUser) {
       throw new UserExistsException(email);
     }
-
     const userEntity = await new UserEntity(user)
       .setPassword(password);
 

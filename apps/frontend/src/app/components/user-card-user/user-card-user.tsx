@@ -1,11 +1,12 @@
 import { TrainingLevel } from '@fit-friends/shared-types';
 import { UserData } from '../../types/user-data';
+import ButtonAddRemoveFriend from '../button-add-remove-friend/button-add-remove-friend';
 
-type UserCardUserPageProps = {
+type UserCardUserProps = {
   user: UserData;
 }
 
-function UserCardUserPage({ user }: UserCardUserPageProps): JSX.Element {
+function UserCardUser({ user }: UserCardUserProps): JSX.Element {
   const trainingTypes = user.questionnaire?.trainingTypes || [];
 
   return (
@@ -40,7 +41,7 @@ function UserCardUserPage({ user }: UserCardUserPageProps): JSX.Element {
                 </li>
               ))}
             </ul>
-            <button className="btn user-card__btn" type="button">Добавить в друзья</button>
+            <ButtonAddRemoveFriend friendId={user.id} />
           </div>
           <div className="user-card__gallary">
             <ul className="user-card__gallary-list">
@@ -56,4 +57,4 @@ function UserCardUserPage({ user }: UserCardUserPageProps): JSX.Element {
   );
 }
 
-export default UserCardUserPage;
+export default UserCardUser;

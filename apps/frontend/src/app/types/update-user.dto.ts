@@ -9,4 +9,5 @@ export type UpdateUserDto = {
   birthDate?: Date | string;
   role?: UserRole;
   location?: UserLocation;
+  friends?: number[];
 };

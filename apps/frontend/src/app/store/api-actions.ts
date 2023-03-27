@@ -63,10 +63,8 @@ export const checkAuth = createAsyncThunk<void, undefined, {
 >(
   'user/checkAuth',
   async (_, { dispatch, extra: api }) => {
-    dispatch(storeIsDataLoadedStatus(false));
     const { data } = await api.get('auth/login');
     dispatch(storeUser(data));
-    dispatch(storeIsDataLoadedStatus(true));
   }
 );
 
@@ -171,7 +169,6 @@ export const fetchUsers = createAsyncThunk<void, undefined,
 >(
   'user/fetchUsers',
   async (_, { dispatch, extra: api }) => {
-    console.log('fetchUsers');
     dispatch(storeIsDataLoadedStatus(false));
 
     const { data } = await api.get<UserData[]>('user/');

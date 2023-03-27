@@ -6,11 +6,11 @@ import PageHeader from '../../components/page-header/page-header';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchUsers } from '../../store/api-actions';
 import { getIsDataLoaded } from '../../store/app-data/selectors';
-import { getUserById } from '../../store/user-process/selectors';
+import { getUser, getUserById } from '../../store/user-process/selectors';
 import { UserData } from '../../types/user-data';
 import NotFoundPage from '../not-found-page/not-found-page';
-import UserCardCoachPage from '../user-card-coach-page/user-card-coach-page';
-import UserCardUserPage from '../user-card-user-page/user-card-user-page';
+import UserCardCoach from '../../components/user-card-coach/user-card-coach';
+import UserCardUser from '../../components/user-card-user/user-card-user';
 
 function UserCardPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -51,8 +51,8 @@ function UserCardPage(): JSX.Element {
                     <use xlinkHref="#arrow-left"></use>
                   </svg><span>Назад</span>
                 </button>
-                {role === UserRole.Coach && (<UserCardCoachPage user={user} />)}
-                {role === UserRole.User && (<UserCardUserPage user={user} />)}
+                {role === UserRole.Coach && (<UserCardCoach user={user} />)}
+                {role === UserRole.User && (<UserCardUser user={user} />)}
               </div>
             </div>
           </div>

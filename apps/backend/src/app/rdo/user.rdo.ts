@@ -67,6 +67,13 @@ export class UserRdo {
   @Expose()
   public createdAt: Date;
 
+  @ApiProperty({
+    description: 'Список id друзей',
+    example: '[1, 2, 3]'
+  })
+  @Expose()
+  public friends: number[];
+
   @Transform((value) => {
     if (value.obj.UserQuestionnaire && value.obj.UserQuestionnaire.length !== 0) {
       return value.obj.UserQuestionnaire[0];

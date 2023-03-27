@@ -32,7 +32,7 @@ Content-Type: application/json
 # Проверка авторизации пользователя
 GET http://localhost:3333/api/auth/login HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJzZGFmYWZhZiIsImlhdCI6MTY3ODg4Nzc0OCwiZXhwIjoxNjc5NDkyNTQ4fQ.0hPRV5QTHIXsYfRhPlsa5NL0gPR_S-mqdNPVQ22h_cA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJmYXNmYXNmc2ZzYSIsImlhdCI6MTY3OTg5ODY2MCwiZXhwIjoxNjc5ODk5NTYwfQ.X2Jm9hp6-G5Z4zkGSOTlDmHDXaYvaCRfE-_qyyHmHW0
 ###
 
 # Обновить токены
@@ -56,12 +56,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsI
 # Редактировать анкету пользователя
 POST http://localhost:3333/api/auth/questionnaire HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJzZGFmYWZhZiIsImlhdCI6MTY3OTA2NjgwOCwiZXhwIjoxNjc5MDY3NzA4fQ.WWMS3SAOFlflDbT90w8oNt03Xqb4sPeY0qcDv6pcKBQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJmYXNmYXNmc2ZzYSIsImlhdCI6MTY3OTkwMDE1NywiZXhwIjoxNjc5OTAxMDU3fQ.VwbCbv-PiSL-Hfr5S34V6MzixJXpU7CEpm06L5ljULo
 
 {
-  "merits": "dafasfasfsafsaf"
+  "merits": "afdasfsafsafasfsafsfas"
 }
 ###
+
+# Редактировать пользователя
+POST http://localhost:3333/api/auth/update HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJmYXNmYXNmc2ZzYSIsImlhdCI6MTY3OTkwMDE1NywiZXhwIjoxNjc5OTAxMDU3fQ.VwbCbv-PiSL-Hfr5S34V6MzixJXpU7CEpm06L5ljULo
+
+{
+  "friends": [2]
+}
 
 ## Upload avatar
 POST http://localhost:3333/api/auth/upload/21 HTTP/1.1

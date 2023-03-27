@@ -56,4 +56,10 @@ export class UpdateUserDto {
   @IsEnum(UserLocation)
   @IsOptional()
   public location?: UserLocation;
+
+  @ApiProperty({
+    description: 'Список id друзей',
+    example: '[1, 2, 3]'
+  })
+  public friends?: number[];
 }

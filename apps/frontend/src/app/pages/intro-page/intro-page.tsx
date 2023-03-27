@@ -12,9 +12,6 @@ function IntroPage(): JSX.Element {
 
   const isUserAuth = useAppSelector(isUserAuthorized);
   const userRole = useAppSelector(getUser)?.role;
-  console.log('userRole: ', userRole);
-  console.log('isUserAuth: ', isUserAuth);
-  console.log('User: ', useAppSelector(getUser));
 
   useEffect(() => {
     if (isUserAuth) {

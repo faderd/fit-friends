@@ -8,6 +8,13 @@ export const getUsers = (state: State) => state[NameSpace.User].users;
 
 export const getUserById = (id: number) => (state: State) => state[NameSpace.User].users.find((user: UserData) => user.id === id);
 
+export const getIsFriend = (id: number) => (state: State) => {
+  if (state[NameSpace.User].user && id) {
+    const userFriends = state[NameSpace.User].user.friends || [];
+    return userFriends.includes(id);
+  }
+}
+
 export const getQuestionnaire = (state: State) => state[NameSpace.User].questionnaire;
 
 export const getAuthorizationStatus = (state: State) => state[NameSpace.User].authorizationStatus;
