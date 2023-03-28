@@ -5,6 +5,7 @@ import { ENV_FILE_PATH } from './app.constant';
 import { AuthModule } from './auth/auth.module';
 import envSchema from './env.schema';
 import { QuestionnaireModule } from './questionnaire/questionnaire.module';
+import { TrainingModule } from './training/training.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     QuestionnaireModule,
+    TrainingModule,
   ],
   controllers: [],
   providers: [],

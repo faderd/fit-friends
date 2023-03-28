@@ -18,7 +18,7 @@ import { CoachQuestionnaireDto } from '../dto/questionnaire/coach-questionnaire.
 import { UserQuestionnaireDto } from '../dto/questionnaire/user-questionnaire.dto';
 import { UserQuestionnaireEntity } from '../questionnaire/user-questionnaire.entity';
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
-import { UpdateUserDto } from '../dto/questionnaire/update-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class AuthService {

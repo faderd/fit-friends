@@ -12,7 +12,7 @@ import { HttpExceptionFilter } from './http.exception-filter';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { QuestionnaireRdo } from '../rdo/questionnaire.rdo';
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
-import { UpdateUserDto } from '../dto/questionnaire/update-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteAuth.Prefix)

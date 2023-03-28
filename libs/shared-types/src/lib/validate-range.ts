@@ -24,3 +24,15 @@ export enum CoachMeritsLengthRange {
 }
 
 export const MAX_TRAINING_TYPE_LENGTH = 3;
+
+export enum TrainingNameLengthRange {
+  Min = 1,
+  Max = 15,
+}
+
+export const MIN_TRAINING_PRICE = 0;
+
+export enum TrainingDescriptionLengthRange {
+  Min = 10,
+  Max = 140,
+}

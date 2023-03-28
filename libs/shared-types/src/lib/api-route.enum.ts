@@ -15,3 +15,10 @@ export enum APIRouteUser {
   Prefix = '/user',
   GetAll = '/',
 }
+
+export enum APIRouteTRaining {
+  Prefix = '/training',
+  Create = '/',
+  GetAll = '/',
+  GetById = '/:id',
+}
