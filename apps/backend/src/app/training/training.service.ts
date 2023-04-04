@@ -4,6 +4,7 @@ import { CreateTrainingDto } from '../dto/create-training.dto';
 import { UpdateTrainingDto } from '../dto/update-training.dto';
 import { TrainingEntity } from './training.entity';
 import { TrainingRepository } from './training.repository';
+import { TrainingQuery } from './query/training.query';
 
 @Injectable()
 export class TrainingService {
@@ -29,6 +30,10 @@ export class TrainingService {
     }
 
     return existTraining;
+  }
+
+  async getTrainings(query: TrainingQuery) {
+    return this.trainingRepository.findAll(query);
   }
 
   async updateTraining(trainingId: number, dto: UpdateTrainingDto) {

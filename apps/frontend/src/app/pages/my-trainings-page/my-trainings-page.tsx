@@ -1,43 +1,36 @@
-import { UserRole } from '@fit-friends/shared-types';
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import LoadingPage from '../../components/loading-page/loading-page';
-import PageHeader from '../../components/page-header/page-header';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchUsers } from '../../store/api-actions';
-import { getIsDataLoaded } from '../../store/app-data/selectors';
-import { getUserById } from '../../store/user-process/selectors';
-import { UserData } from '../../types/user-data';
-import NotFoundPage from '../not-found-page/not-found-page';
-import UserCardCoach from '../../components/user-card-coach/user-card-coach';
-import UserCardUser from '../../components/user-card-user/user-card-user';
+import { applyTrainingsFilters } from '../../../helpers';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageTitle } from '../../../const';
+import MyTrainingsFilter from '../../components/my-trainings-filter/my-trainings-filter';
+import PageHeader from '../../components/page-header/page-header';
+import TrainingItem from '../../components/training-item/training-item';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchTrainings } from '../../store/api-actions';
+import { getTrainingsByUserId } from '../../store/app-data/selectors';
+import { getUser } from '../../store/user-process/selectors';
+import { trainingsFilters } from '../../types/my-trainings-filters';
 
-function UserCardPage(): JSX.Element {
-  document.title = PageTitle.UserCard;
+function MyTrainingsPage(): JSX.Element {
+  document.title = PageTitle.MyTrainings;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [filters, setFilters] = useState<trainingsFilters | null>(null);
 
-  const isDataLoaded = useAppSelector(getIsDataLoaded);
-  const userId = useParams().id || '';
-  const user = useAppSelector(getUserById(+userId)) as UserData;
-  const role = user?.role;
+  const userId = useAppSelector(getUser)?.id;
+  const userTrainings = useAppSelector(getTrainingsByUserId(userId || NaN));
+
+  let filteredTrainings = userTrainings;
+  if (filters !== null) {
+    filteredTrainings = applyTrainingsFilters(userTrainings, filters)
+  }
 
   useEffect(() => {
-    if (userId && !user) {
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, user, userId]);
+    dispatch(fetchTrainings({}));
+  }, [dispatch]);
 
-  if (isDataLoaded && (!userId || user === undefined)) {
-    return (<NotFoundPage />);
-  }
-
-  if (!isDataLoaded) {
-    return (
-      <LoadingPage />
-    );
-  }
+  const getMaxPrice = () => Math.max(...userTrainings.map((training) => training.price)).toString();
+  const getMaxCalory = () => Math.max(...userTrainings.map((training) => training.calories)).toString();
 
   return (
     <>
@@ -45,19 +38,40 @@ function UserCardPage(): JSX.Element {
       <div className="wrapper">
         <PageHeader />
         <main>
-          <div className="inner-page inner-page--no-sidebar">
+          <section className="inner-page">
             <div className="container">
               <div className="inner-page__wrapper">
-                <button className="btn-flat inner-page__back" type="button" onClick={() => { navigate(-1) }}>
-                  <svg width="14" height="10" aria-hidden="true">
-                    <use xlinkHref="#arrow-left"></use>
-                  </svg><span>Назад</span>
-                </button>
-                {role === UserRole.Coach && (<UserCardCoach user={user} />)}
-                {role === UserRole.User && (<UserCardUser user={user} />)}
+                <h1 className="visually-hidden">Мои тренировки</h1>
+                <div className="my-training-form">
+                  <h2 className="visually-hidden">Мои тренировки Фильтр</h2>
+                  <div className="my-training-form__wrapper">
+                    <button className="btn-flat btn-flat--underlined my-training-form__btnback" type="button" onClick={() => {navigate(-1)}}>
+                      <svg width="14" height="10" aria-hidden="true">
+                        <use xlinkHref="#arrow-left"></use>
+                      </svg><span>Назад</span>
+                    </button>
+                    <h3 className="my-training-form__title">фильтры</h3>
+                    <MyTrainingsFilter setFilters={setFilters} maxPrice={getMaxPrice()} maxCalory={getMaxCalory()} classNamePrefix='my-training' isDurationBlockActive={true} />
+                  </div>
+                </div>
+                <div className="inner-page__content">
+                  <div className="my-trainings">
+                    <ul className="my-trainings__list">
+                      {
+                        filteredTrainings.map((training) => (
+                          <TrainingItem training={training} liClassName='my-trainings__item' />
+                        ))
+                      }
+                    </ul>
+                    <div className="show-more my-trainings__show-more">
+                      <button className="btn show-more__button show-more__button--more" type="button">Показать еще</button>
+                      <button className="btn show-more__button show-more__button--to-top" type="button">Вернуться в начало</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
         </main>
       </div>
       <script src="js/vendor.min.js"></script>
@@ -66,4 +80,4 @@ function UserCardPage(): JSX.Element {
   );
 }
 
-export default UserCardPage;
+export default MyTrainingsPage;

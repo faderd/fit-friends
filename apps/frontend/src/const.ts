@@ -23,6 +23,9 @@ export enum AppRoute {
   NotFound = '/not-found',
   UsersCatalog = '/users-catalog',
   UserCard = '/user-card/:id',
+  CreateTraining = '/create-training',
+  MyTrainings = '/my-trainings',
+  TrainingCatalog = '/training-catalog',
 }
 
 export enum PageTitle {
@@ -33,6 +36,10 @@ export enum PageTitle {
   Index = 'FitFriends',
   PersonalAccount = 'Личный кабинет — FitFriends',
   UsersCatalog = 'Каталог пользователей — FitFriends',
+  UserCard = 'Карточка пользователя — FitFriends',
+  CreateTraining = 'Создать тренировку — FitFriends',
+  MyTrainings = 'Мои тренировки — FitFriends',
+  TrainingCatalog = 'Каталог тренировок — FitFriends',
 }
 
 export enum PageType {
@@ -47,6 +54,7 @@ export const DEFAULT_TRAINING_DURATION = TrainingDuration.Range30to50;
 export const DEFAULT_TRAINING_LEVEL = TrainingLevel.Amateur;
 export const DEFAULT_IS_READY_TO_TRAIN = true;
 export const DEFAULT_FILTER_TRAINING_LEVEL = TrainingLevel.Amateur;
+export const DEFAULT_SORT_DIRECTION = 'desc';
 
 export type RegisterDataQuestionnaireUser = {
   trainingLevel: TrainingLevel;
@@ -64,9 +72,27 @@ export type RegisterDataQuestionnaireCoach = {
   isReadyToTrain: boolean;
 }
 
-export enum SearchParam {
+export enum SearchParamUser {
   UserRoleSorting = 'userRoleSorting',
   LocationFilter = 'locationFilter',
   Specialization = 'specialization',
   TrainingLevel = 'trainingLevel',
+}
+
+export enum SearchParamMyTraining {
+  MinPrice = 'minPrice',
+  MaxPrice = 'maxPrice',
+  MinCalories = 'minCalories',
+  MaxCalories = 'maxCalories',
+  MinRate = 'minRate',
+  MaxRate = 'maxRate',
+  TrainingDuration = 'trainingDuration',
+  TrainingType = 'trainingType',
+  SortDirection = 'sortDirection',
+  IsOnlyFreeTrainings = 'isOnlyFreeTrainings',
+}
+
+export enum SortDirection {
+  Desc = 'desc',
+  Asc = 'asc',
 }

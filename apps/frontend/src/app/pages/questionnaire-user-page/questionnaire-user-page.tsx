@@ -1,8 +1,8 @@
 import { BurnsCaloriesPerDayRange, CaloriesLossRange, TrainingDuration, TrainingType } from '@fit-friends/shared-types';
 import { AppRoute, DEFAULT_TRAINING_DURATION, DEFAULT_TRAINING_LEVEL, PageTitle } from '../../../const';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getRegisterDataUser } from '../../store/user-process/selectors';
+import { getRegisterDataUser, isUserAuthorized } from '../../store/user-process/selectors';
 import { register as registerUser } from '../../store/api-actions';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -19,6 +19,14 @@ function QuestionnaireUserPage(): JSX.Element {
   document.title = PageTitle.Questionaire;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const isUserAuth = useAppSelector(isUserAuthorized);
+
+  useEffect(() => {
+    if (isUserAuth) {
+      navigate(AppRoute.Index);
+    }
+  });
 
   const [trainingTypes, setTrainingType] = useState<TrainingType[]>([]);
   const [trainingDuration, setTrainingDuration] = useState(DEFAULT_TRAINING_DURATION);

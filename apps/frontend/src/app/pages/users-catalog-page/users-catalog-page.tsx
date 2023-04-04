@@ -19,9 +19,9 @@ function UsersCatalogPage(): JSX.Element {
   const users = useAppSelector(getUsers);
 
   let filteredUsers = users;
-    if (filters !== null) {
-      filteredUsers = applyFilters(users, filters);
-    }
+  if (filters !== null) {
+    filteredUsers = applyFilters(users, filters);
+  }
 
   useEffect(() => {
     dispatch(fetchUsers());

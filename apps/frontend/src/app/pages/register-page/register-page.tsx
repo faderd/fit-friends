@@ -217,8 +217,6 @@ function RegisterPage(): JSX.Element {
                               <input
                                 type="password"
                                 autoComplete="off"
-                                // name="password"
-                                // ref={passwordRef}
                                 {...register('password', {
                                   required: true,
                                   minLength: UserPasswordLengthRange.Min,

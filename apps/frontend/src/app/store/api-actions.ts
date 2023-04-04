@@ -1,16 +1,17 @@
-import { UserInterface, UserRole } from '@fit-friends/shared-types';
+import { TrainingInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
-import { RegisterDataQuestionnaireUser, RegisterDataQuestionnaireCoach } from '../../const';
+import { RegisterDataQuestionnaireUser, RegisterDataQuestionnaireCoach, SortDirection } from '../../const';
 import { dropAccessToken, dropRefreshToken, saveAccessToken, saveRefreshToken } from '../../services/token';
+import { CreateTrainingDto } from '../types/create-training.dto';
 import { QuestionnaireData } from '../types/questionnaire-data';
 import { RegisterDataUser } from '../types/register-data-user.dto';
 import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
 import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
-import { storeIsDataLoadedStatus } from './app-data/app-data';
+import { storeIsDataLoadedStatus, storeTraining, storeTrainings } from './app-data/app-data';
 import { storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 
 export const register = createAsyncThunk<
@@ -174,5 +175,40 @@ export const fetchUsers = createAsyncThunk<void, undefined,
     const { data } = await api.get<UserData[]>('user/');
     dispatch(storeUsers(data));
     dispatch(storeIsDataLoadedStatus(true));
+  }
+);
+
+export const createTraining = createAsyncThunk<void, CreateTrainingDto,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/createTraining',
+  async (createTrainingData, { dispatch, extra: api }) => {
+    const { data } = await api.post<TrainingInterface>('training/', createTrainingData);
+    dispatch(storeTraining(data));
+  }
+);
+
+export const fetchTrainings = createAsyncThunk<void,
+  {
+    sortDirection?: string,
+    isOnlyFreeTrainings?: string,
+  },
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchTrainings',
+  async ({ sortDirection, isOnlyFreeTrainings }, { dispatch, extra: api }) => {
+    const { data } = await api.get<TrainingInterface[]>(`training/?
+    ${sortDirection ? `sortType = ${sortDirection}` : ''}
+    ${isOnlyFreeTrainings ? `&isOnlyFreeTrainings=${isOnlyFreeTrainings}` : ''}
+    `);
+    dispatch(storeTrainings(data));
   }
 );

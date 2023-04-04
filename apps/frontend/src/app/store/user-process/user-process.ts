@@ -27,7 +27,7 @@ export const userProcess = createSlice({
     storeUsers: (state, action: PayloadAction<UserData[]>) => {
       state.users = action.payload;
     },
-    storeQuestionnaire(state, action: PayloadAction<QuestionnaireData>) {
+    storeQuestionnaire: (state, action: PayloadAction<QuestionnaireData>) => {
       state.questionnaire = action.payload;
     },
     storeIsToQuestionnairePage: (state, action: PayloadAction<boolean>) => {

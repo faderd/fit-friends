@@ -1,4 +1,4 @@
-import { DEFAULT_FILTER_TRAINING_LEVEL, SearchParam } from '../../../const';
+import { DEFAULT_FILTER_TRAINING_LEVEL, SearchParamUser } from '../../../const';
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { TrainingLevel, TrainingType, UserLocation, UserRole } from '@fit-friends/shared-types';
@@ -11,10 +11,10 @@ type UserCatalogFilterProps = {
 function UserCatalogFilter({setFilters}: UserCatalogFilterProps): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  let searchParamLocationFilter: string | string[] | null = searchParams.get(SearchParam.LocationFilter);
-  let searchParamSpecialization: string | string[] | null = searchParams.get(SearchParam.Specialization);
-  const searchParamTrainingLevel: string | null = searchParams.get(SearchParam.TrainingLevel);
-  const searchParamUserTypeSorting: string | null = searchParams.get(SearchParam.UserRoleSorting);
+  let searchParamLocationFilter: string | string[] | null = searchParams.get(SearchParamUser.LocationFilter);
+  let searchParamSpecialization: string | string[] | null = searchParams.get(SearchParamUser.Specialization);
+  const searchParamTrainingLevel: string | null = searchParams.get(SearchParamUser.TrainingLevel);
+  const searchParamUserTypeSorting: string | null = searchParams.get(SearchParamUser.UserRoleSorting);
 
   useEffect(() => {
     setFilters({searchParamLocationFilter, searchParamSpecialization, searchParamTrainingLevel, searchParamUserTypeSorting});
@@ -56,7 +56,7 @@ function UserCatalogFilter({setFilters}: UserCatalogFilterProps): JSX.Element {
 
   useEffect(() => {
     if (!searchParamTrainingLevel) {
-      searchParams.set(SearchParam.TrainingLevel, DEFAULT_FILTER_TRAINING_LEVEL)
+      searchParams.set(SearchParamUser.TrainingLevel, DEFAULT_FILTER_TRAINING_LEVEL)
       setSearchParams(searchParams);
     }
   }, [searchParamTrainingLevel, searchParams, setSearchParams])
@@ -80,11 +80,11 @@ function UserCatalogFilter({setFilters}: UserCatalogFilterProps): JSX.Element {
   const handleChangeUserType = () => {
 
     if (userRoleCoachRef.current?.checked) {
-      searchParams.set(SearchParam.UserRoleSorting, UserRole.Coach);
+      searchParams.set(SearchParamUser.UserRoleSorting, UserRole.Coach);
     }
 
     if (userRoleUserRef.current?.checked) {
-      searchParams.set(SearchParam.UserRoleSorting, UserRole.User);
+      searchParams.set(SearchParamUser.UserRoleSorting, UserRole.User);
     }
 
     setSearchParams(searchParams);
@@ -117,9 +117,9 @@ function UserCatalogFilter({setFilters}: UserCatalogFilterProps): JSX.Element {
                         }
 
                         if (searchParamLocationFilter.length === 0) {
-                          searchParams.delete(SearchParam.LocationFilter);
+                          searchParams.delete(SearchParamUser.LocationFilter);
                         } else {
-                          searchParams.set(SearchParam.LocationFilter, searchParamLocationFilter.join(';'));
+                          searchParams.set(SearchParamUser.LocationFilter, searchParamLocationFilter.join(';'));
                         }
 
                         setSearchParams(searchParams);
@@ -163,9 +163,9 @@ function UserCatalogFilter({setFilters}: UserCatalogFilterProps): JSX.Element {
                       }
 
                       if (searchParamSpecialization.length === 0) {
-                        searchParams.delete(SearchParam.Specialization);
+                        searchParams.delete(SearchParamUser.Specialization);
                       } else {
-                        searchParams.set(SearchParam.Specialization, searchParamSpecialization.join(';'));
+                        searchParams.set(SearchParamUser.Specialization, searchParamSpecialization.join(';'));
                       }
 
                       setSearchParams(searchParams);
@@ -196,7 +196,7 @@ function UserCatalogFilter({setFilters}: UserCatalogFilterProps): JSX.Element {
                   value={TrainingLevel[trainingLevelKey as trainingLevelStrings]}
                   checked={getIsTrainingLevelChecked(TrainingLevel[trainingLevelKey as trainingLevelStrings])}
                   onChange={(evt) => {
-                    searchParams.set(SearchParam.TrainingLevel, evt.target.value)
+                    searchParams.set(SearchParamUser.TrainingLevel, evt.target.value);
                     setSearchParams(searchParams);
                   }}
 

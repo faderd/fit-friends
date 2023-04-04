@@ -1,4 +1,5 @@
-import { TrainingType, UserRole } from '@fit-friends/shared-types';
+import { TrainingDuration, TrainingInterface, TrainingType, UserRole } from '@fit-friends/shared-types';
+import { trainingsFilters } from './app/types/my-trainings-filters';
 import { UserData } from './app/types/user-data';
 import { UserFilters } from './app/types/user-filters';
 
@@ -43,6 +44,54 @@ export const applyFilters = (users: UserData[], filters: UserFilters) => {
   }
 
   return filteredUsers;
+}
+
+export const applyTrainingsFilters = (trainings: TrainingInterface[], filters: trainingsFilters) => {
+  let filteredTrainings = trainings.map((user) => user);
+
+  if (filters.searchParamMaxPrice) {
+    const maxPrice = +filters.searchParamMaxPrice || 0;
+    filteredTrainings = filteredTrainings.filter((training) => training.price <= maxPrice);
+  }
+
+  if (filters.searchParamMinPrice) {
+    const minPrice = +filters.searchParamMinPrice || 0;
+    filteredTrainings = filteredTrainings.filter((training) => training.price >= minPrice);
+  }
+
+  if (filters.searchParamMaxCalories) {
+    const maxCalories = +filters.searchParamMaxCalories || 0;
+    filteredTrainings = filteredTrainings.filter((training) => training.calories <= maxCalories);
+  }
+
+  if (filters.searchParamMinCalories) {
+    const minCalories = +filters.searchParamMinCalories || 0;
+    filteredTrainings = filteredTrainings.filter((training) => training.calories >= minCalories);
+  }
+
+  if (filters.searchParamMaxRate) {
+    const maxRate = +filters.searchParamMaxRate || 0;
+    filteredTrainings = filteredTrainings.filter((training) => training.rate <= maxRate);
+  }
+
+  if (filters.searchParamMinRate) {
+    const minRate = +filters.searchParamMinRate || 0;
+    filteredTrainings = filteredTrainings.filter((training) => training.rate >= minRate);
+  }
+
+  if (Array.isArray(filters.searchParamTrainingDuration)) {
+    filteredTrainings = filteredTrainings.filter((training) => {
+      return filters.searchParamTrainingDuration?.includes(training.trainingDuration);
+    });
+  }
+
+  if (Array.isArray(filters.searchParamTrainingType)) {
+    filteredTrainings = filteredTrainings.filter((training) => {
+      return filters.searchParamTrainingType?.includes(training.type);
+    });
+  }
+
+  return filteredTrainings;
 }
 
 export const makeNewFriendsList = (action: 'add' | 'remove', id: number, userFriends: number[]): number[] => {

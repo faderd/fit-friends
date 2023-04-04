@@ -1,43 +1,34 @@
-import { UserRole } from '@fit-friends/shared-types';
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import LoadingPage from '../../components/loading-page/loading-page';
+import { useEffect, useState } from 'react';
+import { PageTitle } from '../../../const';
 import PageHeader from '../../components/page-header/page-header';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchUsers } from '../../store/api-actions';
-import { getIsDataLoaded } from '../../store/app-data/selectors';
-import { getUserById } from '../../store/user-process/selectors';
-import { UserData } from '../../types/user-data';
-import NotFoundPage from '../not-found-page/not-found-page';
-import UserCardCoach from '../../components/user-card-coach/user-card-coach';
-import UserCardUser from '../../components/user-card-user/user-card-user';
-import { PageTitle } from '../../../const';
+import { getTrainings } from '../../store/app-data/selectors';
+import { applyTrainingsFilters } from '../../../helpers';
+import { useNavigate } from 'react-router-dom';
+import { fetchTrainings } from '../../store/api-actions';
+import TrainingItem from '../../components/training-item/training-item';
+import MyTrainingsFilter from '../../components/my-trainings-filter/my-trainings-filter';
+import { trainingsFilters } from '../../types/my-trainings-filters';
 
-function UserCardPage(): JSX.Element {
-  document.title = PageTitle.UserCard;
+function TrainingCatalogPage(): JSX.Element {
+  document.title = PageTitle.TrainingCatalog;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const isDataLoaded = useAppSelector(getIsDataLoaded);
-  const userId = useParams().id || '';
-  const user = useAppSelector(getUserById(+userId)) as UserData;
-  const role = user?.role;
+  const [filters, setFilters] = useState<trainingsFilters | null>(null);
+  const trainings = useAppSelector(getTrainings);
+
+  let filteredTrainings = trainings;
+  if (filters !== null) {
+    filteredTrainings = applyTrainingsFilters(trainings, filters)
+  }
 
   useEffect(() => {
-    if (userId && !user) {
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, user, userId]);
+    dispatch(fetchTrainings({}));
+  }, [dispatch]);
 
-  if (isDataLoaded && (!userId || user === undefined)) {
-    return (<NotFoundPage />);
-  }
-
-  if (!isDataLoaded) {
-    return (
-      <LoadingPage />
-    );
-  }
+  const getMaxPrice = () => Math.max(...trainings.map((training) => training.price)).toString();
+  const getMaxCalory = () => Math.max(...trainings.map((training) => training.calories)).toString();
 
   return (
     <>
@@ -45,19 +36,38 @@ function UserCardPage(): JSX.Element {
       <div className="wrapper">
         <PageHeader />
         <main>
-          <div className="inner-page inner-page--no-sidebar">
+          <section className="inner-page">
             <div className="container">
               <div className="inner-page__wrapper">
-                <button className="btn-flat inner-page__back" type="button" onClick={() => { navigate(-1) }}>
-                  <svg width="14" height="10" aria-hidden="true">
-                    <use xlinkHref="#arrow-left"></use>
-                  </svg><span>Назад</span>
-                </button>
-                {role === UserRole.Coach && (<UserCardCoach user={user} />)}
-                {role === UserRole.User && (<UserCardUser user={user} />)}
+                <h1 className="visually-hidden">Каталог тренировок</h1>
+                <div className="gym-catalog-form">
+                  <h2 className="visually-hidden">Мои тренировки Фильтр</h2>
+                  <div className="gym-catalog-form__wrapper">
+                    <button className="btn-flat btn-flat--underlined gym-catalog-form__btnback" type="button">
+                      <svg width="14" height="10" aria-hidden="true">
+                        <use xlinkHref="#arrow-left"></use>
+                      </svg><span>Назад</span>
+                    </button>
+                    <h3 className="gym-catalog-form__title">Фильтры</h3>
+                    <MyTrainingsFilter setFilters={setFilters} maxPrice={getMaxPrice()} maxCalory={getMaxCalory()} classNamePrefix='gym-catalog' isTrainingTypeBlockActive={true} isSortingBlockActive={true} />
+                  </div>
+                </div>
+                <div className="training-catalog">
+                  <ul className="training-catalog__list">
+                    {
+                      filteredTrainings.map((training) => (
+                        <TrainingItem training={training} liClassName='training-catalog__item' />
+                      ))
+                    }
+                  </ul>
+                  <div className="show-more training-catalog__show-more">
+                    <button className="btn show-more__button show-more__button--more" type="button">Показать еще</button>
+                    <button className="btn show-more__button show-more__button--to-top" type="button">Вернуться в начало</button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
         </main>
       </div>
       <script src="js/vendor.min.js"></script>
@@ -66,4 +76,4 @@ function UserCardPage(): JSX.Element {
   );
 }
 
-export default UserCardPage;
+export default TrainingCatalogPage;
