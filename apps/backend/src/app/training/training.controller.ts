@@ -1,7 +1,7 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteTRaining, RefreshTokenPayload, RequestWithTokenPayload, UserRole } from '@fit-friends/shared-types';
+import { APIRouteTraining, RefreshTokenPayload, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseFilters, UseGuards } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { HttpExceptionFilter } from '../auth/http.exception-filter';
@@ -9,16 +9,17 @@ import { CreateTrainingDto } from '../dto/create-training.dto';
 import { TrainingRdo } from '../rdo/training.rdo';
 import { TrainingService } from './training.service';
 import { TrainingQuery } from './query/training.query';
+import { UpdateTrainingDto } from '../dto/update-training.dto';
 
 @UseFilters(HttpExceptionFilter)
-@ApiTags(APIRouteTRaining.Prefix)
-@Controller(APIRouteTRaining.Prefix)
+@ApiTags(APIRouteTraining.Prefix)
+@Controller(APIRouteTraining.Prefix)
 export class TrainingController {
   constructor(
     private readonly trainingService: TrainingService,
   ) { }
 
-  @Post(APIRouteTRaining.Create)
+  @Post(APIRouteTraining.Create)
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({
     type: TrainingRdo,
@@ -50,7 +51,7 @@ export class TrainingController {
     return fillObject(TrainingRdo, newTraining);
   }
 
-  @Get(APIRouteTRaining.Create)
+  @Get(APIRouteTraining.Create)
   @ApiOkResponse({
     type: [TrainingRdo],
     description: 'Данные получены'
@@ -73,5 +74,23 @@ export class TrainingController {
     const trainings = await this.trainingService.getTrainings(query);
 
     return trainings.map((training) => fillObject(TrainingRdo, training));
+  }
+
+  @Post(APIRouteTraining.Update)
+  @UseGuards(JwtAuthGuard)
+  @ApiUnauthorizedResponse({ description: 'Пользователь не авторизован' })
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
+  @ApiOkResponse({
+    type: TrainingRdo,
+    description: 'Данные обновлены'
+  })
+  async updateTraining(
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
+    @Body() dto: UpdateTrainingDto,
+  ) {
+    const { user: TokenPayload } = request;
+    const updatedTraining = await this.trainingService.updateTraining(TokenPayload.sub, dto);
+    return fillObject(TrainingRdo, updatedTraining);
   }
 }

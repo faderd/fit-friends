@@ -36,3 +36,13 @@ export enum TrainingDescriptionLengthRange {
   Min = 10,
   Max = 140,
 }
+
+export enum ReviewLengthRange {
+  Min = 100,
+  Max = 1024,
+}
+
+export enum ReviewValueRange {
+  Min = 1,
+  Max = 5,
+}

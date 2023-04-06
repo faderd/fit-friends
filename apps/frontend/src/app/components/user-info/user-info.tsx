@@ -250,11 +250,6 @@ function UserInfo(): JSX.Element {
         <div className={`${isRedactMode ? '' : 'custom-select--readonly'} custom-select user-info${isRedactMode ? '-edit' : ''}__select`} ref={locationWrapperRef}><span className="custom-select__label">Локация</span>
 
           <div className="custom-select__placeholder">ст. м. {location}</div>
-
-          {/* <button className="custom-select__button" type="button" aria-label="Выберите одну из опций" disabled><span className="custom-select__text"></span><span className="custom-select__icon">
-            <svg width="15" height="6" aria-hidden="true">
-              <use xlinkHref="#arrow-down"></use>
-            </svg></span></button> */}
           <button
             className="custom-select__button"
             type="button"
@@ -264,7 +259,6 @@ function UserInfo(): JSX.Element {
           >
             <span className="custom-select__text"
               ref={locationSelectTextRef}
-            // {...register('location')}
             ></span>
             <span className="custom-select__icon">
               <svg width="15" height="6" aria-hidden="true">
@@ -315,9 +309,6 @@ function UserInfo(): JSX.Element {
   );
 
   return (
-    // isRedactMode
-    //   ? getFormEdit()
-    //   : getFormView()
     getForm()
   );
 }

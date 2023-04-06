@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
-import { createTraining } from '../../store/api-actions';
+import { submitNewTraining } from '../../store/api-actions';
 
 const DEFAULT_TRAINING_TYPE = TrainingType.Aerobics;
 const DEFAULT_DURATION = TrainingDuration.Range30to50;
@@ -48,9 +48,11 @@ function CreateTrainingPage(): JSX.Element {
     }
 
     if (createTrainingData !== null) {
-      dispatch(createTraining(createTrainingData));
-      toast.info('Новая тренировка создана');
-      navigate(AppRoute.PersonalAccountCoach);
+      dispatch(submitNewTraining(createTrainingData))
+        .then(() => {
+          navigate(AppRoute.PersonalAccountCoach);
+        });
+
     }
   };
 

@@ -1,6 +1,7 @@
 import { CaloriesLossRange, Gender, MIN_TRAINING_PRICE, TrainingDescriptionLengthRange, TrainingDuration, TrainingLevel, TrainingNameLengthRange, TrainingType } from '@fit-friends/shared-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsNumber, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
 
 export class CreateTrainingDto {
   @ApiProperty({
@@ -42,6 +43,7 @@ export class CreateTrainingDto {
     description: 'Цена',
     example: 1000
   })
+  @Transform(({ value }) => +value)
   @IsNumber()
   @Min(MIN_TRAINING_PRICE, { message: `Минимальное значение: ${MIN_TRAINING_PRICE}` })
   public price: number;
@@ -50,6 +52,7 @@ export class CreateTrainingDto {
     description: 'Количество калорий для сброса',
     example: 4000
   })
+  @Transform(({ value }) => +value)
   @IsNumber()
   @Min(CaloriesLossRange.Min, { message: `Минимальное значение: ${CaloriesLossRange.Min}` })
   @Max(CaloriesLossRange.Max, { message: `Максимальное значение: ${CaloriesLossRange.Max}` })
@@ -81,6 +84,8 @@ export class CreateTrainingDto {
     description: 'Признак специального предложения',
     example: true,
   })
+  @Transform(({ value }) => Boolean(value))
   @IsBoolean()
-  public isSpecialOffer: boolean;
+  @IsOptional()
+  public isSpecialOffer?: boolean;
 }

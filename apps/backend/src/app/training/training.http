@@ -1,7 +1,7 @@
 # Создание новой тренировки
 POST http://localhost:3333/api/training HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImprZ2hzZGdkc2FkaGYiLCJpYXQiOjE2Nzk5OTM0MjcsImV4cCI6MTY3OTk5NDMyN30.CCv_oXxdoLMp55HQLSioJ1zbqIXQaTWYSwDorP3Skw4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ItCS0LXRgNC-0L3QuNC60LAiLCJpYXQiOjE2ODA2Mjc1NjMsImV4cCI6MTY4MDYyODQ2M30.jem07GHYG11blB29B6mr0IceaeTVuk8cKJ048wlQUG4
 
 {
   "name": "CROSSFIT",
@@ -18,7 +18,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsI
 }
 ###
 
-# Создание новой тренировки
+# Получение списка тренировок
 GET http://localhost:3333/api/training HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImprZ2hzZGdkc2FkaGYiLCJpYXQiOjE2ODAxOTY5MDAsImV4cCI6MTY4MDE5NzgwMH0.r3XG0zIPEokCVWKijXOg02-OldDdNN_M9fqAC8HF0Oc

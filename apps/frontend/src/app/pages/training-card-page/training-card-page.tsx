@@ -1,36 +1,65 @@
-import { applyTrainingsFilters } from '../../../helpers';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AppRoute, PageTitle } from '../../../const';
-import MyTrainingsFilter from '../../components/my-trainings-filter/my-trainings-filter';
-import PageHeader from '../../components/page-header/page-header';
-import TrainingItem from '../../components/training-item/training-item';
+import { useNavigate, useParams } from 'react-router-dom';
+import { PageTitle } from '../../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchTrainings } from '../../store/api-actions';
-import { getTrainingsByUserId } from '../../store/app-data/selectors';
-import { getUser } from '../../store/user-process/selectors';
-import { trainingsFilters } from '../../types/my-trainings-filters';
+import { getUser, getUserById } from '../../store/user-process/selectors';
+import { useEffect, useState } from 'react';
+import { fetchTrainings, fetchUsers, updateTraining } from '../../store/api-actions';
+import { getIsDataLoaded, getTrainingById } from '../../store/app-data/selectors';
+import { Gender, TrainingDescriptionLengthRange, TrainingNameLengthRange, UserRole } from '@fit-friends/shared-types';
+import PageHeader from '../../components/page-header/page-header';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import PopupFeedback from '../../components/popup-feedback/popup-feedback';
+import ReviewsSidebar from '../../components/reviews-sidebar/reviews-sidebar';
 
-function MyTrainingsPage(): JSX.Element {
-  document.title = PageTitle.MyTrainings;
-  const dispatch = useAppDispatch();
+const genderMap = {
+  [Gender.Female]: 'для_женщин',
+  [Gender.Male]: 'для_мужчин',
+  [Gender.NotImportant]: 'для_всех',
+}
+
+type ReactHookFormData = {
+  name: string;
+  description: string;
+  price: number;
+}
+
+function TrainingCardPage(): JSX.Element {
+  document.title = PageTitle.TrainingCard;
   const navigate = useNavigate();
-  const [filters, setFilters] = useState<trainingsFilters | null>(null);
+  const dispatch = useAppDispatch();
 
-  const userId = useAppSelector(getUser)?.id;
-  const userTrainings = useAppSelector(getTrainingsByUserId(userId || NaN));
+  const [isPopupFeedbackOpen, setIsPopupFeedbackOpen] = useState(false);
 
-  let filteredTrainings = userTrainings;
-  if (filters !== null) {
-    filteredTrainings = applyTrainingsFilters(userTrainings, filters)
+  const isDataLoaded = useAppSelector(getIsDataLoaded);
+  const trainingId = useParams().id || '';
+  const training = useAppSelector(getTrainingById(+trainingId));
+  const coach = useAppSelector(getUserById(training?.userId || 0));
+  const userRole = useAppSelector(getUser)?.role;
+  let isRedactAvailable = userRole === UserRole.Coach ? true : false;
+
+  if (userRole === UserRole.Coach && !isDataLoaded) {
+    isRedactAvailable = false;
   }
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchTrainings({}));
   }, [dispatch]);
 
-  const getMaxPrice = () => Math.max(...userTrainings.map((training) => training.price)).toString();
-  const getMaxCalory = () => Math.max(...userTrainings.map((training) => training.calories)).toString();
+  const { register, handleSubmit, formState: { errors } } = useForm<ReactHookFormData>();
+
+  const onSubmit: SubmitHandler<ReactHookFormData> = (reactHookFormData) => {
+    const trainingUpdateData = {
+      name: reactHookFormData.name,
+      description: reactHookFormData.description,
+      price: reactHookFormData.price,
+    };
+
+    dispatch(updateTraining(trainingUpdateData));
+  };
 
   return (
     <>
@@ -41,43 +70,189 @@ function MyTrainingsPage(): JSX.Element {
           <section className="inner-page">
             <div className="container">
               <div className="inner-page__wrapper">
-                <h1 className="visually-hidden">Мои тренировки</h1>
-                <div className="my-training-form">
-                  <h2 className="visually-hidden">Мои тренировки Фильтр</h2>
-                  <div className="my-training-form__wrapper">
-                    <button className="btn-flat btn-flat--underlined my-training-form__btnback" type="button" onClick={() => {navigate(AppRoute.PersonalAccountCoach)}}>
-                      <svg width="14" height="10" aria-hidden="true">
-                        <use xlinkHref="#arrow-left"></use>
-                      </svg><span>Назад</span>
-                    </button>
-                    <h3 className="my-training-form__title">фильтры</h3>
-                    <MyTrainingsFilter setFilters={setFilters} maxPrice={getMaxPrice()} maxCalory={getMaxCalory()} classNamePrefix='my-training' isDurationBlockActive={true} />
+                <h1 className="visually-hidden">Карточка тренировки</h1>
+                <aside className="reviews-side-bar">
+                  <button className="btn-flat btn-flat--underlined reviews-side-bar__back" type="button"
+                    onClick={() => { navigate(-1) }}
+                  >
+                    <svg width="14" height="10" aria-hidden="true">
+                      <use xlinkHref="#arrow-left"></use>
+                    </svg><span>Назад</span>
+                  </button>
+                  <h2 className="reviews-side-bar__title">Отзывы</h2>
+                  <ReviewsSidebar trainingId={+trainingId} />
+                  <button
+                    className="btn btn--medium reviews-side-bar__button"
+                    type="button"
+                    disabled={!(userRole === UserRole.User)}
+                    onClick={() => { setIsPopupFeedbackOpen(true) }}
+                  >Оставить отзыв</button>
+                </aside>
+                <div className="training-card training-card--edit">
+                  <div className="training-info">
+                    <h2 className="visually-hidden">Информация о тренировке</h2>
+                    <div className="training-info__header">
+                      <div className="training-info__coach">
+                        <div className="training-info__photo">
+                          <picture>
+                            <source type="image/webp" srcSet="img/content/avatars/coaches//photo-1.webp, img/content/avatars/coaches//photo-1@2x.webp 2x" /><img src="img/content/avatars/coaches//photo-1.png" srcSet="img/content/avatars/coaches//photo-1@2x.png 2x" width="64" height="64" alt="Изображение тренера" />
+                          </picture>
+                        </div>
+                        <div className="training-info__coach-info"><span className="training-info__label">Тренер</span><span className="training-info__name">{coach?.name}</span></div>
+                      </div>
+                      <button className="btn-flat btn-flat--light training-info__edit training-info__edit--edit" type="button">
+                        <svg width="12" height="12" aria-hidden="true">
+                          <use xlinkHref="#icon-edit"></use>
+                        </svg><span>Редактировать</span>
+                      </button>
+                      {userRole === UserRole.Coach && (
+                        <button className="btn-flat btn-flat--light btn-flat--underlined training-info__edit training-info__edit--save" type="submit"
+                          onClick={handleSubmit(onSubmit)}
+                        >
+                          <svg width="12" height="12" aria-hidden="true">
+                            <use xlinkHref="#icon-edit"></use>
+                          </svg><span>Сохранить</span>
+                        </button>
+                      )}
+                    </div>
+                    <div className="training-info__main-content">
+                      <form>
+                        <div className="training-info__form-wrapper">
+                          <div className="training-info__info-wrapper">
+                            <div className={`training-info__input training-info__input--training ${errors.name && 'is-invalid'}`}>
+                              <label><span className="training-info__label">Название тренировки</span>
+                                <input
+                                  type="text"
+                                  defaultValue={training?.name ? training.name : ''}
+                                  disabled={!isRedactAvailable}
+                                  {...register('name', {
+                                    required: true,
+                                    minLength: TrainingNameLengthRange.Min,
+                                    maxLength: TrainingNameLengthRange.Max,
+                                  })}
+                                />
+                              </label>
+                              <div className="training-info__error">Обязательное поле</div>
+                            </div>
+                            <div className="training-info__textarea">
+                              <label><span className="training-info__label">Описание тренировки</span>
+                                <textarea
+                                  disabled={!isRedactAvailable}
+                                  {...register('description', {
+                                    required: true,
+                                    minLength: TrainingDescriptionLengthRange.Min,
+                                    maxLength: TrainingDescriptionLengthRange.Max,
+                                  })}
+                                >{training?.description}
+                                </textarea>
+                              </label>
+                            </div>
+                          </div>
+                          <div className="training-info__rating-wrapper">
+                            <div className="training-info__input training-info__input--rating">
+                              <label><span className="training-info__label">Рейтинг</span><span className="training-info__rating-icon">
+                                <svg width="18" height="18" aria-hidden="true">
+                                  <use xlinkHref="#icon-star"></use>
+                                </svg></span>
+                                <input type="number" name="rating" value={training?.rate} disabled />
+                              </label>
+                            </div>
+                            <ul className="training-info__list">
+                              <li className="training-info__item">
+                                <div className="hashtag hashtag--white"><span>#{training?.type.toLowerCase()}</span></div>
+                              </li>
+                              <li className="training-info__item">
+                                <div className="hashtag hashtag--white"><span>#{training && genderMap[training.gender]}</span></div>
+                              </li>
+                              <li className="training-info__item">
+                                <div className="hashtag hashtag--white"><span>#{training?.calories}ккал</span></div>
+                              </li>
+                              <li className="training-info__item">
+                                <div className="hashtag hashtag--white"><span>#{training?.trainingDuration}_минут</span></div>
+                              </li>
+                            </ul>
+                          </div>
+                          <div className="training-info__price-wrapper">
+                            <div className={`training-info__input training-info__input--price ${errors.price && 'is-invalid'}`}>
+                              <label><span className="training-info__label">Стоимость</span>
+                                <input type="text"
+                                  disabled={!isRedactAvailable}
+                                  defaultValue={training?.price}
+                                  {...register('price', {
+                                    required: true,
+                                    min: 0,
+                                  })}
+                                />
+                              </label>
+                              <div className="training-info__error">Введите число</div>
+                            </div>
+                            {userRole === UserRole.User && (
+                              <button className="btn training-info__buy" type="button">Купить</button>
+                            )}
+
+                            {userRole === UserRole.Coach && (
+                              <button className="btn-flat btn-flat--light btn-flat--underlined training-info__discount" type="button">
+                                <svg width="14" height="14" aria-hidden="true">
+                                  <use xlinkHref="#icon-discount"></use>
+                                </svg><span>Сделать скидку 10%</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </form>
+                    </div>
                   </div>
-                </div>
-                <div className="inner-page__content">
-                  <div className="my-trainings">
-                    <ul className="my-trainings__list">
-                      {
-                        filteredTrainings.map((training) => (
-                          <TrainingItem training={training} liClassName='my-trainings__item' />
-                        ))
-                      }
-                    </ul>
-                    <div className="show-more my-trainings__show-more">
-                      <button className="btn show-more__button show-more__button--more" type="button">Показать еще</button>
-                      <button className="btn show-more__button show-more__button--to-top" type="button">Вернуться в начало</button>
+                  <div className="training-video">
+                    <h2 className="training-video__title">Видео</h2>
+                    <div className="training-video__video">
+                      <div className="training-video__thumbnail">
+                        <picture>
+                          <source type="image/webp" srcSet="img/content/training-video/video-thumbnail.webp, img/content/training-video/video-thumbnail@2x.webp 2x" /><img src="img/content/training-video/video-thumbnail.png" srcSet="img/content/training-video/video-thumbnail@2x.png 2x" width="922" height="566" alt="Обложка видео" />
+                        </picture>
+                      </div>
+                      <button className="training-video__play-button btn-reset">
+                        <svg width="18" height="30" aria-hidden="true">
+                          <use xlinkHref="#icon-arrow"></use>
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="training-video__drop-files">
+                      <form action="#" method="post">
+                        <div className="training-video__form-wrapper">
+                          <div className="drag-and-drop">
+                            <label><span className="drag-and-drop__label" tabIndex={0}>Загрузите сюда файлы формата MOV, AVI или MP4
+                              <svg width="20" height="20" aria-hidden="true">
+                                <use xlinkHref="#icon-import-video"></use>
+                              </svg></span>
+                              <input type="file" name="import" tabIndex={-1} accept=".mov, .avi, .mp4" />
+                            </label>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="training-video__buttons-wrapper">
+                      <button className="btn training-video__button training-video__button--start" type="button" disabled>Приступить</button>
+                      {userRole === UserRole.Coach && (
+                        <div className="training-video__edit-buttons">
+                          <button className="btn" type="button" onClick={handleSubmit(onSubmit)}>Сохранить</button>
+                          <button className="btn btn--outlined" type="button">Удалить</button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-        </main>
-      </div>
+          </section >
+        </main >
+      </div >
+
+      {isPopupFeedbackOpen && (<PopupFeedback setIsPopupFeedbackOpen={setIsPopupFeedbackOpen} trainingId={+trainingId} />)}
+
       <script src="js/vendor.min.js"></script>
       <script src="js/main.min.js"></script>
     </>
   );
 }
 
-export default MyTrainingsPage;
+export default TrainingCardPage;

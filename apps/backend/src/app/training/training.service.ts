@@ -14,7 +14,7 @@ export class TrainingService {
 
   async create(dto: CreateTrainingDto, coachId: number) {
     const { name, backgroundImage, level, type, trainingDuration, price, calories, description, gender, video, isSpecialOffer } = dto;
-    const training = { name, backgroundImage, level, type, trainingDuration, price, calories, description, gender, video, rate: 0, userId: coachId, isSpecialOffer };
+    const training = { name, backgroundImage: backgroundImage || '', level, type, trainingDuration, price, calories, description, gender, video, rate: 0, userId: coachId, isSpecialOffer: isSpecialOffer || false };
 
     const trainingEntity = new TrainingEntity(training);
 
@@ -36,7 +36,7 @@ export class TrainingService {
     return this.trainingRepository.findAll(query);
   }
 
-  async updateTraining(trainingId: number, dto: UpdateTrainingDto) {
+  async updateTraining(trainingId: number, dto: UpdateTrainingDto | {rate: number}) {
     const existTraining = await this.trainingRepository.findById(trainingId);
     if (!existTraining) {
       throw new TrainingNotFoundException(trainingId);

@@ -30,7 +30,7 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
     return this.prisma.training.findFirst({
       where: {
         id,
-      }
+      },
     }) as unknown as TrainingInterface;
   }
 

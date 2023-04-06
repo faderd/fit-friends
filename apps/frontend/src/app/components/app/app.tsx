@@ -20,6 +20,7 @@ import UserCardPage from '../../pages/user-card-page/user-card-page';
 import CreateTrainingPage from '../../pages/create-training-page/create-training-page';
 import MyTrainingsPage from '../../pages/my-trainings-page/my-trainings-page';
 import TrainingCatalogPage from '../../pages/training-catalog-page/training-catalog-page';
+import TrainingCardPage from '../../pages/training-card-page/training-card-page';
 
 function App(): JSX.Element {
   const isAuthStatusUnknown = useAppSelector(isAuthUnknown);
@@ -115,6 +116,14 @@ function App(): JSX.Element {
           <PrivateRouteCoach>
             <MyTrainingsPage />
           </PrivateRouteCoach>
+        }
+      />
+      <Route
+        path={AppRoute.TrainingCard}
+        element={
+          <PrivateRoute>
+            <TrainingCardPage />
+          </PrivateRoute>
         }
       />
       <Route

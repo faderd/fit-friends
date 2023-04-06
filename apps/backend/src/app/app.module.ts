@@ -7,6 +7,7 @@ import envSchema from './env.schema';
 import { QuestionnaireModule } from './questionnaire/questionnaire.module';
 import { TrainingModule } from './training/training.module';
 import { UserModule } from './user/user.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     QuestionnaireModule,
     TrainingModule,
+    ReviewModule,
   ],
   controllers: [],
   providers: [],

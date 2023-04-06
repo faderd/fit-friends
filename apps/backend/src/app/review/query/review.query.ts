@@ -1,8 +1,8 @@
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsIn, IsNumber, IsOptional } from 'class-validator';
+import { IsIn, IsNumber, IsOptional } from 'class-validator';
 import { DEFAULT_COUNT_LIMIT, DEFAULT_SORT_DIRECTION } from '../../app.constant';
 
-export class TrainingQuery {
+export class ReviewQuery {
   @Transform(({ value }) => +value || DEFAULT_COUNT_LIMIT)
   @IsNumber()
   @IsOptional()
@@ -11,10 +11,4 @@ export class TrainingQuery {
   @IsIn(['asc', 'desc'])
   @IsOptional()
   public sortDirection: 'desc' | 'asc' = DEFAULT_SORT_DIRECTION;
-
-  @Transform(({ value }) => Boolean(value))
-  @IsBoolean()
-  @IsOptional()
-  public isOnlyFreeTrainings: boolean;
-
 }

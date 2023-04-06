@@ -1,4 +1,4 @@
-import { TrainingInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
+import { ReviewInterface, TrainingInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
@@ -11,8 +11,11 @@ import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
 import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
-import { storeIsDataLoadedStatus, storeTraining, storeTrainings } from './app-data/app-data';
+import { storeIsDataLoadedStatus, storeReviews, storeTraining, storeTrainings } from './app-data/app-data';
 import { storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
+import { UpdateTrainingDto } from '../types/update-training.dto';
+import { CreateReviewDto } from '../types/create-review.dto';
+import { generatePath } from 'react-router-dom';
 
 export const register = createAsyncThunk<
   UserInterface,
@@ -178,17 +181,24 @@ export const fetchUsers = createAsyncThunk<void, undefined,
   }
 );
 
-export const createTraining = createAsyncThunk<void, CreateTrainingDto,
+export const submitNewTraining = createAsyncThunk<void, CreateTrainingDto,
   {
     dispatch: AppDispatch,
     state: State,
     extra: AxiosInstance
   }
 >(
-  'data/createTraining',
+  'data/submitNewTraining',
   async (createTrainingData, { dispatch, extra: api }) => {
-    const { data } = await api.post<TrainingInterface>('training/', createTrainingData);
-    dispatch(storeTraining(data));
+    try {
+      const { data } = await api.post<TrainingInterface>('training/', createTrainingData);
+      dispatch(storeTraining(data));
+      toast.info('Новая тренировка создана');
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        toast.warn(`Ошибка: ${err.response.data.message}\n Код ошибки: ${err.response.status}`);
+      }
+    }
   }
 );
 
@@ -210,5 +220,55 @@ export const fetchTrainings = createAsyncThunk<void,
     ${isOnlyFreeTrainings ? `&isOnlyFreeTrainings=${isOnlyFreeTrainings}` : ''}
     `);
     dispatch(storeTrainings(data));
+  }
+);
+
+export const updateTraining = createAsyncThunk<void, UpdateTrainingDto,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/updateTraining',
+  async (updateData, { dispatch, extra: api }) => {
+    const { data } = await api.post<TrainingInterface>('training/update', updateData);
+    dispatch(storeTraining(data));
+  }
+);
+
+export const fetchReviews = createAsyncThunk<void,
+  number,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchReviews',
+  async (trainingId, { dispatch, extra: api }) => {
+    const { data } = await api.get<ReviewInterface[]>(generatePath('review/:id', {id: trainingId.toString()}));
+    dispatch(storeReviews(data));
+  }
+);
+
+export const submitNewReview = createAsyncThunk<ReviewInterface | void, CreateReviewDto,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/submitNewReview',
+  async (createReviewData, { dispatch, extra: api }) => {
+    try {
+      const { data } = await api.post<ReviewInterface>('review/', { ...createReviewData });
+      dispatch(fetchReviews(data.trainingId));
+      return data;
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        toast.warn(`Ошибка: ${err.response.data.message}\n Код ошибки: ${err.response.status}`);
+      }
+    }
   }
 );

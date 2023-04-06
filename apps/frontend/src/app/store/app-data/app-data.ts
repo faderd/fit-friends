@@ -1,12 +1,13 @@
-import { TrainingInterface } from '@fit-friends/shared-types';
+import { ReviewInterface, TrainingInterface } from '@fit-friends/shared-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../../const';
 import { AppData } from '../../types/state';
-import { createTraining, fetchTrainings } from '../api-actions';
+import { submitNewTraining, fetchTrainings, updateTraining, submitNewReview } from '../api-actions';
 
 export const getInitialStateAppData = (): AppData => ({
   isDataLoaded: true,
   trainings: [],
+  reviews: [],
 });
 
 export const appData = createSlice({
@@ -22,6 +23,9 @@ export const appData = createSlice({
     storeTrainings: (state, action: PayloadAction<TrainingInterface[]>) => {
       state.trainings = action.payload;
     },
+    storeReviews: (state, action: PayloadAction<ReviewInterface[]>) => {
+      state.reviews = action.payload;
+    }
   },
   extraReducers(builder) {
     builder
@@ -34,16 +38,34 @@ export const appData = createSlice({
       .addCase(fetchTrainings.pending, (state) => {
         state.isDataLoaded = false;
       })
-      .addCase(createTraining.fulfilled, (state) => {
+      .addCase(submitNewTraining.fulfilled, (state) => {
         state.isDataLoaded = true;
       })
-      .addCase(createTraining.rejected, (state) => {
+      .addCase(submitNewTraining.rejected, (state) => {
         state.isDataLoaded = true;
       })
-      .addCase(createTraining.pending, (state) => {
+      .addCase(submitNewTraining.pending, (state) => {
+        state.isDataLoaded = false;
+      })
+      .addCase(updateTraining.fulfilled, (state) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(updateTraining.rejected, (state) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(updateTraining.pending, (state) => {
+        state.isDataLoaded = false;
+      })
+      .addCase(submitNewReview.fulfilled, (state) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(submitNewReview.rejected, (state) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(submitNewReview.pending, (state) => {
         state.isDataLoaded = false;
       })
   }
 });
 
-export const { storeIsDataLoadedStatus, storeTraining, storeTrainings } = appData.actions;
+export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews } = appData.actions;

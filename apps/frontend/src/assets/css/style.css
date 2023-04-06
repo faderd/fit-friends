@@ -8564,7 +8564,7 @@ input:active + .custom-textarea__text {
 }
 
 .popup-form--feedback {
-  position: absolute;
+  /* position: absolute; */
 }
 
 .popup-form--buy {

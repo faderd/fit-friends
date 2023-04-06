@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { TrainingDuration, TrainingType } from '@fit-friends/shared-types';
 import FilterRange from '../filter-range/filter-range';
 import { useAppDispatch } from '../../hooks';
-import { fetchTrainings, fetchUsers } from '../../store/api-actions';
+import { fetchTrainings } from '../../store/api-actions';
 
 const TrainingDurationMap = {
   [TrainingDuration.Range10to30]: '10 мин - 30 мин',

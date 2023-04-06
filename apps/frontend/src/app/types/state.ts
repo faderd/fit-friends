@@ -1,4 +1,4 @@
-import { TrainingInterface } from '@fit-friends/shared-types';
+import { ReviewInterface, TrainingInterface } from '@fit-friends/shared-types';
 import { AuthorizationStatus } from '../../const';
 import { store } from '../store';
 import { QuestionnaireData } from './questionnaire-data';
@@ -10,6 +10,7 @@ export type AppDispatch = typeof store.dispatch;
 export type AppData = {
   isDataLoaded: boolean,
   trainings: TrainingInterface[],
+  reviews: ReviewInterface[],
 }
 
 export type UserProcess = {

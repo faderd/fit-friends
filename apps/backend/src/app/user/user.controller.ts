@@ -34,9 +34,9 @@ export class UserController {
   ) {
     const { user: tokenPayload } = request;
 
-    if (tokenPayload.role !== UserRole.User) {
-      throw new MethodNotAllowedException('Роль должна быть: Пользователь');
-    }
+    // if (tokenPayload.role !== UserRole.User) {
+    //   throw new MethodNotAllowedException('Роль должна быть: Пользователь');
+    // }
 
     const users = await this.userService.getUsers();
     return users.map((user) => fillObject(UserRdo, user));

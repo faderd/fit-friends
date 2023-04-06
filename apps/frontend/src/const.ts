@@ -26,6 +26,7 @@ export enum AppRoute {
   CreateTraining = '/create-training',
   MyTrainings = '/my-trainings',
   TrainingCatalog = '/training-catalog',
+  TrainingCard = '/training-card/:id',
 }
 
 export enum PageTitle {
@@ -40,6 +41,7 @@ export enum PageTitle {
   CreateTraining = 'Создать тренировку — FitFriends',
   MyTrainings = 'Мои тренировки — FitFriends',
   TrainingCatalog = 'Каталог тренировок — FitFriends',
+  TrainingCard = 'Карточка тренировки — FitFriends',
 }
 
 export enum PageType {

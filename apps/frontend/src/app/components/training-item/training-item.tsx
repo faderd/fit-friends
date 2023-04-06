@@ -1,4 +1,6 @@
 import { TrainingInterface } from '@fit-friends/shared-types';
+import { AppRoute } from '../../../const';
+import { Link, generatePath } from 'react-router-dom';
 
 type TrainingItemProps = {
   training: TrainingInterface;
@@ -37,7 +39,7 @@ function TrainingItem({ training, liClassName }: TrainingItemProps): JSX.Element
             <p className="thumbnail-training__text">{training.description}</p>
           </div>
           <div className="thumbnail-training__button-wrapper">
-            <a className="btn btn--small thumbnail-training__button-catalog" href="#">Подробнее</a>
+            <Link className="btn btn--small thumbnail-training__button-catalog" to={generatePath(AppRoute.TrainingCard, {id: training.id?.toString() || ''})}>Подробнее</Link>
             <a className="btn btn--small btn--outlined thumbnail-training__button-catalog" href="#">Отзывы</a>
           </div>
         </div>
