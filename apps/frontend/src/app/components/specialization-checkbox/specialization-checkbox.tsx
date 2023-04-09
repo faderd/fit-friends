@@ -11,26 +11,15 @@ type SpecializationCheckboxProps = {
 function SpecializationCheckbox({ trainingTypes, setTrainingType, className }: SpecializationCheckboxProps): JSX.Element {
   const isDataLoaded = useAppSelector(getIsDataLoaded);
 
-  const getTrainingTypeIsChecked = (typeOfInputElement: TrainingType) => {
-    return trainingTypes.includes(typeOfInputElement);
-  };
+  const getTrainingTypeIsChecked = (typeOfInputElement: TrainingType) => trainingTypes.includes(typeOfInputElement);
 
-  const handleCheckedTrainingType = (typeOfInputElement: TrainingType) => {
-    const index = trainingTypes.findIndex((typeItem) => typeItem === typeOfInputElement);
+  function handleCheckedTrainingType(type: TrainingType): void {
+    const index = trainingTypes.findIndex((typeItem) => typeItem === type);
 
-    const newTrainingTypes = trainingTypes.map((trainingTypeItem) => trainingTypeItem);
-
-    if (index === -1) {
-      if (newTrainingTypes.length >= MAX_TRAINING_TYPE_LENGTH) {
-        return;
-      }
-      newTrainingTypes.push(typeOfInputElement);
-      setTrainingType(newTrainingTypes);
-    } else {
-      newTrainingTypes.splice(index, 1);
-      setTrainingType(newTrainingTypes);
-    }
-  };
+    index === -1
+      ? trainingTypes.length >= MAX_TRAINING_TYPE_LENGTH || setTrainingType([...trainingTypes, type])
+      : setTrainingType([...trainingTypes.slice(0, index), ...trainingTypes.slice(index + 1)]);
+  }
 
   return (
     <div className={`specialization-checkbox ${className}`}>

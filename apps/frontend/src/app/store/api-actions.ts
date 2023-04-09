@@ -1,8 +1,8 @@
-import { ReviewInterface, TrainingInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
+import { GymInterface, ReviewInterface, TrainingInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
-import { RegisterDataQuestionnaireUser, RegisterDataQuestionnaireCoach, SortDirection } from '../../const';
+import { RegisterDataQuestionnaireUser, RegisterDataQuestionnaireCoach } from '../../const';
 import { dropAccessToken, dropRefreshToken, saveAccessToken, saveRefreshToken } from '../../services/token';
 import { CreateTrainingDto } from '../types/create-training.dto';
 import { QuestionnaireData } from '../types/questionnaire-data';
@@ -11,7 +11,7 @@ import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
 import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
-import { storeIsDataLoadedStatus, storeReviews, storeTraining, storeTrainings } from './app-data/app-data';
+import { storeGyms, storeIsDataLoadedStatus, storeReviews, storeTraining, storeTrainings } from './app-data/app-data';
 import { storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 import { UpdateTrainingDto } from '../types/update-training.dto';
 import { CreateReviewDto } from '../types/create-review.dto';
@@ -157,7 +157,6 @@ export const updateUser = createAsyncThunk<void, UpdateUserDto,
   'user/updateUser',
   async (updateData, { dispatch, extra: api }) => {
     dispatch(storeIsDataLoadedStatus(false));
-
     const { data } = await api.post<UserData>('auth/update', updateData);
     dispatch(storeUser(data));
     dispatch(storeIsDataLoadedStatus(true));
@@ -270,5 +269,19 @@ export const submitNewReview = createAsyncThunk<ReviewInterface | void, CreateRe
         toast.warn(`Ошибка: ${err.response.data.message}\n Код ошибки: ${err.response.status}`);
       }
     }
+  }
+);
+
+export const fetchGyms = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchGyms',
+  async (_, { dispatch, extra: api }) => {
+    const { data } = await api.get<GymInterface[]>('gym/');
+    dispatch(storeGyms(data));
   }
 );

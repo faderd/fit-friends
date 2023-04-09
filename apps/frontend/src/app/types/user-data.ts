@@ -11,6 +11,7 @@ export type UserData = {
   role: UserRole;
   location: UserLocation;
   friends: number[];
+  myFavoriteGyms: number[];
   questionnaire?: QuestionnaireData;
   access_token?: string;
   refresh_token?: string;

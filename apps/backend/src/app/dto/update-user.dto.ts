@@ -62,4 +62,10 @@ export class UpdateUserDto {
     example: '[1, 2, 3]'
   })
   public friends?: number[];
+
+  @ApiProperty({
+    description: 'Список id избранных залов',
+    example: '[1, 2, 3]'
+  })
+  public myFavoriteGyms?: number[];
 }

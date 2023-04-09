@@ -14,4 +14,5 @@ export interface UserInterface {
   location: UserLocation;
   createdAt: Date;
   friends: number[];
+  myFavoriteGyms: number[];
 }

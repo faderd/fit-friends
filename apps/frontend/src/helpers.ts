@@ -1,16 +1,17 @@
-import { TrainingDuration, TrainingInterface, TrainingType, UserRole } from '@fit-friends/shared-types';
+import { GymInterface, TrainingInterface, TrainingType, UserRole } from '@fit-friends/shared-types';
 import { trainingsFilters } from './app/types/my-trainings-filters';
 import { UserData } from './app/types/user-data';
 import { UserFilters } from './app/types/user-filters';
+import { gymFilters } from './app/types/gym-filters';
 
 export const applyFilters = (users: UserData[], filters: UserFilters) => {
-  let filteredUsers = users.map((user) => user);
+  let filteredUsers = users.slice();
 
   if (Array.isArray(filters.searchParamSpecialization)) {
     filters.searchParamSpecialization.forEach((trainingType) => {
-      filteredUsers = filteredUsers.filter((user) => {
-        return user.questionnaire?.trainingTypes?.includes(trainingType as TrainingType);
-      });
+      filteredUsers = filteredUsers.filter((user) =>
+        user.questionnaire?.trainingTypes?.includes(trainingType as TrainingType)
+      );
     });
   }
 
@@ -47,7 +48,7 @@ export const applyFilters = (users: UserData[], filters: UserFilters) => {
 }
 
 export const applyTrainingsFilters = (trainings: TrainingInterface[], filters: trainingsFilters) => {
-  let filteredTrainings = trainings.map((user) => user);
+  let filteredTrainings = trainings.slice();
 
   if (filters.searchParamMaxPrice) {
     const maxPrice = +filters.searchParamMaxPrice || 0;
@@ -94,16 +95,61 @@ export const applyTrainingsFilters = (trainings: TrainingInterface[], filters: t
   return filteredTrainings;
 }
 
-export const makeNewFriendsList = (action: 'add' | 'remove', id: number, userFriends: number[]): number[] => {
-  const newUserFriends = [...userFriends];
+export const makeNewFriendsList = (
+  action: 'add' | 'remove',
+  id: number,
+  friendsList: number[]
+): number[] => {
+  let updatedFriendsList = [...friendsList];
 
-  if (action === 'add') {
-    newUserFriends.push(id);
-    return newUserFriends;
+  switch (action) {
+    case 'add':
+      updatedFriendsList.push(id);
+      break;
+    case 'remove':
+      updatedFriendsList = updatedFriendsList.filter((friendId) => friendId !== id);
+      break;
+    default:
+      console.error(`Unsupported action: ${action}`);
+      break;
   }
 
-  const index = newUserFriends.findIndex((friendId) => friendId === id);
-  newUserFriends.splice(index, 1);
+  return updatedFriendsList;
+};
 
-  return newUserFriends;
+export const applyGymFilters = (gyms: GymInterface[], filters: gymFilters) => {
+  let filteredGyms = gyms.slice();
+
+  if (filters.searchParamIsOnlyVerified) {
+    filteredGyms = filteredGyms.filter((gym) => gym.isVerified);
+  }
+
+  if (filters.searchParamLocation) {
+    filteredGyms = filteredGyms.filter((gym) => filters.searchParamLocation?.includes(gym.location));
+  }
+
+  if (filters.searchParamMaxPrice) {
+    const maxPrice = +filters.searchParamMaxPrice || 0;
+    filteredGyms = filteredGyms.filter((gym) => gym.price <= maxPrice);
+  }
+
+  if (filters.searchParamMinPrice) {
+    const minPrice = +filters.searchParamMinPrice || 0;
+    filteredGyms = filteredGyms.filter((gym) => gym.price >= minPrice);
+  }
+
+  if (filters.searchParamOptions) {
+    filteredGyms = filteredGyms.filter((gym) => {
+      let isInclude = false;
+      gym.options.forEach((option) => {
+        if (filters.searchParamOptions?.includes(option)) {
+          isInclude = true;
+          return;
+        }
+      })
+
+      return isInclude;
+    })
+  }
+  return filteredGyms;
 };

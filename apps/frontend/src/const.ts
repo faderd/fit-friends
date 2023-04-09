@@ -27,6 +27,8 @@ export enum AppRoute {
   MyTrainings = '/my-trainings',
   TrainingCatalog = '/training-catalog',
   TrainingCard = '/training-card/:id',
+  GymsCatalog = '/gyms-catalog',
+  GymCard = '/gym-card/:id',
 }
 
 export enum PageTitle {
@@ -42,6 +44,8 @@ export enum PageTitle {
   MyTrainings = 'Мои тренировки — FitFriends',
   TrainingCatalog = 'Каталог тренировок — FitFriends',
   TrainingCard = 'Карточка тренировки — FitFriends',
+  GymsCatalog = 'Каталог залов — FitFriends',
+  GymCard = 'Карточка зала — FitFriends',
 }
 
 export enum PageType {
@@ -81,7 +85,7 @@ export enum SearchParamUser {
   TrainingLevel = 'trainingLevel',
 }
 
-export enum SearchParamMyTraining {
+export enum SearchParam {
   MinPrice = 'minPrice',
   MaxPrice = 'maxPrice',
   MinCalories = 'minCalories',
@@ -92,6 +96,9 @@ export enum SearchParamMyTraining {
   TrainingType = 'trainingType',
   SortDirection = 'sortDirection',
   IsOnlyFreeTrainings = 'isOnlyFreeTrainings',
+  Location = 'location',
+  GymOption = 'gymOption',
+  IsOnlyVerifiedGyms = 'isOnlyVerifiedGyms',
 }
 
 export enum SortDirection {

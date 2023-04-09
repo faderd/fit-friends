@@ -8,6 +8,8 @@ import { QuestionnaireModule } from './questionnaire/questionnaire.module';
 import { TrainingModule } from './training/training.module';
 import { UserModule } from './user/user.module';
 import { ReviewModule } from './review/review.module';
+import { GymModule } from './gym/gym.module';
+import { OrderModule } from './order/gym.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { ReviewModule } from './review/review.module';
     QuestionnaireModule,
     TrainingModule,
     ReviewModule,
+    GymModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],

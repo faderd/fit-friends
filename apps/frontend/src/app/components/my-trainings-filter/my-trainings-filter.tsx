@@ -1,10 +1,12 @@
-import { DEFAULT_SORT_DIRECTION, SearchParamMyTraining, SortDirection } from '../../../const';
+import { DEFAULT_SORT_DIRECTION, SearchParam, SortDirection } from '../../../const';
 import { useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { TrainingDuration, TrainingType } from '@fit-friends/shared-types';
 import FilterRange from '../filter-range/filter-range';
 import { useAppDispatch } from '../../hooks';
 import { fetchTrainings } from '../../store/api-actions';
+import { trainingsFilters } from '../../types/my-trainings-filters';
+import FilterPrice from '../filter-price/filter-price';
 
 const TrainingDurationMap = {
   [TrainingDuration.Range10to30]: '10 мин - 30 мин',
@@ -18,7 +20,7 @@ const MAX_RATE_VALUE = '5';
 const MIN_RATE_VALUE = '0';
 
 type MyTrainingsFilterProps = {
-  setFilters: (filters: any) => void;
+  setFilters: (filters: trainingsFilters) => void;
   maxPrice: string;
   maxCalory: string;
   classNamePrefix: string;
@@ -33,16 +35,16 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const searchParamMinPrice: string | null = searchParams.get(SearchParamMyTraining.MinPrice);
-  const searchParamMaxPrice: string | null = searchParams.get(SearchParamMyTraining.MaxPrice);
-  const searchParamMinCalories: string | null = searchParams.get(SearchParamMyTraining.MinCalories);
-  const searchParamMaxCalories: string | null = searchParams.get(SearchParamMyTraining.MaxCalories);
-  const searchParamMinRate: string | null = searchParams.get(SearchParamMyTraining.MinRate);
-  const searchParamMaxRate: string | null = searchParams.get(SearchParamMyTraining.MaxRate);
-  let searchParamTrainingDuration: string | string[] | null = searchParams.get(SearchParamMyTraining.TrainingDuration);
-  let searchParamTrainingType: string | string[] | null = searchParams.get(SearchParamMyTraining.TrainingType);
-  const searchParamSortDirecton: string | null = searchParams.get(SearchParamMyTraining.SortDirection);
-  const searchParamIsOnlyFreeTrainings: string | null = searchParams.get(SearchParamMyTraining.IsOnlyFreeTrainings);
+  const searchParamMinPrice: string = searchParams.get(SearchParam.MinPrice) || DEFAULT_MIN_PRICE;
+  const searchParamMaxPrice: string = searchParams.get(SearchParam.MaxPrice) || maxPrice;
+  const searchParamMinCalories: string | null = searchParams.get(SearchParam.MinCalories);
+  const searchParamMaxCalories: string | null = searchParams.get(SearchParam.MaxCalories);
+  const searchParamMinRate: string | null = searchParams.get(SearchParam.MinRate);
+  const searchParamMaxRate: string | null = searchParams.get(SearchParam.MaxRate);
+  let searchParamTrainingDuration: string | string[] | null = searchParams.get(SearchParam.TrainingDuration);
+  let searchParamTrainingType: string | string[] | null = searchParams.get(SearchParam.TrainingType);
+  const searchParamSortDirecton: string | null = searchParams.get(SearchParam.SortDirection);
+  const searchParamIsOnlyFreeTrainings: string | null = searchParams.get(SearchParam.IsOnlyFreeTrainings);
 
   useEffect(() => {
     setFilters({ searchParamMinPrice, searchParamMaxPrice, searchParamMinCalories, searchParamMaxCalories, searchParamMinRate, searchParamMaxRate, searchParamTrainingDuration, searchParamTrainingType });
@@ -55,7 +57,7 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
 
   useEffect(() => {
     if (!searchParamIsOnlyFreeTrainings) { return; }
-    dispatch(fetchTrainings({isOnlyFreeTrainings: searchParamIsOnlyFreeTrainings}));
+    dispatch(fetchTrainings({ isOnlyFreeTrainings: searchParamIsOnlyFreeTrainings }));
   }, [dispatch, searchParamIsOnlyFreeTrainings]);
 
   // Длительность тренировки====================================================
@@ -74,25 +76,25 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
   }
 
   // Максимальная цена==========================================================
-  useEffect(() => {
-    if (!searchParamMaxPrice && +maxPrice >= 0) {
-      searchParams.set(SearchParamMyTraining.MaxPrice, maxPrice);
-      setSearchParams(searchParams);
-    }
-  }, [maxPrice, searchParamMaxPrice, searchParams, setSearchParams]);
+  // useEffect(() => {
+  //   if (!searchParamMaxPrice && +maxPrice >= 0) {
+  //     searchParams.set(SearchParam.MaxPrice, maxPrice);
+  //     setSearchParams(searchParams);
+  //   }
+  // }, [maxPrice, searchParamMaxPrice, searchParams, setSearchParams]);
 
   // Минимальная цена===========================================================
-  useEffect(() => {
-    if (!searchParamMinPrice) {
-      searchParams.set(SearchParamMyTraining.MinPrice, DEFAULT_MIN_PRICE);
-      setSearchParams(searchParams);
-    }
-  }, [searchParamMinPrice, searchParams, setSearchParams]);
+  // useEffect(() => {
+  //   if (!searchParamMinPrice) {
+  //     searchParams.set(SearchParam.MinPrice, DEFAULT_MIN_PRICE);
+  //     setSearchParams(searchParams);
+  //   }
+  // }, [searchParamMinPrice, searchParams, setSearchParams]);
 
   // Сортировка=================================================================
   useEffect(() => {
     if (!searchParamSortDirecton && !searchParamIsOnlyFreeTrainings) {
-      searchParams.set(SearchParamMyTraining.SortDirection, DEFAULT_SORT_DIRECTION);
+      searchParams.set(SearchParam.SortDirection, DEFAULT_SORT_DIRECTION);
       setSearchParams(searchParams);
     }
   }, [searchParamIsOnlyFreeTrainings, searchParamSortDirecton, searchParams, setSearchParams]);
@@ -104,15 +106,15 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
   // Максимум калорий===========================================================
   useEffect(() => {
     if (!searchParamMaxCalories && +maxCalory >= 0) {
-      searchParams.set(SearchParamMyTraining.MaxCalories, maxCalory);
+      searchParams.set(SearchParam.MaxCalories, maxCalory);
       setSearchParams(searchParams);
     }
   }, [maxCalory, searchParamMaxCalories, searchParams, setSearchParams]);
 
-  // Минимальная цена===========================================================
+  // Минимум калорий============================================================
   useEffect(() => {
     if (!searchParamMinCalories) {
-      searchParams.set(SearchParamMyTraining.MinCalories, DEFAULT_MIN_CALORY);
+      searchParams.set(SearchParam.MinCalories, DEFAULT_MIN_CALORY);
       setSearchParams(searchParams);
     }
   }, [searchParamMinCalories, searchParams, setSearchParams]);
@@ -120,7 +122,7 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
   // Максимальный рейтинг=====================================================
   useEffect(() => {
     if (!searchParamMaxRate && +MAX_RATE_VALUE >= 0) {
-      searchParams.set(SearchParamMyTraining.MaxRate, MAX_RATE_VALUE);
+      searchParams.set(SearchParam.MaxRate, MAX_RATE_VALUE);
       setSearchParams(searchParams);
     }
   }, [searchParamMaxRate, searchParams, setSearchParams]);
@@ -128,7 +130,7 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
   // Минимальный рейтинг=======================================================
   useEffect(() => {
     if (!searchParamMinRate) {
-      searchParams.set(SearchParamMyTraining.MinRate, MIN_RATE_VALUE);
+      searchParams.set(SearchParam.MinRate, MIN_RATE_VALUE);
       setSearchParams(searchParams);
     }
   }, [searchParamMinRate, searchParams, setSearchParams]);
@@ -152,29 +154,19 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
     <form className={formFormClassName}>
       <div className={`${classNamePrefix}-form__block ${classNamePrefix}-form__block--price`}>
         <h4 className={`${classNamePrefix}-form__block-title`}>Цена, ₽</h4>
-        <div className="filter-price">
-          <div className="filter-price__input-text filter-price__input-text--min">
-            <input type="number" id="text-min" name="text-min"
-              value={searchParamMinPrice?.toString()}
-              onChange={(evt) => {
-                searchParams.set(SearchParamMyTraining.MinPrice, evt.target.value || '0');
-                setSearchParams(searchParams);
-              }}
-            />
-            <label htmlFor="text-min">от</label>
-          </div>
-          <div className="filter-price__input-text filter-price__input-text--max">
-            <input type="number" id="text-max" name="text-max"
-              value={searchParamMaxPrice?.toString()}
-              onChange={(evt) => {
-                searchParams.set(SearchParamMyTraining.MaxPrice, evt.target.value || '0');
-                setSearchParams(searchParams);
-              }}
-            />
-            <label htmlFor="text-max">до</label>
-          </div>
-        </div>
-        <FilterRange maxValue={maxPrice} searchParamMin={searchParamMinPrice} searchParamMax={searchParamMaxPrice} searchParamMinName={SearchParamMyTraining.MinPrice} searchParamMaxName={SearchParamMyTraining.MaxPrice} />
+        <FilterPrice
+          searchParamMinPrice={searchParamMinPrice}
+          searchParamMaxPrice={searchParamMaxPrice}
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+        />
+        <FilterRange
+          maxValue={maxPrice}
+          searchParamMin={searchParamMinPrice}
+          searchParamMax={searchParamMaxPrice}
+          searchParamMinName={SearchParam.MinPrice}
+          searchParamMaxName={SearchParam.MaxPrice}
+        />
       </div>
       <div className={`${classNamePrefix}-form__block ${classNamePrefix}-form__block--calories`}>
         <h4 className={`${classNamePrefix}-form__block-title`}>Калории</h4>
@@ -183,7 +175,7 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
             <input type="number" id="text-min-cal" name="text-min-cal"
               value={searchParamMinCalories?.toString()}
               onChange={(evt) => {
-                searchParams.set(SearchParamMyTraining.MinCalories, evt.target.value || '0');
+                searchParams.set(SearchParam.MinCalories, evt.target.value || '0');
                 setSearchParams(searchParams);
               }}
             />
@@ -193,18 +185,18 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
             <input type="number" id="text-max-cal" name="text-max-cal"
               value={searchParamMaxCalories?.toString()}
               onChange={(evt) => {
-                searchParams.set(SearchParamMyTraining.MaxCalories, evt.target.value || '0');
+                searchParams.set(SearchParam.MaxCalories, evt.target.value || '0');
                 setSearchParams(searchParams);
               }}
             />
             <label htmlFor="text-max-cal">до</label>
           </div>
         </div>
-        <FilterRange maxValue={maxCalory} searchParamMin={searchParamMinCalories} searchParamMax={searchParamMaxCalories} searchParamMinName={SearchParamMyTraining.MinCalories} searchParamMaxName={SearchParamMyTraining.MaxCalories} />
+        <FilterRange maxValue={maxCalory} searchParamMin={searchParamMinCalories} searchParamMax={searchParamMaxCalories} searchParamMinName={SearchParam.MinCalories} searchParamMaxName={SearchParam.MaxCalories} />
       </div>
       <div className={`${classNamePrefix}-form__block ${classNamePrefix}-form__block--raiting`}>
         <h4 className={`${classNamePrefix}-form__block-title`}>Рейтинг</h4>
-        <FilterRange maxValue={MAX_RATE_VALUE} searchParamMin={searchParamMinRate} searchParamMax={searchParamMaxRate} searchParamMinName={SearchParamMyTraining.MinRate} searchParamMaxName={SearchParamMyTraining.MaxRate} isMarkValues={true} classNameSuffix='raiting' />
+        <FilterRange maxValue={MAX_RATE_VALUE} searchParamMin={searchParamMinRate} searchParamMax={searchParamMaxRate} searchParamMinName={SearchParam.MinRate} searchParamMaxName={SearchParam.MaxRate} isMarkValues={true} classNameSuffix='raiting' />
       </div>
       {isDurationBlockActive && (
         <div className={`${classNamePrefix}-form__block ${classNamePrefix}-form__block--duration`}>
@@ -233,9 +225,9 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
                           }
 
                           if (searchParamTrainingDuration.length === 0) {
-                            searchParams.delete(SearchParamMyTraining.TrainingDuration);
+                            searchParams.delete(SearchParam.TrainingDuration);
                           } else {
-                            searchParams.set(SearchParamMyTraining.TrainingDuration, searchParamTrainingDuration.join(';'));
+                            searchParams.set(SearchParam.TrainingDuration, searchParamTrainingDuration.join(';'));
                           }
 
                           setSearchParams(searchParams);
@@ -278,9 +270,9 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
                           }
 
                           if (searchParamTrainingType.length === 0) {
-                            searchParams.delete(SearchParamMyTraining.TrainingType);
+                            searchParams.delete(SearchParam.TrainingType);
                           } else {
-                            searchParams.set(SearchParamMyTraining.TrainingType, searchParamTrainingType.join(';'));
+                            searchParams.set(SearchParam.TrainingType, searchParamTrainingType.join(';'));
                           }
 
                           setSearchParams(searchParams);
@@ -306,8 +298,8 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
               <input type="radio" name="sort"
                 checked={getIsSortDirectionChecked(SortDirection.Asc)}
                 onChange={() => {
-                  searchParams.delete(SearchParamMyTraining.IsOnlyFreeTrainings);
-                  searchParams.set(SearchParamMyTraining.SortDirection, SortDirection.Asc);
+                  searchParams.delete(SearchParam.IsOnlyFreeTrainings);
+                  searchParams.set(SearchParam.SortDirection, SortDirection.Asc);
                   setSearchParams(searchParams);
                 }}
               /><span className="btn-radio-sort__label">Дешевле</span>
@@ -316,8 +308,8 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
               <input type="radio" name="sort"
                 checked={getIsSortDirectionChecked(SortDirection.Desc)}
                 onChange={() => {
-                  searchParams.delete(SearchParamMyTraining.IsOnlyFreeTrainings);
-                  searchParams.set(SearchParamMyTraining.SortDirection, SortDirection.Desc);
+                  searchParams.delete(SearchParam.IsOnlyFreeTrainings);
+                  searchParams.set(SearchParam.SortDirection, SortDirection.Desc);
                   setSearchParams(searchParams);
                 }}
               /><span className="btn-radio-sort__label">Дороже</span>
@@ -326,8 +318,8 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
               <input type="radio" name="sort"
                 checked={Boolean(searchParamIsOnlyFreeTrainings) === true}
                 onChange={() => {
-                  searchParams.delete(SearchParamMyTraining.SortDirection);
-                  searchParams.set(SearchParamMyTraining.IsOnlyFreeTrainings, 'true');
+                  searchParams.delete(SearchParam.SortDirection);
+                  searchParams.set(SearchParam.IsOnlyFreeTrainings, 'true');
                   setSearchParams(searchParams);
                 }}
               /><span className="btn-radio-sort__label">Бесплатные</span>

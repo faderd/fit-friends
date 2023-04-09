@@ -15,6 +15,7 @@ export class UserEntity implements EntityInterface<UserEntity>, UserInterface {
   public location: UserLocation;
   public createdAt: Date;
   public friends: number[];
+  public myFavoriteGyms: number[];
 
   constructor(user: UserInterface) {
     this.fillEntity(user);
@@ -36,6 +37,7 @@ export class UserEntity implements EntityInterface<UserEntity>, UserInterface {
     this.location = user.location;
     this.createdAt = user.createdAt;
     this.friends = user.friends;
+    this.myFavoriteGyms = user.myFavoriteGyms;
   }
 
   public async setPassword(password: string): Promise<UserEntity> {

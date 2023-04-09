@@ -34,7 +34,7 @@ export class AuthService {
   async register(dto: CreateUserDto) {
     const { name, email, gender, birthDate, role, location, password } = dto;
     const user = {
-      email, avatar: '', passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [],
+      email, avatar: '', passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], myFavoriteGyms: [],
     };
 
     const existUser = await this.userRepository

@@ -4,6 +4,8 @@ import { UserData } from '../../types/user-data';
 
 export const getUser = (state: State) => state[NameSpace.User].user;
 
+export const getFavoriteGyms = (state: State) => state[NameSpace.User].user?.myFavoriteGyms;
+
 export const getUsers = (state: State) => state[NameSpace.User].users;
 
 export const getUserById = (id: number) => (state: State) => state[NameSpace.User].users.find((user: UserData) => user.id === id);

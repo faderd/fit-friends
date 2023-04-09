@@ -3,7 +3,7 @@ POST http://localhost:3333/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "user51@notfound.local",
+  "email": "coach1@notfound.local",
   "name": "Иван",
   "password": "123456",
   "gender": "мужчина",
@@ -24,7 +24,7 @@ POST http://localhost:3333/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "user1@notfound.local",
+  "email": "coach1@notfound.local",
   "password": "123456"
 }
 ###
@@ -32,7 +32,7 @@ Content-Type: application/json
 # Проверка авторизации пользователя
 GET http://localhost:3333/api/auth/login HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQv9GA0LXQv9GD0YbQutC10YPQutC_0LLQsNC_0LIiLCJpYXQiOjE2Nzk5OTI3MTQsImV4cCI6MTY3OTk5MzYxNH0.E-aPwNZs4oBavscfbRhfwm9_N4RswIsTnU9JjmYLd2M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImZnaGZnZGZnaGQiLCJpYXQiOjE2ODA4NjgyMTYsImV4cCI6MTY4MDg2OTExNn0.3YP887XOwPKWmIMt7KqxxbVg-aktvULBcaHdi8r3E4E
 ###
 
 # Обновить токены

@@ -1,0 +1,20 @@
+# Создание нового зала
+POST http://localhost:3333/api/gym HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImZnaGZnZGZnaGQiLCJpYXQiOjE2ODA4NjgyMTYsImV4cCI6MTY4MDg2OTExNn0.3YP887XOwPKWmIMt7KqxxbVg-aktvULBcaHdi8r3E4E
+
+{
+  "name": "REFORMA",
+  "location": "Пионерская",
+  "isVerified": true,
+  "options": ["Бассейн", "Массаж"],
+  "description": "Огромный зал с отдельной зоной кроссфит. Разнообразное оборудование для занятий практически любым видом спорта. Фитнес-клуб World Sport предоставляет полный комплекс фитнес-программ, бассейны, групповой и индивидуальный тренинг, тренажерные залы, детские комнаты, 3 вида саун, SPA салоны.",
+  "price": 500
+  }
+###
+
+# Получить список залов
+GET http://localhost:3333/api/gym HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ItCS0LDRgdC40LvQuNC5IiwiaWF0IjoxNjgwODA2NTEwLCJleHAiOjE2ODA4MDc0MTB9.QPmQ0pIuZT4v7gLRH271GSV6sRV5gQ8SH8sCY8zMTDk
+###

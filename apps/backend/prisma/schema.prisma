@@ -22,6 +22,7 @@ model User {
   role                    String
   location                String
   createdAt               DateTime
+  myFavoriteGyms          Int[]
   RefreshSessions         RefreshSessions[]
   UserQuestionnaire       UserQuestionnaire[]
   CoachQuestionnaire      CoachQuestionnaire[]
@@ -88,7 +89,7 @@ model Gym {
   name        String
   location    String
   isVerified  Boolean
-  options     String
+  options     String[]
   photos      String[]
   description String
   price       Int
@@ -113,6 +114,7 @@ model Order {
   count         Int
   paymentMethod String
   createdAt     DateTime @default(now())
+  entityId      Int
 }
 
 model RequestPersonalTraining {

@@ -29,3 +29,17 @@ export enum APIRouteReview {
   Create = '/',
   GetByTrainingId = '/:id',
 }
+
+export enum APIRouteGym {
+  Prefix = '/gym',
+  Create = '/',
+  GetAll = '/',
+  GetById = '/:id',
+}
+
+export enum APIRouteOrder {
+  Prefix = '/order',
+  Create = '/',
+  GetAll = '/',
+  GetById = '/:id',
+}

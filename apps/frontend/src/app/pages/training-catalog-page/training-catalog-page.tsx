@@ -4,7 +4,6 @@ import PageHeader from '../../components/page-header/page-header';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getTrainings } from '../../store/app-data/selectors';
 import { applyTrainingsFilters } from '../../../helpers';
-import { useNavigate } from 'react-router-dom';
 import { fetchTrainings } from '../../store/api-actions';
 import TrainingItem from '../../components/training-item/training-item';
 import MyTrainingsFilter from '../../components/my-trainings-filter/my-trainings-filter';
@@ -13,7 +12,6 @@ import { trainingsFilters } from '../../types/my-trainings-filters';
 function TrainingCatalogPage(): JSX.Element {
   document.title = PageTitle.TrainingCatalog;
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const [filters, setFilters] = useState<trainingsFilters | null>(null);
   const trainings = useAppSelector(getTrainings);

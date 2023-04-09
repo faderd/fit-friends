@@ -6,7 +6,7 @@ export interface GymInterface {
   name: string;
   location: UserLocation;
   isVerified: boolean;
-  options: GymOption;
+  options: GymOption[];
   photos: string[];
   description: string;
   price: number;

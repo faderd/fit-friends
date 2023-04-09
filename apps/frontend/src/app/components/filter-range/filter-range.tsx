@@ -14,9 +14,9 @@ function FilterRange({ maxValue, searchParamMin, searchParamMax, searchParamMinN
   const [searchParams, setSearchParams] = useSearchParams();
 
   return (
-    <div className={`filter-${classNameSuffix ? classNameSuffix : 'range'}`}>
-      <div className={`filter-${classNameSuffix ? classNameSuffix : 'range'}__scale`}>
-        <div className={`filter-${classNameSuffix ? classNameSuffix : 'range'}__bar`}
+    <div className={`filter-${classNameSuffix ?? 'range'}`}>
+      <div className={`filter-${classNameSuffix ?? 'range'}__scale`}>
+        <div className={`filter-${classNameSuffix ?? 'range'}__bar`}
           style={{
             position: 'relative',
             left: `${(searchParamMin ? +searchParamMin : 0) / +maxValue * 100}%`,
@@ -25,8 +25,8 @@ function FilterRange({ maxValue, searchParamMin, searchParamMax, searchParamMinN
           }}
         ><span className="visually-hidden">Полоса прокрутки</span></div>
       </div>
-      <div className={`filter-${classNameSuffix ? classNameSuffix : 'range'}__control`}>
-        <button className={`filter-${classNameSuffix ? classNameSuffix : 'range'}__min-toggle`}
+      <div className={`filter-${classNameSuffix ?? 'range'}__control`}>
+        <button className={`filter-${classNameSuffix ?? 'range'}__min-toggle`}
           style={{ left: `${(searchParamMin ? +searchParamMin : 0) / +maxValue * 100}%` }}
           onMouseDown={(evt) => {
             evt.preventDefault();
@@ -35,9 +35,9 @@ function FilterRange({ maxValue, searchParamMin, searchParamMax, searchParamMinN
               if (!bar) { return; }
 
               const range = bar.getBoundingClientRect();
-              const newMinValue = Math.round(((evt.clientX - range.left) / range.width) * (+maxValue || 1));
+              const newMinValue = Math.floor(((evt.clientX - range.left) / range.width) * (+maxValue ?? 1));
 
-              if (newMinValue >= 0 && newMinValue < ((searchParamMax ? +searchParamMax : false) || +maxValue || 1)) {
+              if (newMinValue >= 0 && newMinValue < ((searchParamMax ? +searchParamMax : 0) ?? +maxValue ?? 1)) {
                 searchParams.set(searchParamMinName, newMinValue.toString());
                 setSearchParams(searchParams);
               }
@@ -48,9 +48,11 @@ function FilterRange({ maxValue, searchParamMin, searchParamMax, searchParamMinN
             });
           }}
           onClick={(evt) => { evt.preventDefault() }}
-        ><span className="visually-hidden">Минимальное значение</span>
+        >
+          <span className="visually-hidden">Минимальное значение</span>
         </button>{isMarkValues && (<span>{searchParamMin}</span>)}
-        <button className={`filter-${classNameSuffix ? classNameSuffix : 'range'}__max-toggle`}
+
+        <button className={`filter-${classNameSuffix ?? 'range'}__max-toggle`}
           style={{
             left: `${(
               (searchParamMax ? +searchParamMax : 0) / +maxValue * 100) < 100 ? ((searchParamMax ? +searchParamMax : 0) / +maxValue * 100) : 100}%`
@@ -62,9 +64,9 @@ function FilterRange({ maxValue, searchParamMin, searchParamMax, searchParamMinN
               if (!bar) { return; }
 
               const range = bar.getBoundingClientRect();
-              const newMaxValue = Math.round(((evt.clientX - range.left) / range.width) * (+maxValue || 1));
+              const newMaxValue = Math.ceil(((evt.clientX - range.left) / range.width) * (+maxValue ?? 1));
 
-              if (newMaxValue >= 0 && newMaxValue > (searchParamMin ? +searchParamMin : 0) && (newMaxValue <= +maxValue)) {
+              if (newMaxValue >= 0 && newMaxValue > ((searchParamMin ? +searchParamMin : 0) ?? +maxValue ?? 1) && newMaxValue <= +maxValue) {
                 searchParams.set(searchParamMaxName, newMaxValue.toString());
                 setSearchParams(searchParams);
               }

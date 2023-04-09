@@ -10,4 +10,5 @@ export type UpdateUserDto = {
   role?: UserRole;
   location?: UserLocation;
   friends?: number[];
+  myFavoriteGyms?: number[];
 };

@@ -83,4 +83,11 @@ export class UserRdo {
   })
   @Expose()
   public questionnaire?: QuestionnaireRdo;
+
+  @ApiProperty({
+    description: 'Избранные тренажерные залы',
+    example: '[1, 3]'
+  })
+  @Expose()
+  public myFavoriteGyms: number[];
 }

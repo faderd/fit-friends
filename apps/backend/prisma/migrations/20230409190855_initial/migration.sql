@@ -10,6 +10,7 @@ CREATE TABLE "User" (
     "role" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
+    "myFavoriteGyms" INTEGER[],
     "friends" INTEGER[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -79,7 +80,7 @@ CREATE TABLE "Gym" (
     "name" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "isVerified" BOOLEAN NOT NULL,
-    "options" TEXT NOT NULL,
+    "options" TEXT[],
     "photos" TEXT[],
     "description" TEXT NOT NULL,
     "price" INTEGER NOT NULL,
@@ -108,6 +109,7 @@ CREATE TABLE "Order" (
     "count" INTEGER NOT NULL,
     "paymentMethod" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "entityId" INTEGER NOT NULL,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
 );

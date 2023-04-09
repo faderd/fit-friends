@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppRoute, PageTitle, PageType } from '../../../const';
 import PageHeader from '../../components/page-header/page-header';
 
@@ -197,7 +197,7 @@ function IndexPage(): JSX.Element {
                   </div>
                   <div className="thumbnail-spec-gym__button-wrapper">
                     <a className="btn btn--small thumbnail-spec-gym__button" href="#">Подробнее</a>
-                    <a className="btn btn--small btn--outlined thumbnail-spec-gym__button" href="#">Все залы</a>
+                    <Link className="btn btn--small btn--outlined thumbnail-spec-gym__button" to={AppRoute.GymsCatalog}>Все залы</Link>
                   </div>
                 </div>
               </div>
