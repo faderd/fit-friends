@@ -1,7 +1,7 @@
 # Создание нового заказа абонемент
 POST http://localhost:3333/api/order HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImZnaGZnZGZnaGQiLCJpYXQiOjE2ODA4NjgyMTYsImV4cCI6MTY4MDg2OTExNn0.3YP887XOwPKWmIMt7KqxxbVg-aktvULBcaHdi8r3E4E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJqaGRzZ3NkZ2dkaCIsImlhdCI6MTY4MTEwNzQ2NSwiZXhwIjoxNjgxMTA4MzY1fQ.xbAgZI9eK9tZEOToclMC1MOIqIrCvA4JUufSRAEJ2OY
 
 {
   "type": "Абонемент",
@@ -13,7 +13,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsI
 ###
 
 # Получить список залов
-GET http://localhost:3333/api/gym HTTP/1.1
+GET http://localhost:3333/api/order HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ItCS0LDRgdC40LvQuNC5IiwiaWF0IjoxNjgwODA2NTEwLCJleHAiOjE2ODA4MDc0MTB9.QPmQ0pIuZT4v7gLRH271GSV6sRV5gQ8SH8sCY8zMTDk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJqaGRzZ3NkZ2dkaCIsImlhdCI6MTY4MTEwNzQ2NSwiZXhwIjoxNjgxMTA4MzY1fQ.xbAgZI9eK9tZEOToclMC1MOIqIrCvA4JUufSRAEJ2OY
 ###

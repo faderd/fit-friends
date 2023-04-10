@@ -46,7 +46,7 @@ export class OrderController {
       throw new UserNotUserException();
     }
 
-    const newOrder = await this.orderService.create(dto);
+    const newOrder = await this.orderService.create(dto, tokenPayload.sub);
     return fillObject(OrderRdo, newOrder);
   }
 
@@ -67,10 +67,13 @@ export class OrderController {
   @ApiUnauthorizedResponse({
     description: 'Пользователь не авторизован',
   })
-  async getAll(
+  async getUserOrders(
     @Query() query: OrderQuery,
+    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
   ) {
-    const orders = await this.orderService.getAll(query);
+    const { user: tokenPayload } = request;
+
+    const orders = await this.orderService.getByUserId(query, tokenPayload.sub);
 
     return orders.map((review) => fillObject(OrderRdo, review));
   }

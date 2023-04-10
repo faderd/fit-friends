@@ -1,7 +1,9 @@
-import { GymInterface, GymOption, PaymentMethod } from '@fit-friends/shared-types';
+import { GymInterface, GymOption, OrderType, PaymentMethod } from '@fit-friends/shared-types';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getIsDataLoaded } from '../../store/app-data/selectors';
 import { useState } from 'react';
+import { submitNewOrder } from '../../store/api-actions';
+import { toast } from 'react-toastify';
 
 const DEFAULT_OPTION_PRICE = 1000;
 const DEFAULT_QUANTITY = 1;
@@ -31,6 +33,26 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
   };
 
   const calculatePrice = () => gym.price * quantity + options.length * DEFAULT_OPTION_PRICE;
+
+  const handleSubmit = () => {
+    if (!gym.id) { return; }
+
+    const orderData = {
+      type: OrderType.Subscription,
+      price: calculatePrice(),
+      count: quantity,
+      paymentMethod,
+      entityId: gym.id,
+    }
+
+    dispatch(submitNewOrder(orderData))
+      .then((data) => {
+        if (data.payload) {
+          setIsPopupMembershipOpen(false);
+          toast.info('Заказ создан');
+        }
+      });
+  };
 
   return (
     <div className="popup-form popup-form--membership">
@@ -136,7 +158,7 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
                         name="payment-membership"
                         aria-label="Visa."
                         checked={paymentMethod === PaymentMethod.Visa}
-                        onChange={() => {setPaymentMethod(PaymentMethod.Visa)}}
+                        onChange={() => { setPaymentMethod(PaymentMethod.Visa) }}
                       /><span className="btn-radio-image__image">
                         <svg width="58" height="20" aria-hidden="true">
                           <use xlinkHref="#visa-logo"></use>
@@ -152,7 +174,7 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
                         name="payment-membership"
                         aria-label="Мир."
                         checked={paymentMethod === PaymentMethod.Mir}
-                        onChange={() => {setPaymentMethod(PaymentMethod.Mir)}}
+                        onChange={() => { setPaymentMethod(PaymentMethod.Mir) }}
                       /><span className="btn-radio-image__image">
                         <svg width="66" height="20" aria-hidden="true">
                           <use xlinkHref="#mir-logo"></use>
@@ -168,7 +190,7 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
                         name="payment-membership"
                         aria-label="Iomoney."
                         checked={paymentMethod === PaymentMethod.Umoney}
-                        onChange={() => {setPaymentMethod(PaymentMethod.Umoney)}}
+                        onChange={() => { setPaymentMethod(PaymentMethod.Umoney) }}
                       /><span className="btn-radio-image__image">
                         <svg width="106" height="24" aria-hidden="true">
                           <use xlinkHref="#iomoney-logo"></use>
@@ -188,7 +210,9 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
               </div>
             </div>
             <div className="popup__button">
-              <button className="btn" type="button">Купить</button>
+              <button className="btn" type="button"
+                onClick={handleSubmit}
+              >Купить</button>
             </div>
           </div>
         </div>

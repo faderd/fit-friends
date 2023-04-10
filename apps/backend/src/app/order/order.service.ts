@@ -16,7 +16,7 @@ export class OrderService {
     private readonly trainingService: TrainingService,
   ) { }
 
-  async create(dto: CreateOrderDto) {
+  async create(dto: CreateOrderDto, userId) {
     const { type, price, count, paymentMethod, entityId } = dto;
 
     // Проверим, существует ли объект с таким id
@@ -26,7 +26,7 @@ export class OrderService {
       await this.trainingService.getTraining(entityId);
     }
 
-    const order = { type, price, count, paymentMethod, entityId, createdAt: new Date() };
+    const order = { type, price, count, paymentMethod, entityId, createdAt: new Date(), userId };
 
     const orderEntity = new OrderEntity(order);
 
@@ -44,8 +44,8 @@ export class OrderService {
     return existOrder;
   }
 
-  async getAll(query: OrderQuery) {
-    return this.orderRepository.findAll(query);
+  async getByUserId(query: OrderQuery, userId: number) {
+    return this.orderRepository.findByUserId(query, userId);
   }
 
   async update(id: number, dto: UpdateOrderDto) {

@@ -1,8 +1,9 @@
-import { GymInterface, TrainingInterface, TrainingType, UserRole } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, OrderType, TrainingInterface, TrainingType, UserRole } from '@fit-friends/shared-types';
 import { trainingsFilters } from './app/types/my-trainings-filters';
 import { UserData } from './app/types/user-data';
 import { UserFilters } from './app/types/user-filters';
 import { gymFilters } from './app/types/gym-filters';
+import { ordersFilters } from './app/types/orders-filters';
 
 export const applyFilters = (users: UserData[], filters: UserFilters) => {
   let filteredUsers = users.slice();
@@ -153,3 +154,18 @@ export const applyGymFilters = (gyms: GymInterface[], filters: gymFilters) => {
   }
   return filteredGyms;
 };
+
+export const applyOrdersFilters = (orders: OrderInterface[], filters: ordersFilters) => {
+  let filteredOrders = [...orders];
+
+  if (filters.searchParamOrderType) {
+    if (filters.searchParamOrderType === OrderType.Subscription) {
+      filteredOrders = filteredOrders.filter((order) => order.type === OrderType.Subscription);
+    }
+    if (filters.searchParamOrderType === OrderType.Training) {
+      filteredOrders = filteredOrders.filter((order) => order.type === OrderType.Training);
+    }
+  }
+
+  return filteredOrders;
+}

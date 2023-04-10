@@ -1,4 +1,5 @@
-import { PageType } from '../../../const';
+import { Link } from 'react-router-dom';
+import { AppRoute, PageType } from '../../../const';
 import PageHeader from '../../components/page-header/page-header';
 import UserInfo from '../../components/user-info/user-info';
 
@@ -125,12 +126,16 @@ function PersonalAccountUserPage(): JSX.Element {
                           <svg width="30" height="26" aria-hidden="true">
                             <use xlinkHref="#icon-weight"></use>
                           </svg>
-                        </div><span className="thumbnail-link__text">Мои залы</span></a><a className="thumbnail-link thumbnail-link--theme-light personal-account-user__shop" href="#">
+                        </div><span className="thumbnail-link__text">Мои залы</span></a>
+                      <Link
+                        className="thumbnail-link thumbnail-link--theme-light personal-account-user__shop"
+                        to={AppRoute.MyPurchases}
+                      >
                         <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
                           <svg width="30" height="26" aria-hidden="true">
                             <use xlinkHref="#icon-shopping-cart"></use>
                           </svg>
-                        </div><span className="thumbnail-link__text">Мои покупки</span></a>
+                        </div><span className="thumbnail-link__text">Мои покупки</span></Link>
                       <div className="personal-account-user__calendar"></div>
                     </div>
                   </div>

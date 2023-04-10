@@ -1,14 +1,17 @@
-import { GymInterface, ReviewInterface, TrainingInterface } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, ReviewInterface, TrainingInterface } from '@fit-friends/shared-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../../const';
 import { AppData } from '../../types/state';
-import { submitNewTraining, fetchTrainings, updateTraining, submitNewReview } from '../api-actions';
+import { submitNewTraining, fetchTrainings, updateTraining, submitNewReview, submitNewOrder, fetchTraining, fetchGym } from '../api-actions';
 
 export const getInitialStateAppData = (): AppData => ({
   isDataLoaded: true,
   trainings: [],
+  training: null,
   reviews: [],
   gyms: [],
+  gym: null,
+  orders: [],
 });
 
 export const appData = createSlice({
@@ -30,6 +33,9 @@ export const appData = createSlice({
     storeGyms: (state, action: PayloadAction<GymInterface[]>) => {
       state.gyms = action.payload;
     },
+    storeOrders: (state, action: PayloadAction<OrderInterface[]>) => {
+      state.orders = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -40,6 +46,16 @@ export const appData = createSlice({
         state.isDataLoaded = true;
       })
       .addCase(fetchTrainings.pending, (state) => {
+        state.isDataLoaded = false;
+      })
+      .addCase(fetchTraining.fulfilled, (state, action: PayloadAction<TrainingInterface>) => {
+        state.training = action.payload;
+        state.isDataLoaded = true;
+      })
+      .addCase(fetchTraining.rejected, (state) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(fetchTraining.pending, (state) => {
         state.isDataLoaded = false;
       })
       .addCase(submitNewTraining.fulfilled, (state) => {
@@ -69,7 +85,26 @@ export const appData = createSlice({
       .addCase(submitNewReview.pending, (state) => {
         state.isDataLoaded = false;
       })
+      .addCase(submitNewOrder.fulfilled, (state) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(submitNewOrder.rejected, (state) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(submitNewOrder.pending, (state) => {
+        state.isDataLoaded = false;
+      })
+      .addCase(fetchGym.fulfilled, (state, action: PayloadAction<GymInterface>) => {
+        state.gym = action.payload;
+        state.isDataLoaded = true;
+      })
+      .addCase(fetchGym.rejected, (state) => {
+        state.isDataLoaded = true;
+      })
+      .addCase(fetchGym.pending, (state) => {
+        state.isDataLoaded = false;
+      })
   }
 });
 
-export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms } = appData.actions;
+export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders } = appData.actions;

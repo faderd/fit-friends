@@ -9,4 +9,5 @@ export interface OrderInterface {
   paymentMethod: PaymentMethod;
   createdAt: Date;
   entityId: number;
+  userId: number;
 }

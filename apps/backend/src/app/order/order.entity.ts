@@ -9,6 +9,7 @@ export class OrderEntity implements EntityInterface<OrderEntity>, OrderInterface
   public paymentMethod: PaymentMethod;
   public createdAt: Date;
   public entityId: number;
+  public userId: number;
 
   constructor(order: OrderInterface) {
     this.fillEntity(order);
@@ -26,5 +27,6 @@ export class OrderEntity implements EntityInterface<OrderEntity>, OrderInterface
     this.paymentMethod = order.paymentMethod;
     this.createdAt = order.createdAt;
     this.entityId = order.entityId;
+    this.userId = order.userId;
   }
 }

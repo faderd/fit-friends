@@ -31,6 +31,7 @@ model User {
   Feedback                Feedback[]
   RequestPersonalTraining RequestPersonalTraining[]
   Notification            Notification[]
+  Order                   Order[]
 }
 
 model UserQuestionnaire {
@@ -115,6 +116,8 @@ model Order {
   paymentMethod String
   createdAt     DateTime @default(now())
   entityId      Int
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int
 }
 
 model RequestPersonalTraining {

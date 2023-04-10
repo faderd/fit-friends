@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { AppRoute, PageTitle } from '../../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchGyms, updateUser } from '../../store/api-actions';
+import { fetchGyms } from '../../store/api-actions';
 import { getGyms } from '../../store/app-data/selectors';
 import PageHeader from '../../components/page-header/page-header';
-import { getFavoriteGyms } from '../../store/user-process/selectors';
 import { gymFilters } from '../../types/gym-filters';
 import { applyGymFilters } from '../../../helpers';
 import GymsFilter from '../../components/gyms-filter/gyms-filter';
-import { Link, generatePath, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import GymCatalogItem from '../../components/gym-catalog-item/gym-catalog-item';
 
 function GymsCatalogPage(): JSX.Element {
   document.title = PageTitle.GymsCatalog;
@@ -18,7 +18,6 @@ function GymsCatalogPage(): JSX.Element {
   const [filters, setFilters] = useState<gymFilters | null>(null);
 
   const gyms = useAppSelector(getGyms);
-  const favoriteGyms = useAppSelector(getFavoriteGyms);
 
   let filteredGyms = gyms;
   if (filters !== null) {
@@ -28,21 +27,6 @@ function GymsCatalogPage(): JSX.Element {
   useEffect(() => {
     dispatch(fetchGyms());
   }, [dispatch]);
-
-  const getIsFavoriteGym = (gymId: number) => favoriteGyms?.includes(gymId);
-
-  const handleFavoriteGymClick = (gymId: number) => {
-    const newFavoriteGyms = favoriteGyms ? [...favoriteGyms] : [];
-
-    if (getIsFavoriteGym(gymId)) {
-      const gymIndex = newFavoriteGyms.findIndex((item) => item === gymId);
-      newFavoriteGyms.splice(gymIndex, 1);
-    } else {
-      newFavoriteGyms.push(gymId);
-    }
-
-    dispatch(updateUser({ myFavoriteGyms: newFavoriteGyms }));
-  };
 
   const getMaxPrice = () => Math.max(...gyms.map((gym) => gym.price)).toString();
 
@@ -74,58 +58,7 @@ function GymsCatalogPage(): JSX.Element {
                   <ul className="gyms-catalog__list">
                     {
                       filteredGyms.map((gym) => (
-                        <li key={gym.id} className="gyms-catalog__item">
-                          <div className="thumbnail-gym">
-                            <div className="thumbnail-gym__image">
-                              <picture>
-                                <source type="image/webp" srcSet="img/content/thumbnails/gym-01.webp, img/content/thumbnails/gym-01@2x.webp 2x" /><img src="img/content/thumbnails/gym-01.jpg" srcSet="img/content/thumbnails/gym-01@2x.jpg 2x" width="330" height="190" alt="" />
-                              </picture>
-                            </div>
-                            {gym.isVerified && (<div className="thumbnail-gym__verified">
-                              <svg width="14" height="14" aria-hidden="true">
-                                <use xlinkHref="#icon-verify"></use>
-                              </svg>
-                            </div>)}
-                            <button className={`thumbnail-gym__favourite-button ${gym.id && getIsFavoriteGym(gym.id) ? 'is-active' : ''}`}
-                              onClick={() => {
-                                if (!gym.id) { return; }
-                                handleFavoriteGymClick(gym.id);
-                              }}
-                            >
-                              {gym.id && !getIsFavoriteGym(gym.id) && (
-                                <>
-                                  <span className="visually-hidden">Добавить в Избранное</span>
-                                  <svg width="14" height="13" aria-hidden="true">
-                                    <use xlinkHref="#icon-heart"></use>
-                                  </svg>
-                                </>
-                              )}
-                              {gym.id && getIsFavoriteGym(gym.id) && (
-                                <>
-                                  <span className="visually-hidden">Удалить из Избранного</span>
-                                  <svg width="12" height="11" aria-hidden="true">
-                                    <use xlinkHref="#icon-heart-filled"></use>
-                                  </svg>
-                                </>
-                              )}
-                            </button>
-                            <div className="thumbnail-gym__header">
-                              <h4 className="thumbnail-gym__title">{gym.name}</h4>
-                              <div className="thumbnail-gym__location">
-                                <svg width="14" height="16" aria-hidden="true">
-                                  <use xlinkHref="#icon-location"></use>
-                                </svg>
-                                <address className="thumbnail-gym__location-address">м. {gym.location}</address>
-                              </div>
-                            </div>
-                            <div className="thumbnail-gym__text-wrapper">
-                              <p className="thumbnail-gym__text">{gym.description}</p>
-                            </div>
-                            <div className="thumbnail-gym__buttons-wrapper">
-                              <Link className="btn btn--small thumbnail-gym__button" to={generatePath(AppRoute.GymCard, { id: `${gym.id}` })}>Подробнее</Link>
-                            </div>
-                          </div>
-                        </li>
+                        <GymCatalogItem gym={gym} itemClassName='gyms-catalog__item' key={gym.id} />
                       ))
                     }
                   </ul>

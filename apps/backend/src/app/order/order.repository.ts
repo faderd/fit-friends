@@ -33,8 +33,11 @@ export class OrderRepository implements CRUDRepositoryInterface<OrderEntity, num
     }) as unknown as OrderInterface;
   }
 
-  public async findAll({ limit, sortDirection }: OrderQuery): Promise<OrderInterface[]> {
+  public async findByUserId({ limit, sortDirection }: OrderQuery, userId: number): Promise<OrderInterface[]> {
     return this.prisma.order.findMany({
+      where: {
+        userId,
+      },
       take: limit,
       orderBy: {
         createdAt: sortDirection,

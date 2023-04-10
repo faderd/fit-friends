@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteTraining, RefreshTokenPayload, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query, Req, UseFilters, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -92,5 +92,30 @@ export class TrainingController {
     const { user: TokenPayload } = request;
     const updatedTraining = await this.trainingService.updateTraining(TokenPayload.sub, dto);
     return fillObject(TrainingRdo, updatedTraining);
+  }
+
+  @Get(APIRouteTraining.GetById)
+  @ApiOkResponse({
+    type: TrainingRdo,
+    description: 'Данные получены'
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  async getTraining(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const training = await this.trainingService.getTraining(id);
+
+    return fillObject(TrainingRdo, training);
   }
 }

@@ -29,6 +29,7 @@ export enum AppRoute {
   TrainingCard = '/training-card/:id',
   GymsCatalog = '/gyms-catalog',
   GymCard = '/gym-card/:id',
+  MyPurchases = '/my-purchases',
 }
 
 export enum PageTitle {
@@ -46,6 +47,7 @@ export enum PageTitle {
   TrainingCard = 'Карточка тренировки — FitFriends',
   GymsCatalog = 'Каталог залов — FitFriends',
   GymCard = 'Карточка зала — FitFriends',
+  MyPurchases = 'Мои покупки - FitFriends',
 }
 
 export enum PageType {
@@ -99,6 +101,8 @@ export enum SearchParam {
   Location = 'location',
   GymOption = 'gymOption',
   IsOnlyVerifiedGyms = 'isOnlyVerifiedGyms',
+  OrderType = 'orderType',
+  IsOnlyActiveOrders = 'isOnlyActiveOrders',
 }
 
 export enum SortDirection {

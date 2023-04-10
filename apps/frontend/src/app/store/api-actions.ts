@@ -1,4 +1,4 @@
-import { GymInterface, ReviewInterface, TrainingInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, ReviewInterface, TrainingInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
@@ -11,11 +11,12 @@ import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
 import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
-import { storeGyms, storeIsDataLoadedStatus, storeReviews, storeTraining, storeTrainings } from './app-data/app-data';
+import { storeGyms, storeIsDataLoadedStatus, storeOrders, storeReviews, storeTraining, storeTrainings } from './app-data/app-data';
 import { storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 import { UpdateTrainingDto } from '../types/update-training.dto';
 import { CreateReviewDto } from '../types/create-review.dto';
 import { generatePath } from 'react-router-dom';
+import { CreateOrderDto } from '../types/create-order.dto';
 
 export const register = createAsyncThunk<
   UserInterface,
@@ -222,6 +223,20 @@ export const fetchTrainings = createAsyncThunk<void,
   }
 );
 
+export const fetchTraining = createAsyncThunk<TrainingInterface, number,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchTraining',
+  async (id, { dispatch, extra: api }) => {
+    const { data } = await api.get<TrainingInterface>(`training/${id}`);
+    return data;
+  }
+);
+
 export const updateTraining = createAsyncThunk<void, UpdateTrainingDto,
   {
     dispatch: AppDispatch,
@@ -283,5 +298,54 @@ export const fetchGyms = createAsyncThunk<void, undefined,
   async (_, { dispatch, extra: api }) => {
     const { data } = await api.get<GymInterface[]>('gym/');
     dispatch(storeGyms(data));
+  }
+);
+
+export const fetchGym = createAsyncThunk<GymInterface, number,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchGym',
+  async (id, { dispatch, extra: api }) => {
+    const { data } = await api.get<GymInterface>(`gym/${id}`);
+    return data;
+  }
+);
+
+export const fetchOrders = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchOrders',
+  async (_, { dispatch, extra: api }) => {
+    const { data } = await api.get<OrderInterface[]>('order/');
+    dispatch(storeOrders(data));
+  }
+);
+
+export const submitNewOrder = createAsyncThunk<OrderInterface | void, CreateOrderDto,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/submitNewOrder',
+  async (createOrderData, { dispatch, extra: api }) => {
+    try {
+      const { data } = await api.post<OrderInterface>('order/', { ...createOrderData });
+      dispatch(fetchOrders());
+      return data;
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        toast.warn(`Ошибка: ${err.response.data.message}\n Код ошибки: ${err.response.status}`);
+      }
+    }
   }
 );
