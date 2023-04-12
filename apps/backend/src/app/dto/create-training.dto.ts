@@ -14,11 +14,6 @@ export class CreateTrainingDto {
   public name: string;
 
   @ApiProperty({
-    description: 'Картинка тренировки',
-  })
-  public backgroundImage: string;
-
-  @ApiProperty({
     description: 'Уровень физической подготовки пользователя',
     example: 'Новичек'
   })

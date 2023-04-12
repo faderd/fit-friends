@@ -58,6 +58,7 @@ function TrainingCardPage(): JSX.Element {
       name: reactHookFormData.name,
       description: reactHookFormData.description,
       price: reactHookFormData.price,
+      trainingId
     };
 
     dispatch(updateTraining(trainingUpdateData));

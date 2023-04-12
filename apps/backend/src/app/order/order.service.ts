@@ -7,6 +7,7 @@ import { OrderEntity } from './order.entity';
 import { OrderType } from '@fit-friends/shared-types';
 import { GymService } from '../gym/gym.service';
 import { TrainingService } from '../training/training.service';
+import { getSortedOrdersInfo } from '../../helpers';
 
 @Injectable()
 export class OrderService {
@@ -81,6 +82,6 @@ export class OrderService {
       coachOrdersInfo.push(orderInfo);
     }
 
-    return coachOrdersInfo;
+    return getSortedOrdersInfo(query.sortType, query.sortDirection, coachOrdersInfo);
   }
 }

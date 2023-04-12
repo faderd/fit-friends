@@ -26,7 +26,7 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="email"
 
-user8@notfound.local
+user9@notfound.local
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="name"
 
@@ -60,9 +60,10 @@ Content-Disposition: form-data; name="questionnaire[isReadyToTrain]"
 
 true
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="questionnaire[certificate]"
+Content-Disposition: form-data; name="questionnaire[certificate]"; filename="certificate-1.pdf"
+Content-Type: image/jpeg
 
-< ../../../../../markup/img/content/certificates-and-diplomas/certificate-1.jpg
+< ../../../../../markup/img/content/certificates-and-diplomas/certificate-1.pdf
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="questionnaire[merits]"
 
@@ -122,20 +123,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsI
 # Редактировать пользователя
 POST http://localhost:3333/api/auth/update HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJmYXNmYXNmc2ZzYSIsImlhdCI6MTY3OTkwMDE1NywiZXhwIjoxNjc5OTAxMDU3fQ.VwbCbv-PiSL-Hfr5S34V6MzixJXpU7CEpm06L5ljULo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJqaGRzZ3NkZ2dkaCIsImlhdCI6MTY4MTMyMDE0MSwiZXhwIjoxNjgxMzIxMDQxfQ.shhn64y7d3L869s1M9lRLfS4xrXVKkjVxS0ifGhU7xk
 
 {
-  "friends": [2]
+  "email": "user1@notfound.local"
 }
-
-## Upload avatar
-POST http://localhost:3333/api/auth/upload/21 HTTP/1.1
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
-
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="avatar"; filename="ava.jpeg"
-Content-Type: image/jpeg
-
-< D:/downloads/ava.jpeg
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###

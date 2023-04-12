@@ -1,16 +1,14 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteReview, RefreshTokenPayload, RequestWithTokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { HttpExceptionFilter } from '../auth/http.exception-filter';
 import { ReviewService } from './review.service';
 import { ReviewRdo } from '../rdo/review.rdo';
 import { CreateReviewDto } from '../dto/create-review.dto';
 import { ReviewQuery } from './query/review.query';
 import { UserNotUserException } from '../auth/exceptions/user-not-user.exception';
 
-@UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteReview.Prefix)
 @Controller(APIRouteReview.Prefix)
 export class ReviewController {

@@ -51,8 +51,27 @@ export class UserRepository implements CRUDRepositoryInterface<UserEntity, numbe
     }) as unknown as UserInterface;
   }
 
-  public async findAll({limit, sortDirection, page}: UserQuery): Promise<UserInterface[]> {
+  public async findAll({ limit, sortDirection, page }: UserQuery): Promise<UserInterface[]> {
     return this.prisma.user.findMany({
+      include: {
+        UserQuestionnaire: true,
+        CoachQuestionnaire: true,
+      },
+      take: limit,
+      orderBy: {
+        createdAt: sortDirection
+      },
+      skip: page > 0 ? limit * (page - 1) : undefined,
+    }) as unknown as UserInterface[];
+  }
+
+  public async findFriends({ limit, sortDirection, page }: UserQuery, userId: number): Promise<UserInterface[]> {
+    return this.prisma.user.findMany({
+      where: {
+        friends: {
+          has: userId
+        }
+      },
       include: {
         UserQuestionnaire: true,
         CoachQuestionnaire: true,

@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser, TokenPayload } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, NotImplementedException, Param, ParseIntPipe, Post, Req, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser, TokenPayload, UserRole } from '@fit-friends/shared-types';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UserRdo } from '../rdo/user.rdo';
@@ -8,10 +8,12 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { QuestionnaireRdo } from '../rdo/questionnaire.rdo';
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { AVATAR_ALLOW_FILE_TYPES, AVATAR_MAX_FILE_SIZE, CERTIFICATE_ALLOW_FILE_TYPES } from './auth.constant';
+import { extname } from 'path';
 
 @ApiTags(APIRouteAuth.Prefix)
 @Controller(APIRouteAuth.Prefix)
@@ -19,29 +21,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
   ) { }
-
-  // @Post(APIRouteAuth.Register)
-  // @HttpCode(HttpStatus.CREATED)
-  // @ApiCreatedResponse({
-  //   type: UserRdo,
-  //   description: 'Новый пользователь зарегистрирован',
-  // })
-  // @ApiConflictResponse({
-  //   description: 'Пользователь с таким email существует',
-  // })
-  // @ApiBadRequestResponse({
-  //   description: 'Bad Request',
-  // })
-  // @UseInterceptors(FileInterceptor('avatar'))
-  // async create(
-  //   @Body() dto: CreateUserDto,
-  //   @UploadedFile() avatar?: Express.Multer.File
-  // ) {
-  //   console.log('avatar: ', avatar);
-  //   console.log('dto: ', dto);
-  //   const newUser = await this.authService.register(dto);
-  //   return fillObject(UserRdo, newUser);
-  // }
 
   @Post(APIRouteAuth.Register)
   @HttpCode(HttpStatus.CREATED)
@@ -55,34 +34,46 @@ export class AuthController {
   @ApiBadRequestResponse({
     description: 'Bad Request',
   })
-  // @UseInterceptors(
-  //   FileFieldsInterceptor([
-  //     { name: 'avatar', maxCount: 1 },
-  //     { name: 'questionnaire[certificate]', maxCount: 1 }
-  //   ])
-  // )
-  @UseInterceptors(FileInterceptor('avatar'))
-  async create(
-    @Body() dto: CreateUserDto,
-    // @UploadedFiles() files: Express.Multer.File[],
-    @UploadedFile() files,
-  ) {
-    console.log('files: ', files);
-    console.log('dto: ', dto);
-    const newUser = await this.authService.register(dto, files);
-    return fillObject(UserRdo, newUser);
-  }
-
-  @Post(APIRouteAuth.Upload)
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'avatar', maxCount: 1 },
-    { name: 'certificate', maxCount: 1 }
-  ]))
-  async upload(
-    @UploadedFiles() files,
+    { name: 'questionnaire[certificate]', maxCount: 1 }
+  ], {
+    fileFilter: (_req, file, callback) => {
+      if (file.fieldname === 'avatar') {
+        const ext = extname(file.originalname).toLowerCase();
+        if (!AVATAR_ALLOW_FILE_TYPES.test(ext)) {
+          callback(new BadRequestException('Тип файла аватара должен быть .jpeg, .jpg, или .png'), false);
+        } else if (file.size > AVATAR_MAX_FILE_SIZE) {
+          callback(new BadRequestException('Превышен максимальный размер аватара'), false);
+        } else {
+          callback(null, true);
+        }
+      } else if (file.fieldname === 'questionnaire[certificate]') {
+        const ext = extname(file.originalname).toLowerCase();
+        if (!CERTIFICATE_ALLOW_FILE_TYPES.test(ext)) {
+          callback(new BadRequestException('Тип файла сертификата должен быть .pdf'), false);
+        } else {
+          callback(null, true);
+        }
+      }
+    },
+
+  }
+  ))
+  async create(
+    @Body() dto: CreateUserDto,
+    @UploadedFiles() files: {
+      avatar?: Express.Multer.File,
+      ['questionnaire[certificate]']?: Express.Multer.File,
+    },
   ) {
-    console.log('uploaded files: ', files);
-    new NotImplementedException(files);
+    const { avatar, ['questionnaire[certificate]']: certificate } = files;
+    if (dto.role === UserRole.Coach && !certificate) {
+      throw new BadRequestException('Наличие файла сертификата обязательно');
+    }
+
+    const newUser = await this.authService.register(dto, avatar, certificate);
+    return fillObject(UserRdo, newUser);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -225,7 +216,7 @@ export class AuthController {
     type: UserRdo,
     description: 'Пользователь найден'
   })
-  async show(@Param('id', ParseIntPipe) id: number) {
+  async getUser(@Param('id', ParseIntPipe) id: number) {
     const existUser = await this.authService.getUser(id);
     return fillObject(UserRdo, existUser);
   }

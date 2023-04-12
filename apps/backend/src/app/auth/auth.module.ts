@@ -11,6 +11,8 @@ import { AuthService } from './auth.service';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { MulterModule } from '@nestjs/platform-express';
+import { getMulterOptions } from '../../config/multer.config';
 
 @Module({
   imports: [
@@ -23,6 +25,9 @@ import { LocalStrategy } from './strategies/local.strategy';
       inject: [ConfigService],
       useFactory: getJwtConfig
     }),
+    MulterModule.registerAsync({
+      useFactory: getMulterOptions
+    }),
   ],
   controllers: [AuthController],
   providers: [
@@ -32,4 +37,4 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtRefreshStrategy,
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

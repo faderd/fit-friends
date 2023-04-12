@@ -1,9 +1,8 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteOrder, RefreshTokenPayload, RequestWithTokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { HttpExceptionFilter } from '../auth/http.exception-filter';
 import { OrderService } from './order.service';
 import { OrderQuery } from './query/order.query';
 import { CreateOrderDto } from '../dto/create-order.dto';
@@ -12,7 +11,6 @@ import { OrderRdo } from '../rdo/order.rdo';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
 import { CoachOrdersInfoRdo } from '../rdo/coachOrdersInfo.rdo';
 
-@UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteOrder.Prefix)
 @Controller(APIRouteOrder.Prefix)
 export class OrderController {

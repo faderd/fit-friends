@@ -1,5 +1,11 @@
 # Получить пользователей
-GET http://localhost:3333/api/user?limit=1&page=2 HTTP/1.1
+GET http://localhost:3333/api/user HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJqaGRzZ3NkZ2dkaCIsImlhdCI6MTY4MTIzOTgzMiwiZXhwIjoxNjgxMjQwNzMyfQ.YscKKIjElVgiJJpKySPHLosJNnEADjDY9WfGKOSeS1g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MTMyNjU4NSwiZXhwIjoxNjgxMzI3NDg1fQ.ak1GqdIxWhRpNT2ZJHt-2TBXhIRKYnBrn7PP9n1dUdA
+###
+
+# Получить друзей пользователя
+GET http://localhost:3333/api/user/get-my-friends HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MTMyNjU4NSwiZXhwIjoxNjgxMzI3NDg1fQ.ak1GqdIxWhRpNT2ZJHt-2TBXhIRKYnBrn7PP9n1dUdA
 ###

@@ -13,6 +13,7 @@ export enum APIRouteAuth {
 
 export enum APIRouteUser {
   Prefix = '/user',
+  GetMyFriends = 'get-my-friends',
   GetAll = '/',
 }
 
@@ -20,7 +21,7 @@ export enum APIRouteTraining {
   Prefix = '/training',
   Create = '/',
   GetAll = '/',
-  Update = '/update',
+  Update = '/:id',
   GetById = '/:id',
 }
 

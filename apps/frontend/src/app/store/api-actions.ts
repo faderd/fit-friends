@@ -247,7 +247,7 @@ export const updateTraining = createAsyncThunk<void, UpdateTrainingDto,
 >(
   'data/updateTraining',
   async (updateData, { dispatch, extra: api }) => {
-    const { data } = await api.post<TrainingInterface>('training/update', updateData);
+    const { data } = await api.patch<TrainingInterface>(`training/${updateData.trainingId}`, updateData);
     dispatch(storeTraining(data));
   }
 );

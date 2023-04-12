@@ -11,4 +11,8 @@ export class UserService {
   async getUsers(query: UserQuery) {
     return this.userRepository.findAll(query);
   }
+
+  async getMyFriends(query: UserQuery, userId: number) {
+    return this.userRepository.findFriends(query, userId);
+  }
 }

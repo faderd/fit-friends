@@ -1,17 +1,15 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteTraining, RefreshTokenPayload, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query, Req, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { HttpExceptionFilter } from '../auth/http.exception-filter';
 import { CreateTrainingDto } from '../dto/create-training.dto';
 import { TrainingRdo } from '../rdo/training.rdo';
 import { TrainingService } from './training.service';
 import { TrainingQuery } from './query/training.query';
 import { UpdateTrainingDto } from '../dto/update-training.dto';
 
-// @UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteTraining.Prefix)
 @Controller(APIRouteTraining.Prefix)
 export class TrainingController {
@@ -76,7 +74,7 @@ export class TrainingController {
     return trainings.map((training) => fillObject(TrainingRdo, training));
   }
 
-  @Post(APIRouteTraining.Update)
+  @Patch(APIRouteTraining.Update)
   @UseGuards(JwtAuthGuard)
   @ApiUnauthorizedResponse({ description: 'Пользователь не авторизован' })
   @ApiNotFoundResponse()
@@ -88,9 +86,16 @@ export class TrainingController {
   async updateTraining(
     @Req() request: RequestWithTokenPayload<TokenPayload>,
     @Body() dto: UpdateTrainingDto,
+    @Param('id', ParseIntPipe) trainingId: number,
   ) {
-    const { user: TokenPayload } = request;
-    const updatedTraining = await this.trainingService.updateTraining(TokenPayload.sub, dto);
+    const { user: tokenPayload } = request;
+
+    if (tokenPayload.role !== UserRole.Coach) {
+      throw new UserNotCoachException();
+    }
+
+    const updatedTraining = await this.trainingService.updateTraining(trainingId, dto, tokenPayload.sub);
+
     return fillObject(TrainingRdo, updatedTraining);
   }
 

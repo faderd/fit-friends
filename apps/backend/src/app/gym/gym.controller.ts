@@ -1,16 +1,14 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteGym, RefreshTokenPayload, RequestWithTokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query, Req, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { HttpExceptionFilter } from '../auth/http.exception-filter';
 import { GymService } from './gym.service';
 import { GymQuery } from './query/gym.query';
 import { GymRdo } from '../rdo/gym.rdo';
 import { CreateGymDto } from '../dto/create-gym.dto';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
 
-@UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteGym.Prefix)
 @Controller(APIRouteGym.Prefix)
 export class GymController {

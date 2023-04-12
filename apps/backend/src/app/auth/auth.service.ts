@@ -19,6 +19,8 @@ import { UserQuestionnaireDto } from '../dto/questionnaire/user-questionnaire.dt
 import { UserQuestionnaireEntity } from '../questionnaire/user-questionnaire.entity';
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { UPLOAD_PATH } from '../app.constant';
+import { fillObject } from '@fit-friends/core';
 
 @Injectable()
 export class AuthService {
@@ -31,10 +33,10 @@ export class AuthService {
     @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
   ) { }
 
-  async register(dto: CreateUserDto) {
+  async register(dto: CreateUserDto, avatar: Express.Multer.File, certificate: Express.Multer.File) {
     const { name, email, gender, birthDate, role, location, password } = dto;
     const user = {
-      email, avatar: '', passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], myFavoriteGyms: [],
+      email, passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], myFavoriteGyms: [], avatar: `${UPLOAD_PATH}${avatar[0].filename}`
     };
 
     const existUser = await this.userRepository
@@ -45,12 +47,11 @@ export class AuthService {
     }
     const userEntity = await new UserEntity(user)
       .setPassword(password);
-
     const createdUser = await this.userRepository
       .create(userEntity);
 
     if (role === UserRole.Coach) {
-      const questionnaireEntity = new CoachQuestionnaireEntity({ ...dto.questionnaire as CoachQuestionnaireDto, userId: createdUser.id, certificate: '', isReadyToTrain: !!dto.questionnaire.isReadyToTrain });
+      const questionnaireEntity = new CoachQuestionnaireEntity({ ...dto.questionnaire as CoachQuestionnaireDto, userId: createdUser.id, certificate: `${UPLOAD_PATH}${certificate[0].filename}`, isReadyToTrain: !!dto.questionnaire.isReadyToTrain });
       await this.coachQuestionnaireRepository.create(questionnaireEntity);
 
     } else if (role === UserRole.User) {
@@ -156,7 +157,8 @@ export class AuthService {
       throw new UserNotFoundException(userId);
     }
 
-    const userEntity = new UserEntity({ ...existUser, ...dto });
+    const filteredDto = fillObject(UpdateUserDto, dto);
+    const userEntity = new UserEntity({ ...existUser, ...filteredDto });
     return this.userRepository.update(existUser.id, userEntity);
   }
 }
