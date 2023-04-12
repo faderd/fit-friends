@@ -11,12 +11,13 @@ import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
 import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
-import { storeGyms, storeIsDataLoadedStatus, storeOrders, storeReviews, storeTraining, storeTrainings } from './app-data/app-data';
+import { storeCoachOrdersInfo, storeGyms, storeIsDataLoadedStatus, storeOrders, storeReviews, storeTraining, storeTrainings } from './app-data/app-data';
 import { storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 import { UpdateTrainingDto } from '../types/update-training.dto';
 import { CreateReviewDto } from '../types/create-review.dto';
 import { generatePath } from 'react-router-dom';
 import { CreateOrderDto } from '../types/create-order.dto';
+import { CoachOrdersInfo } from '../types/coach-orders-info';
 
 export const register = createAsyncThunk<
   UserInterface,
@@ -315,7 +316,7 @@ export const fetchGym = createAsyncThunk<GymInterface, number,
   }
 );
 
-export const fetchOrders = createAsyncThunk<void, undefined,
+export const fetchUserOrders = createAsyncThunk<void, undefined,
   {
     dispatch: AppDispatch,
     state: State,
@@ -326,6 +327,35 @@ export const fetchOrders = createAsyncThunk<void, undefined,
   async (_, { dispatch, extra: api }) => {
     const { data } = await api.get<OrderInterface[]>('order/');
     dispatch(storeOrders(data));
+  }
+);
+
+export const fetchCoachOrders = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchCoachOrders',
+  async (_, { dispatch, extra: api }) => {
+    const { data } = await api.get<OrderInterface[]>('order/coach-orders');
+    dispatch(storeOrders(data));
+  }
+);
+
+export const fetchCoachOrdersInfo = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchCoachOrdersInfo',
+  async (_, { dispatch, extra: api }) => {
+    const { data } = await api.get<CoachOrdersInfo[]>('order/coach-orders-info');
+    console.log('orderData: ', data);
+    dispatch(storeCoachOrdersInfo(data));
   }
 );
 
@@ -340,7 +370,7 @@ export const submitNewOrder = createAsyncThunk<OrderInterface | void, CreateOrde
   async (createOrderData, { dispatch, extra: api }) => {
     try {
       const { data } = await api.post<OrderInterface>('order/', { ...createOrderData });
-      dispatch(fetchOrders());
+      dispatch(fetchUserOrders());
       return data;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {

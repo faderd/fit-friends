@@ -5,7 +5,7 @@ import { fetchGyms } from '../../store/api-actions';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getGymById } from '../../store/app-data/selectors';
 import PageHeader from '../../components/page-header/page-header';
-import PopoupMembership from '../../components/popup-membership/popup-membership';
+import PopupMembership from '../../components/popup-membership/popup-membership';
 
 const DEFAULT_GYM_RATE = 0;
 
@@ -136,7 +136,7 @@ function GymCardPage(): JSX.Element {
         </main>
       </div>
 
-      {isPopupMembershipOpen && gym && (<PopoupMembership setIsPopupMembershipOpen={setIsPopupMembershipOpen} gym={gym} />)}
+      {isPopupMembershipOpen && gym && (<PopupMembership setIsPopupMembershipOpen={setIsPopupMembershipOpen} buyEntity={gym} />)}
 
       <script src="js/vendor.min.js"></script>
       <script src="js/main.min.js"></script>

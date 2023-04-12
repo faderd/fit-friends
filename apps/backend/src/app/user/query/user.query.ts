@@ -2,8 +2,8 @@ import { Transform } from 'class-transformer';
 import { IsIn, IsNumber, IsOptional } from 'class-validator';
 import { DEFAULT_COUNT_LIMIT, DEFAULT_SORT_DIRECTION } from '../../app.constant';
 
-export class OrderQuery {
-  @Transform(({ value }) => +value || DEFAULT_COUNT_LIMIT)
+export class UserQuery {
+  @Transform(({ value }) => value && (+value <= DEFAULT_COUNT_LIMIT) ? +value : DEFAULT_COUNT_LIMIT)
   @IsNumber()
   @IsOptional()
   public limit = DEFAULT_COUNT_LIMIT;

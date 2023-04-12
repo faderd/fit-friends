@@ -1,4 +1,4 @@
-import { GymInterface, GymOption, OrderType, PaymentMethod } from '@fit-friends/shared-types';
+import { GymInterface, GymOption, OrderType, PaymentMethod, TrainingInterface } from '@fit-friends/shared-types';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getIsDataLoaded } from '../../store/app-data/selectors';
 import { useState } from 'react';
@@ -9,12 +9,13 @@ const DEFAULT_OPTION_PRICE = 1000;
 const DEFAULT_QUANTITY = 1;
 const DEFAULT_PAYMENT_METHOD = PaymentMethod.Mir;
 
-type PopoupMembershipProps = {
+type PopupMembershipProps = {
   setIsPopupMembershipOpen: (isPopupMembershipOpen: boolean) => void;
-  gym: GymInterface;
+  buyEntity: GymInterface | TrainingInterface;
+  isPurchases?: boolean;
 }
 
-function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipProps): JSX.Element {
+function PopupMembership({ setIsPopupMembershipOpen, buyEntity, isPurchases }: PopupMembershipProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const isDataLoaded = useAppSelector(getIsDataLoaded);
@@ -32,17 +33,17 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
       : setOptions([...options.slice(0, index), ...options.slice(index + 1)]);
   };
 
-  const calculatePrice = () => gym.price * quantity + options.length * DEFAULT_OPTION_PRICE;
+  const calculatePrice = () => buyEntity.price * quantity + options.length * DEFAULT_OPTION_PRICE;
 
   const handleSubmit = () => {
-    if (!gym.id) { return; }
+    if (!buyEntity.id) { return; }
 
     const orderData = {
-      type: OrderType.Subscription,
+      type: isPurchases ? OrderType.Training : OrderType.Subscription,
       price: calculatePrice(),
       count: quantity,
       paymentMethod,
-      entityId: gym.id,
+      entityId: buyEntity.id,
     }
 
     dispatch(submitNewOrder(orderData))
@@ -55,11 +56,11 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
   };
 
   return (
-    <div className="popup-form popup-form--membership">
+    <div className={`popup-form popup-form--${isPurchases ? 'purchases' : 'membership'}`}>
       <section className="popup">
         <div className="popup__wrapper">
           <div className="popup-head">
-            <h2 className="popup-head__header">Оформить абонемент</h2>
+            <h2 className="popup-head__header">{isPurchases ? 'Купить тренировку' : 'Оформить абонемент'}</h2>
             <button
               className="btn-icon btn-icon--outlined btn-icon--big"
               type="button"
@@ -71,7 +72,7 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
               </svg>
             </button>
           </div>
-          <div className="popup__content popup__content--membership">
+          <div className={`popup__content popup__content--${isPurchases ? 'purchases' : 'membership'}`}>
             <div className="popup__product">
               <div className="popup__product-image">
                 <picture>
@@ -79,8 +80,8 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
                 </picture>
               </div>
               <div className="popup__product-info">
-                <h3 className="popup__product-title">{gym.name}</h3>
-                <p className="popup__product-price">{gym.price} ₽</p>
+                <h3 className="popup__product-title">{buyEntity.name}</h3>
+                <p className="popup__product-price">{buyEntity.price} ₽</p>
               </div>
               <div className="popup__product-quantity">
                 <p className="popup__quantity">Количество</p>
@@ -121,32 +122,34 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
                 </div>
               </div>
             </div>
-            <section className="services-check">
-              <h4 className="services-check__title">Дополнительные услуги ({DEFAULT_OPTION_PRICE} ₽)</h4>
-              <ul className="services-check__list">
-                {
-                  gym.options.map((option) => (
-                    <li className="services-check__item">
-                      <div className="custom-toggle custom-toggle--checkbox">
-                        <label>
-                          <input
-                            type="checkbox"
-                            value={option}
-                            name="user-agreement"
-                            checked={getOptionIsChecked(option)}
-                            onChange={(evt) => handleCheckedOption(evt.target.value as GymOption)}
-                            disabled={!isDataLoaded}
-                          /><span className="custom-toggle__icon">
-                            <svg width="9" height="6" aria-hidden="true">
-                              <use xlinkHref="#arrow-check"></use>
-                            </svg></span><span className="custom-toggle__label">{option}</span>
-                        </label>
-                      </div>
-                    </li>
-                  ))
-                }
-              </ul>
-            </section>
+            {!isPurchases && (
+              <section className="services-check">
+                <h4 className="services-check__title">Дополнительные услуги ({DEFAULT_OPTION_PRICE} ₽)</h4>
+                <ul className="services-check__list">
+                  {
+                    (buyEntity as GymInterface).options.map((option) => (
+                      <li className="services-check__item">
+                        <div className="custom-toggle custom-toggle--checkbox">
+                          <label>
+                            <input
+                              type="checkbox"
+                              value={option}
+                              name="user-agreement"
+                              checked={getOptionIsChecked(option)}
+                              onChange={(evt) => handleCheckedOption(evt.target.value as GymOption)}
+                              disabled={!isDataLoaded}
+                            /><span className="custom-toggle__icon">
+                              <svg width="9" height="6" aria-hidden="true">
+                                <use xlinkHref="#arrow-check"></use>
+                              </svg></span><span className="custom-toggle__label">{option}</span>
+                          </label>
+                        </div>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </section>
+            )}
             <section className="payment-method">
               <h4 className="payment-method__title">Выберите способ оплаты</h4>
               <ul className="payment-method__list">
@@ -155,7 +158,7 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
                     <label>
                       <input
                         type="radio"
-                        name="payment-membership"
+                        name={`payment-${isPurchases ? 'purchases' : 'membership'}`}
                         aria-label="Visa."
                         checked={paymentMethod === PaymentMethod.Visa}
                         onChange={() => { setPaymentMethod(PaymentMethod.Visa) }}
@@ -171,7 +174,7 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
                     <label>
                       <input
                         type="radio"
-                        name="payment-membership"
+                        name={`payment-${isPurchases ? 'purchases' : 'membership'}`}
                         aria-label="Мир."
                         checked={paymentMethod === PaymentMethod.Mir}
                         onChange={() => { setPaymentMethod(PaymentMethod.Mir) }}
@@ -187,7 +190,7 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
                     <label>
                       <input
                         type="radio"
-                        name="payment-membership"
+                        name={`payment-${isPurchases ? 'purchases' : 'membership'}`}
                         aria-label="Iomoney."
                         checked={paymentMethod === PaymentMethod.Umoney}
                         onChange={() => { setPaymentMethod(PaymentMethod.Umoney) }}
@@ -221,4 +224,4 @@ function PopoupMembership({ setIsPopupMembershipOpen, gym }: PopoupMembershipPro
   );
 }
 
-export default PopoupMembership;
+export default PopupMembership;

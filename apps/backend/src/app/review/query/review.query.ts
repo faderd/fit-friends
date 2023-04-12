@@ -11,4 +11,8 @@ export class ReviewQuery {
   @IsIn(['asc', 'desc'])
   @IsOptional()
   public sortDirection: 'desc' | 'asc' = DEFAULT_SORT_DIRECTION;
+
+  @Transform(({ value }) => +value)
+  @IsOptional()
+  public page: number;
 }

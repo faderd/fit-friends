@@ -50,7 +50,7 @@ export class AuthService {
       .create(userEntity);
 
     if (role === UserRole.Coach) {
-      const questionnaireEntity = new CoachQuestionnaireEntity({ ...dto.questionnaire as CoachQuestionnaireDto, userId: createdUser.id, certificate: '' });
+      const questionnaireEntity = new CoachQuestionnaireEntity({ ...dto.questionnaire as CoachQuestionnaireDto, userId: createdUser.id, certificate: '', isReadyToTrain: !!dto.questionnaire.isReadyToTrain });
       await this.coachQuestionnaireRepository.create(questionnaireEntity);
 
     } else if (role === UserRole.User) {

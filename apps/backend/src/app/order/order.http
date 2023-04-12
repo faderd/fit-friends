@@ -12,8 +12,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsI
   }
 ###
 
-# Получить список залов
+# Получить список заказов пользователя
 GET http://localhost:3333/api/order HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJqaGRzZ3NkZ2dkaCIsImlhdCI6MTY4MTEwNzQ2NSwiZXhwIjoxNjgxMTA4MzY1fQ.xbAgZI9eK9tZEOToclMC1MOIqIrCvA4JUufSRAEJ2OY
+###
+
+# Получить список заказов тренера
+GET http://localhost:3333/api/order/coach-orders HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImdmanJoc2dkcyIsImlhdCI6MTY4MTE5OTIxMiwiZXhwIjoxNjgxMjAwMTEyfQ.gWi9JO-_RC50QSto8RX-xKEcqHePMS6TH4Yihk_3_gw
 ###

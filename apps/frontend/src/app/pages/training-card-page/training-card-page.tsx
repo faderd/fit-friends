@@ -10,6 +10,7 @@ import PageHeader from '../../components/page-header/page-header';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import PopupFeedback from '../../components/popup-feedback/popup-feedback';
 import ReviewsSidebar from '../../components/reviews-sidebar/reviews-sidebar';
+import PopupMembership from '../../components/popup-membership/popup-membership';
 
 const genderMap = {
   [Gender.Female]: 'для_женщин',
@@ -29,6 +30,7 @@ function TrainingCardPage(): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [isPopupFeedbackOpen, setIsPopupFeedbackOpen] = useState(false);
+  const [isPopupMembershipOpen, setIsPopupMembershipOpen] = useState(false);
 
   const isDataLoaded = useAppSelector(getIsDataLoaded);
   const trainingId = useParams().id || '';
@@ -187,7 +189,11 @@ function TrainingCardPage(): JSX.Element {
                               <div className="training-info__error">Введите число</div>
                             </div>
                             {userRole === UserRole.User && (
-                              <button className="btn training-info__buy" type="button">Купить</button>
+                              <button
+                                className="btn training-info__buy"
+                                type="button"
+                                onClick={() => {setIsPopupMembershipOpen(true)}}
+                              >Купить</button>
                             )}
 
                             {userRole === UserRole.Coach && (
@@ -248,6 +254,8 @@ function TrainingCardPage(): JSX.Element {
       </div >
 
       {isPopupFeedbackOpen && (<PopupFeedback setIsPopupFeedbackOpen={setIsPopupFeedbackOpen} trainingId={+trainingId} />)}
+
+      {isPopupMembershipOpen && training && (<PopupMembership setIsPopupMembershipOpen={setIsPopupMembershipOpen} buyEntity={training} isPurchases={true} />)}
 
       <script src="js/vendor.min.js"></script>
       <script src="js/main.min.js"></script>

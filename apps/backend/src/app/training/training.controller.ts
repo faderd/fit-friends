@@ -11,7 +11,7 @@ import { TrainingService } from './training.service';
 import { TrainingQuery } from './query/training.query';
 import { UpdateTrainingDto } from '../dto/update-training.dto';
 
-@UseFilters(HttpExceptionFilter)
+// @UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteTraining.Prefix)
 @Controller(APIRouteTraining.Prefix)
 export class TrainingController {

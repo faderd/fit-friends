@@ -33,20 +33,19 @@ export class ReviewRepository implements CRUDRepositoryInterface<ReviewEntity, n
     });
   }
 
-  public async findByTrainingId(trainingId: number, { limit, sortDirection }: ReviewQuery): Promise<ReviewInterface[]> {
+  public async findByTrainingId(trainingId: number, { limit, sortDirection, page }: ReviewQuery): Promise<ReviewInterface[]> {
     return this.prisma.feedback.findMany({
-      where: {trainingId},
-      include: {author: true },
+      where: { trainingId },
+      include: { author: true },
       take: limit,
-      orderBy: {
-        createdAt: sortDirection,
-      },
+      orderBy: { createdAt: sortDirection },
+      skip: page > 0 ? limit * (page - 1) : undefined,
     }) as unknown as ReviewInterface[];
   }
 
   public async findAllByTrainingId(trainingId: number): Promise<ReviewInterface[]> {
     return this.prisma.feedback.findMany({
-      where: {trainingId},
+      where: { trainingId },
     });
   }
 

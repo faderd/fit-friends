@@ -4,6 +4,7 @@ import { store } from '../store';
 import { QuestionnaireData } from './questionnaire-data';
 import { RegisterDataUser } from './register-data-user.dto';
 import { UserData } from './user-data';
+import { CoachOrdersInfo } from './coach-orders-info';
 
 export type AppDispatch = typeof store.dispatch;
 
@@ -15,6 +16,7 @@ export type AppData = {
   gyms: GymInterface[],
   gym: GymInterface | null,
   orders: OrderInterface[],
+  coachOrdersInfo: CoachOrdersInfo[],
 }
 
 export type UserProcess = {

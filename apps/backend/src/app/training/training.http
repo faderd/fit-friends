@@ -1,16 +1,16 @@
 # Создание новой тренировки
 POST http://localhost:3333/api/training HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImdmanJoc2dkcyIsImlhdCI6MTY4MTEzMjc0MywiZXhwIjoxNjgxMTMzNjQzfQ.A6Oc5T2MuVTZGWFJ3XKBT6WKojTNKfYGRPAG7R8iU0Q
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImdmanJoc2dkcyIsImlhdCI6MTY4MTI0MzI1NywiZXhwIjoxNjgxMjQ0MTU3fQ.QeHF4MPvWyQLPSq9gl5-R7X0orLJ2mOgUDPqN6UDXJ4
 
 {
   "name": "CROSSFIT",
   "backgroundImage": "",
   "level": "Любитель",
   "type": "Бег",
-  "trainingDuration": "10-30",
-  "price": 0,
-  "calories": 1500,
+  "trainingDuration": "50-80",
+  "price": 900,
+  "calories": 1300,
   "description": "Сложный комплекс упражнений для профессиональных атлетов на отработку показателей в классическом стиле.",
   "gender": "мужчина",
   "video": "",
@@ -19,9 +19,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsI
 ###
 
 # Получение списка тренировок
-GET http://localhost:3333/api/training HTTP/1.1
+GET http://localhost:3333/api/training?maxPrice=1999&trainingDuration=80;50-80;10-30 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImprZ2hzZGdkc2FkaGYiLCJpYXQiOjE2ODAxOTY5MDAsImV4cCI6MTY4MDE5NzgwMH0.r3XG0zIPEokCVWKijXOg02-OldDdNN_M9fqAC8HF0Oc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJqaGRzZ3NkZ2dkaCIsImlhdCI6MTY4MTI0MzM1MCwiZXhwIjoxNjgxMjQ0MjUwfQ.oc8tZTmOevpi8vFh_A9aLPw-jcQvQJcAJyLm_wY7lVs
 ###
 
 # Получение тренировки по id

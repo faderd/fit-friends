@@ -53,4 +53,34 @@ export class OrderService {
     const orderEntity = new OrderEntity({ ...existOrder, ...dto });
     return this.orderRepository.update(existOrder.id, orderEntity);
   }
+
+  async getCoachOrders(query: OrderQuery, userId: number) {
+    const coachTrainingsId = (await this.trainingService.getTrainingsByCoachId(userId)).map((training) => training.id);
+    return this.orderRepository.getCoachOrders(query, coachTrainingsId);
+  }
+
+  async getCoachOrdersInfo(query: OrderQuery, userId: number) {
+    const coachTrainingsId = (await this.trainingService.getTrainingsByCoachId(userId)).map((training) => training.id);
+    const orders = await this.orderRepository.getCoachOrders(query, coachTrainingsId);
+
+    const uniqueTrainingIds = Array.from(new Set(orders.map((order) => order.entityId)));
+
+    const getCount = (id: number) => orders.reduce((count, order) => order.entityId === id ? count + 1 * order.count : count, 0);
+
+    const getPrice = (id: number) => orders.reduce((price, order) => order.entityId === id ? price + order.price : price, 0)
+
+    const coachOrdersInfo = [];
+    for (const trainingId of uniqueTrainingIds) {
+      const training = await this.trainingService.getTraining(trainingId);
+      const orderInfo = {
+        training,
+        trainingsCount: getCount(trainingId),
+        price: getPrice(trainingId)
+      };
+
+      coachOrdersInfo.push(orderInfo);
+    }
+
+    return coachOrdersInfo;
+  }
 }

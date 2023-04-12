@@ -36,6 +36,10 @@ export class TrainingService {
     return this.trainingRepository.findAll(query);
   }
 
+  async getTrainingsByCoachId(id: number) {
+    return this.trainingRepository.findByCoachId(id);
+  }
+
   async updateTraining(trainingId: number, dto: UpdateTrainingDto | {rate: number}) {
     const existTraining = await this.trainingRepository.findById(trainingId);
     if (!existTraining) {

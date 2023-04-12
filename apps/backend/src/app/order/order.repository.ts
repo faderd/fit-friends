@@ -1,5 +1,5 @@
 import { CRUDRepositoryInterface } from '@fit-friends/core';
-import { OrderInterface } from '@fit-friends/shared-types';
+import { OrderInterface, OrderType } from '@fit-friends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { OrderEntity } from './order.entity';
@@ -54,5 +54,17 @@ export class OrderRepository implements CRUDRepositoryInterface<OrderEntity, num
       },
       data: entityData,
     }) as unknown as OrderInterface;
+  }
+
+  public async getCoachOrders({ limit, sortDirection, page }: OrderQuery, trainingIds: number[]): Promise<OrderInterface[]> {
+    return this.prisma.order.findMany({
+      where: {
+        type: OrderType.Training,
+        entityId: { in: trainingIds }
+      },
+      take: limit,
+      orderBy: { createdAt: sortDirection },
+      skip: page > 0 ? limit * (page - 1) : undefined,
+    }) as unknown as OrderInterface[];
   }
 }

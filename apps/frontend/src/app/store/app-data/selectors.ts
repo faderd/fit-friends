@@ -15,4 +15,5 @@ export const getGym = (state: State) => state[NameSpace.Data].gym;
 export const getGymById = (id: number) => (state: State) => state[NameSpace.Data].gyms.find((gym) => gym.id === id);
 
 export const getOrders = (state: State) => state[NameSpace.Data].orders;
+export const getCoachOrdersInfo = (state: State) => state[NameSpace.Data].coachOrdersInfo;
 export const getOrderById = (id: number) => (state: State) => state[NameSpace.Data].orders.find((order) => order.id === id);

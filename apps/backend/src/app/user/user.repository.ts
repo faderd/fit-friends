@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserEntity } from './user.entity';
+import { UserQuery } from './query/user.query';
 
 @Injectable()
 export class UserRepository implements CRUDRepositoryInterface<UserEntity, number, UserInterface> {
@@ -50,12 +51,17 @@ export class UserRepository implements CRUDRepositoryInterface<UserEntity, numbe
     }) as unknown as UserInterface;
   }
 
-  public async findAll(): Promise<UserInterface[]> {
+  public async findAll({limit, sortDirection, page}: UserQuery): Promise<UserInterface[]> {
     return this.prisma.user.findMany({
       include: {
         UserQuestionnaire: true,
         CoachQuestionnaire: true,
-      }
+      },
+      take: limit,
+      orderBy: {
+        createdAt: sortDirection
+      },
+      skip: page > 0 ? limit * (page - 1) : undefined,
     }) as unknown as UserInterface[];
   }
 }

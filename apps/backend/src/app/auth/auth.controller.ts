@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser, TokenPayload } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, NotImplementedException, Param, ParseIntPipe, Post, Req, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, NotImplementedException, Param, ParseIntPipe, Post, Req, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UserRdo } from '../rdo/user.rdo';
@@ -8,19 +8,40 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { HttpExceptionFilter } from './http.exception-filter';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { QuestionnaireRdo } from '../rdo/questionnaire.rdo';
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
-@UseFilters(HttpExceptionFilter)
 @ApiTags(APIRouteAuth.Prefix)
 @Controller(APIRouteAuth.Prefix)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
   ) { }
+
+  // @Post(APIRouteAuth.Register)
+  // @HttpCode(HttpStatus.CREATED)
+  // @ApiCreatedResponse({
+  //   type: UserRdo,
+  //   description: 'Новый пользователь зарегистрирован',
+  // })
+  // @ApiConflictResponse({
+  //   description: 'Пользователь с таким email существует',
+  // })
+  // @ApiBadRequestResponse({
+  //   description: 'Bad Request',
+  // })
+  // @UseInterceptors(FileInterceptor('avatar'))
+  // async create(
+  //   @Body() dto: CreateUserDto,
+  //   @UploadedFile() avatar?: Express.Multer.File
+  // ) {
+  //   console.log('avatar: ', avatar);
+  //   console.log('dto: ', dto);
+  //   const newUser = await this.authService.register(dto);
+  //   return fillObject(UserRdo, newUser);
+  // }
 
   @Post(APIRouteAuth.Register)
   @HttpCode(HttpStatus.CREATED)
@@ -34,8 +55,21 @@ export class AuthController {
   @ApiBadRequestResponse({
     description: 'Bad Request',
   })
-  async create(@Body() dto: CreateUserDto) {
-    const newUser = await this.authService.register(dto);
+  // @UseInterceptors(
+  //   FileFieldsInterceptor([
+  //     { name: 'avatar', maxCount: 1 },
+  //     { name: 'questionnaire[certificate]', maxCount: 1 }
+  //   ])
+  // )
+  @UseInterceptors(FileInterceptor('avatar'))
+  async create(
+    @Body() dto: CreateUserDto,
+    // @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFile() files,
+  ) {
+    console.log('files: ', files);
+    console.log('dto: ', dto);
+    const newUser = await this.authService.register(dto, files);
     return fillObject(UserRdo, newUser);
   }
 

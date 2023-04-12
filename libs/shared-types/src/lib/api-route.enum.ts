@@ -41,5 +41,7 @@ export enum APIRouteOrder {
   Prefix = '/order',
   Create = '/',
   GetAll = '/',
+  getCoachOrders = '/coach-orders',
+  getCoachOrdersInfo = '/coach-orders-info',
   GetById = '/:id',
 }

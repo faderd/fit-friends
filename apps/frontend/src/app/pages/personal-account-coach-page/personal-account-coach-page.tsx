@@ -23,12 +23,12 @@ function PersonalAccountCoachPage(): JSX.Element {
                   <div className="personal-account-coach">
                     <div className="personal-account-coach__navigation">
                       <Link className="thumbnail-link thumbnail-link--theme-light" to={AppRoute.MyTrainings}>
-                      <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
-                        <svg width="30" height="26" aria-hidden="true">
-                          <use xlinkHref="#icon-flash"></use>
-                        </svg>
-                      </div><span className="thumbnail-link__text">Мои тренировки</span>
-                    </Link>
+                        <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
+                          <svg width="30" height="26" aria-hidden="true">
+                            <use xlinkHref="#icon-flash"></use>
+                          </svg>
+                        </div><span className="thumbnail-link__text">Мои тренировки</span>
+                      </Link>
                       <Link className="thumbnail-link thumbnail-link--theme-light" to={AppRoute.CreateTraining}>
                         <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
                           <svg width="30" height="26" aria-hidden="true">
@@ -43,12 +43,12 @@ function PersonalAccountCoachPage(): JSX.Element {
                           </svg>
                         </div><span className="thumbnail-link__text">Мои друзья</span>
                       </a>
-                      <a className="thumbnail-link thumbnail-link--theme-light" href="#">
+                      <Link className="thumbnail-link thumbnail-link--theme-light" to={AppRoute.MyOrders}>
                         <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
                           <svg width="30" height="26" aria-hidden="true">
                             <use xlinkHref="#icon-bag"></use>
                           </svg>
-                        </div><span className="thumbnail-link__text">Мои заказы</span></a>
+                        </div><span className="thumbnail-link__text">Мои заказы</span></Link>
                       <div className="personal-account-coach__calendar"></div>
                     </div>
                     <div className="personal-account-coach__additional-info">

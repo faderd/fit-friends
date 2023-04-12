@@ -24,6 +24,7 @@ import TrainingCardPage from '../../pages/training-card-page/training-card-page'
 import GymsCatalogPage from '../../pages/gyms-catalog-page/gyms-catalog-page';
 import GymCardPage from '../../pages/gym-card-page/gym-card-page';
 import MyPurchasesPage from '../../pages/my-purchases-page/my-purchases-page';
+import MyOrdersPage from '../../pages/my-orders-page/my-orders-page';
 
 function App(): JSX.Element {
   const isAuthStatusUnknown = useAppSelector(isAuthUnknown);
@@ -159,6 +160,14 @@ function App(): JSX.Element {
           <PrivateRouteUser>
             <MyPurchasesPage />
           </PrivateRouteUser>
+        }
+      />
+      <Route
+        path={AppRoute.MyOrders}
+        element={
+          <PrivateRouteCoach>
+            <MyOrdersPage />
+          </PrivateRouteCoach>
         }
       />
     </Routes>

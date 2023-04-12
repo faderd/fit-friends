@@ -1,5 +1,5 @@
 import { CRUDRepositoryInterface } from '@fit-friends/core';
-import { TrainingInterface } from '@fit-friends/shared-types';
+import { TrainingDuration, TrainingInterface } from '@fit-friends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { Training } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -34,7 +34,16 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
     }) as unknown as TrainingInterface;
   }
 
-  public async findAll({ limit, sortDirection, isOnlyFreeTrainings }: TrainingQuery): Promise<TrainingInterface[]> {
+  public async findByCoachId(id: number): Promise<TrainingInterface[]> {
+    return this.prisma.training.findMany({
+      where: {
+        userId: id,
+      },
+    }) as unknown as TrainingInterface[];
+  }
+
+  public async findAll({ limit, sortDirection, isOnlyFreeTrainings, page, minPrice, maxPrice, minCalories, maxCalories, minRate, maxRate, trainingDuration }: TrainingQuery): Promise<TrainingInterface[]> {
+
     if (isOnlyFreeTrainings) {
       return this.prisma.training.findMany({
         where: {
@@ -43,13 +52,58 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
         take: limit,
       }) as unknown as TrainingInterface[];
     }
+
+    const whereCondition: {
+      price?: { gte?: number; lte?: number },
+      calories?: { gte?: number; lte?: number },
+      rate?: { gte?: number; lte?: number },
+      trainingDuration?: { in: TrainingDuration[] }
+    } = {};
+
+    if (minPrice !== undefined) {
+      whereCondition.price = { gte: minPrice };
+    }
+    if (maxPrice !== undefined) {
+      if (whereCondition.price === undefined) {
+        whereCondition.price = {};
+      }
+      whereCondition.price.lte = maxPrice;
+    }
+
+    if (minCalories !== undefined) {
+      whereCondition.calories = { gte: minCalories };
+    }
+    if (maxCalories !== undefined) {
+      if (whereCondition.calories === undefined) {
+        whereCondition.calories = {};
+      }
+      whereCondition.calories.lte = maxCalories;
+    }
+
+    if (minRate !== undefined) {
+      whereCondition.rate = { gte: minRate };
+    }
+    if (maxRate !== undefined) {
+      if (whereCondition.rate === undefined) {
+        whereCondition.rate = {};
+      }
+      whereCondition.rate.lte = maxRate;
+    }
+
+    if (trainingDuration !== undefined) {
+      whereCondition.trainingDuration = { in: trainingDuration }
+    }
+
     return this.prisma.training.findMany({
+      where: whereCondition,
       take: limit,
       orderBy: {
         price: sortDirection,
       },
+      skip: page > 0 ? limit * (page - 1) : undefined,
     }) as unknown as TrainingInterface[];
   }
+
 
   public async update(id: number, item: TrainingEntity): Promise<TrainingInterface> {
     const entityData = item.toObject();

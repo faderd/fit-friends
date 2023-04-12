@@ -34,12 +34,13 @@ export class GymRepository implements CRUDRepositoryInterface<GymEntity, number,
     }) as unknown as GymInterface;
   }
 
-  public async findAll({ limit, sortDirection }: GymQuery): Promise<GymInterface[]> {
+  public async findAll({ limit, sortDirection, page }: GymQuery): Promise<GymInterface[]> {
     return this.prisma.gym.findMany({
       take: limit,
       orderBy: {
         createdAt: sortDirection,
       },
+      skip: page > 0 ? limit * (page - 1) : undefined,
     }) as unknown as GymInterface[];
   }
 

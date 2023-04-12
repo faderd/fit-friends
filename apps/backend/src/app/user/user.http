@@ -1,5 +1,5 @@
 # Получить пользователей
-GET http://localhost:3333/api/user HTTP/1.1
+GET http://localhost:3333/api/user?limit=1&page=2 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ItCS0LXRgNC-0L3QuNC60LAiLCJpYXQiOjE2ODA2MzEwMDQsImV4cCI6MTY4MDYzMTkwNH0.klom0ZaA2m5swt8AP13JsbAGSsYUtiJu5piAMnFNX8M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiJqaGRzZ3NkZ2dkaCIsImlhdCI6MTY4MTIzOTgzMiwiZXhwIjoxNjgxMjQwNzMyfQ.YscKKIjElVgiJJpKySPHLosJNnEADjDY9WfGKOSeS1g
 ###

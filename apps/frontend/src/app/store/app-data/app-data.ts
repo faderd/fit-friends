@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../../const';
 import { AppData } from '../../types/state';
 import { submitNewTraining, fetchTrainings, updateTraining, submitNewReview, submitNewOrder, fetchTraining, fetchGym } from '../api-actions';
+import { CoachOrdersInfo } from '../../types/coach-orders-info';
 
 export const getInitialStateAppData = (): AppData => ({
   isDataLoaded: true,
@@ -12,6 +13,7 @@ export const getInitialStateAppData = (): AppData => ({
   gyms: [],
   gym: null,
   orders: [],
+  coachOrdersInfo: [],
 });
 
 export const appData = createSlice({
@@ -35,6 +37,9 @@ export const appData = createSlice({
     },
     storeOrders: (state, action: PayloadAction<OrderInterface[]>) => {
       state.orders = action.payload;
+    },
+    storeCoachOrdersInfo: (state, action: PayloadAction<CoachOrdersInfo[]>) => {
+      state.coachOrdersInfo = action.payload;
     },
   },
   extraReducers(builder) {
@@ -107,4 +112,4 @@ export const appData = createSlice({
   }
 });
 
-export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders } = appData.actions;
+export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo } = appData.actions;

@@ -30,6 +30,7 @@ export enum AppRoute {
   GymsCatalog = '/gyms-catalog',
   GymCard = '/gym-card/:id',
   MyPurchases = '/my-purchases',
+  MyOrders = '/my-orders',
 }
 
 export enum PageTitle {
@@ -48,6 +49,7 @@ export enum PageTitle {
   GymsCatalog = 'Каталог залов — FitFriends',
   GymCard = 'Карточка зала — FitFriends',
   MyPurchases = 'Мои покупки - FitFriends',
+  MyOrders = 'Мои заказы — FitFriends',
 }
 
 export enum PageType {
