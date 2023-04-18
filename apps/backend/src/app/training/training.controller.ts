@@ -1,5 +1,5 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteTraining, RefreshTokenPayload, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
+import { APIRouteTraining, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
@@ -37,7 +37,7 @@ export class TrainingController {
   })
   async create(
     @Body() dto: CreateTrainingDto,
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+    @Req() request: RequestWithTokenPayload<TokenPayload>
   ) {
     const { user: tokenPayload } = request;
 

@@ -1,5 +1,5 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteReview, RefreshTokenPayload, RequestWithTokenPayload, UserRole } from '@fit-friends/shared-types';
+import { APIRouteReview, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -36,7 +36,7 @@ export class ReviewController {
   })
   async create(
     @Body() dto: CreateReviewDto,
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+    @Req() request: RequestWithTokenPayload<TokenPayload>
   ) {
     const { user: tokenPayload } = request;
 

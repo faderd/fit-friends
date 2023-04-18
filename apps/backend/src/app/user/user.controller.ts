@@ -1,5 +1,5 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteUser, RefreshTokenPayload, RequestWithTokenPayload, UserRole } from '@fit-friends/shared-types';
+import { APIRouteUser, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
 import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -30,7 +30,7 @@ export class UserController {
     description: 'Данные получены'
   })
   async getAll(
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>,
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
     @Query() query: UserQuery,
   ) {
     const { user: tokenPayload } = request;
@@ -58,7 +58,7 @@ export class UserController {
     description: 'Данные получены'
   })
   async getMyFriends(
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>,
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
     @Query() query: UserQuery,
   ) {
     const { user: tokenPayload } = request;

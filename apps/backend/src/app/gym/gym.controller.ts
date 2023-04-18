@@ -1,5 +1,5 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteGym, RefreshTokenPayload, RequestWithTokenPayload, UserRole } from '@fit-friends/shared-types';
+import { APIRouteGym, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -36,7 +36,7 @@ export class GymController {
   })
   async create(
     @Body() dto: CreateGymDto,
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+    @Req() request: RequestWithTokenPayload<TokenPayload>
   ) {
     const { user: tokenPayload } = request;
 

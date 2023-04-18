@@ -1,5 +1,5 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteOrder, RefreshTokenPayload, RequestWithTokenPayload, UserRole } from '@fit-friends/shared-types';
+import { APIRouteOrder, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -38,7 +38,7 @@ export class OrderController {
   })
   async create(
     @Body() dto: CreateOrderDto,
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+    @Req() request: RequestWithTokenPayload<TokenPayload>
   ) {
     const { user: tokenPayload } = request;
 
@@ -69,7 +69,7 @@ export class OrderController {
   })
   async getUserOrders(
     @Query() query: OrderQuery,
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+    @Req() request: RequestWithTokenPayload<TokenPayload>
   ) {
     const { user: tokenPayload } = request;
 
@@ -97,7 +97,7 @@ export class OrderController {
   })
   async getCoachOrders(
     @Query() query: OrderQuery,
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+    @Req() request: RequestWithTokenPayload<TokenPayload>
   ) {
     const { user: tokenPayload } = request;
 
@@ -129,7 +129,7 @@ export class OrderController {
   })
   async getCoachOrderInfo(
     @Query() query: OrderQuery,
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+    @Req() request: RequestWithTokenPayload<TokenPayload>
   ) {
     const { user: tokenPayload } = request;
 

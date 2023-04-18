@@ -87,9 +87,34 @@ export class AuthService {
     return existUser;
   }
 
-  async loginUser(user: Pick<UserInterface, 'id' | 'email' | 'role' | 'name'>, refreshTokenId?: string) {
+  async loginUser(user: UserInterface) {
     const payload: TokenPayload = {
       sub: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    };
+
+    const refreshTokenPayload: RefreshTokenPayload = {
+      ...payload, refreshTokenId: randomUUID()
+    }
+
+    await this.refreshTokenService
+      .createRefreshSession(refreshTokenPayload);
+
+    return {
+      ...user,
+      access_token: await this.jwtService.signAsync(payload),
+      refresh_token: await this.jwtService.signAsync(refreshTokenPayload, {
+        secret: this.jwtOptions.refreshTokenSecret,
+        expiresIn: this.jwtOptions.refreshTokenExpiresIn,
+      })
+    };
+  }
+
+  async refreshTokens(user: TokenPayload, refreshTokenId: string) {
+    const payload: TokenPayload = {
+      sub: user.sub,
       email: user.email,
       role: user.role,
       name: user.name,

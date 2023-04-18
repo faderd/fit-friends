@@ -108,8 +108,8 @@ export class AuthController {
   async refresh(@Req() request: RequestWithTokenPayload<RefreshTokenPayload>) {
     const { user: tokenPayload } = request;
 
-    return this.authService.loginUser({
-      id: tokenPayload.sub,
+    return this.authService.refreshTokens({
+      sub: tokenPayload.sub,
       email: tokenPayload.email,
       role: tokenPayload.role,
       name: tokenPayload.name,
@@ -127,7 +127,7 @@ export class AuthController {
     description: 'Пользователь не авторизован',
   })
   async verifyAuth(
-    @Req() request: RequestWithTokenPayload<RefreshTokenPayload>
+    @Req() request: RequestWithTokenPayload<TokenPayload>
   ) {
     const { user: tokenPayload } = request;
     const user = await this.authService.getUser(tokenPayload.sub);
