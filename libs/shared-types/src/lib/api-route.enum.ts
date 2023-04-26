@@ -46,3 +46,11 @@ export enum APIRouteOrder {
   getCoachOrdersInfo = '/coach-orders-info',
   GetById = '/:id',
 }
+
+export enum APIRouteFoodDiary {
+  Prefix = '/food-diary',
+  Create = '/',
+  Get = '/',
+  Update = '/',
+  GetById = '/:id',
+}

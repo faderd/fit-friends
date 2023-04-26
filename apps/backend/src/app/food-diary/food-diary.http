@@ -1,0 +1,53 @@
+# Создание нового дневника питания
+POST http://localhost:3333/api/food-diary HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MjUyOTg2OSwiZXhwIjoxNjgyNTMwNzY5fQ._1-RV30O0hP6g6tsS2W8pxCidEke0N54jd42EpCgqmQ
+
+{
+  "diary": [
+    {
+      "caloriesCount": 300,
+      "date": "Wed Apr 26 2023 20:23:34 GMT+0300",
+      "mealType": "lunch"
+    },
+    {
+      "caloriesCount": 500,
+      "date": "Wed Apr 25 2023 20:23:34 GMT+0300",
+      "mealType": "breakfast"
+    }
+  ]
+}
+###
+
+# Редактирование дневника питания
+PATCH http://localhost:3333/api/food-diary HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MjUyOTg2OSwiZXhwIjoxNjgyNTMwNzY5fQ._1-RV30O0hP6g6tsS2W8pxCidEke0N54jd42EpCgqmQ
+
+{
+  "diary": [
+    {
+      "caloriesCount": 300,
+      "date": "Wed Apr 26 2023 20:23:34 GMT+0300",
+      "mealType": "lunch"
+    },
+    {
+      "caloriesCount": 500,
+      "date": "Wed Apr 25 2023 20:23:34 GMT+0300",
+      "mealType": "breakfast"
+    }
+  ]
+}
+###
+
+# Получение дневника питания
+GET http://localhost:3333/api/food-diary HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MjUzMDgxNCwiZXhwIjoxNjgyNTMxNzE0fQ.y8kKPzJZ-fu7-FQIFiAe0PgT35j5HEpkqdDKGJoR5zI
+###
+
+# Получение дневника питания по id
+GET http://localhost:3333/api/food-diary/6 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MjUzMDgxNCwiZXhwIjoxNjgyNTMxNzE0fQ.y8kKPzJZ-fu7-FQIFiAe0PgT35j5HEpkqdDKGJoR5zI
+###

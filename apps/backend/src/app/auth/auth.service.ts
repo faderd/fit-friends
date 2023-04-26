@@ -36,7 +36,7 @@ export class AuthService {
   async register(dto: CreateUserDto, avatar: Express.Multer.File, certificate: Express.Multer.File) {
     const { name, email, gender, birthDate, role, location, password } = dto;
     const user = {
-      email, passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], myFavoriteGyms: [], avatar: `${UPLOAD_PATH}${avatar[0].filename}`
+      email, passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], myFavoriteGyms: [], avatar: avatar ? `${UPLOAD_PATH}${avatar[0].filename}` : '',
     };
 
     const existUser = await this.userRepository

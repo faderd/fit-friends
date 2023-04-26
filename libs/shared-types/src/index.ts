@@ -26,3 +26,6 @@ export * from './lib/status-request-training.enum';
 export * from './lib/notification.interface';
 export * from './lib/review.interface';
 export * from './lib/order-sort-type.enum';
+export * from './lib/meal-type.enum';
+export * from './lib/food-diary.interface';
+export * from './lib/training-diary.interface';

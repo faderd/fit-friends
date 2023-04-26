@@ -67,12 +67,13 @@ export class AuthController {
       ['questionnaire[certificate]']?: Express.Multer.File,
     },
   ) {
-    const { avatar, ['questionnaire[certificate]']: certificate } = files;
+    const certificate = files ? files['questionnaire[certificate]'] : undefined;
+
     if (dto.role === UserRole.Coach && !certificate) {
       throw new BadRequestException('Наличие файла сертификата обязательно');
     }
 
-    const newUser = await this.authService.register(dto, avatar, certificate);
+    const newUser = await this.authService.register(dto, files?.avatar, certificate);
     return fillObject(UserRdo, newUser);
   }
 
