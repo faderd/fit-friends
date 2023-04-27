@@ -11,6 +11,7 @@ import { ReviewModule } from './review/review.module';
 import { GymModule } from './gym/gym.module';
 import { OrderModule } from './order/gym.module';
 import { FoodDiaryModule } from './food-diary/food-diary.module';
+import { TrainingDiaryModule } from './training-diary/training-diary.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { FoodDiaryModule } from './food-diary/food-diary.module';
     GymModule,
     OrderModule,
     FoodDiaryModule,
+    TrainingDiaryModule,
   ],
   controllers: [],
   providers: [],

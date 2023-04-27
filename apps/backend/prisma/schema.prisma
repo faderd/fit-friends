@@ -70,7 +70,7 @@ model RefreshSessions {
 }
 
 model Training {
-  id               Int             @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   name             String
   backgroundImage  String
   level            String
@@ -82,11 +82,10 @@ model Training {
   gender           String
   video            String
   rate             Int
-  coach            User            @relation(fields: [userId], references: [id])
+  coach            User          @relation(fields: [userId], references: [id])
   userId           Int
   isSpecialOffer   Boolean
   Feedback         Feedback[]
-  TrainingDiary    TrainingDiary[]
   UserBalance      UserBalance[]
 }
 
@@ -144,21 +143,17 @@ model Notification {
 }
 
 model FoodDiary {
-  id            Int      @id @default(autoincrement())
-  user          User     @relation(fields: [userId], references: [id])
-  userId        Int
-  diary Json[]
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  diary  Json[]
 }
 
 model TrainingDiary {
-  id               Int      @id @default(autoincrement())
-  training         Training @relation(fields: [trainingId], references: [id])
-  trainingId       Int
-  caloriesLoss     Int
-  trainingDuration String
-  dateTraining     DateTime
-  user             User     @relation(fields: [userId], references: [id])
-  userId           Int
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  diary  Json[]
 }
 
 model UserBalance {

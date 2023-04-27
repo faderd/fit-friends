@@ -54,3 +54,9 @@ export enum APIRouteFoodDiary {
   Update = '/',
   GetById = '/:id',
 }
+
+export enum APIRouteTrainingDiary {
+  Prefix = '/training-diary',
+  Get = '/',
+  GetById = '/:id',
+}
