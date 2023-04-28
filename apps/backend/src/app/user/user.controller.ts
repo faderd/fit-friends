@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteUser, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Patch, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserRdo } from '../rdo/user.rdo';
@@ -65,5 +65,55 @@ export class UserController {
 
     const users = await this.userService.getMyFriends(query, tokenPayload.sub);
     return users.map((user) => fillObject(UserRdo, user));
+  }
+
+  @Patch(APIRouteUser.AddFriend)
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  @ApiOkResponse({
+    type: UserRdo,
+    description: 'Данные получены'
+  })
+  async addFriend(
+    @Param('id', ParseIntPipe) newFriendId: number,
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
+  ) {
+    const { user: tokenPayload } = request;
+
+    if (tokenPayload.role !== UserRole.User) {
+      throw new UserNotUserException();
+    }
+
+    return this.userService.addFriend(tokenPayload.sub, newFriendId);
+  }
+
+  @Patch(APIRouteUser.RemoveFriend)
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  @ApiOkResponse({
+    type: UserRdo,
+    description: 'Данные получены'
+  })
+  async removeFriend(
+    @Param('id', ParseIntPipe) friendId: number,
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
+  ) {
+    const { user: tokenPayload } = request;
+
+    return this.userService.removeFriend(tokenPayload.sub, friendId);
   }
 }

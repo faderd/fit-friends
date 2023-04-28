@@ -15,6 +15,8 @@ export enum APIRouteUser {
   Prefix = '/user',
   GetMyFriends = 'get-my-friends',
   GetAll = '/',
+  AddFriend = '/add-friend/:id',
+  RemoveFriend = '/remove-friend/:id',
 }
 
 export enum APIRouteTraining {

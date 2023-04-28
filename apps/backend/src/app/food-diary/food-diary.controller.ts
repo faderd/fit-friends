@@ -60,7 +60,6 @@ export class FoodDiaryController {
   async update(
     @Req() request: RequestWithTokenPayload<TokenPayload>,
     @Body() dto: UpdateFoodDiaryDto,
-    // @Param('id', ParseIntPipe) foodDiaryId: number,
   ) {
     const { user: tokenPayload } = request;
 
