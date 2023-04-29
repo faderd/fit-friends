@@ -9,7 +9,7 @@ import { TrainingModule } from './training/training.module';
 import { UserModule } from './user/user.module';
 import { ReviewModule } from './review/review.module';
 import { GymModule } from './gym/gym.module';
-import { OrderModule } from './order/gym.module';
+import { OrderModule } from './order/order.module';
 import { FoodDiaryModule } from './food-diary/food-diary.module';
 import { TrainingDiaryModule } from './training-diary/training-diary.module';
 

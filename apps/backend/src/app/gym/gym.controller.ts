@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteGym, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GymService } from './gym.service';
@@ -8,6 +8,8 @@ import { GymQuery } from './query/gym.query';
 import { GymRdo } from '../rdo/gym.rdo';
 import { CreateGymDto } from '../dto/create-gym.dto';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
+import { UserRdo } from '../rdo/user.rdo';
+import { UserNotUserException } from '../auth/exceptions/user-not-user.exception';
 
 @ApiTags(APIRouteGym.Prefix)
 @Controller(APIRouteGym.Prefix)
@@ -73,6 +75,33 @@ export class GymController {
     return gyms.map((review) => fillObject(GymRdo, review));
   }
 
+  @Patch(APIRouteGym.AddFavoriteGym)
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  @ApiOkResponse({
+    type: UserRdo,
+    description: 'Данные получены'
+  })
+  async addFavoriteGym(
+    @Param('id', ParseIntPipe) newFavoriteGymId: number,
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
+  ) {
+    const { user: tokenPayload } = request;
+
+    if (tokenPayload.role !== UserRole.User) {
+      throw new UserNotUserException();
+    }
+
+    return this.gymService.addFavoriteGym(tokenPayload.sub, newFavoriteGymId);
+  }
+
   @Get(APIRouteGym.GetById)
   @ApiOkResponse({
     type: GymRdo,
@@ -90,7 +119,7 @@ export class GymController {
   @ApiUnauthorizedResponse({
     description: 'Пользователь не авторизован',
   })
-  async getTraining(
+  async getGym(
     @Param('id', ParseIntPipe) id: number,
   ) {
     const gym = await this.gymService.getById(id);

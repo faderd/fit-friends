@@ -38,6 +38,7 @@ export enum APIRouteGym {
   Create = '/',
   GetAll = '/',
   GetById = '/:id',
+  AddFavoriteGym = '/add-favorite-gym/:id'
 }
 
 export enum APIRouteOrder {
