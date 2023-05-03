@@ -149,11 +149,8 @@ CREATE TABLE "FoodDiary" (
 -- CreateTable
 CREATE TABLE "TrainingDiary" (
     "id" SERIAL NOT NULL,
-    "trainingId" INTEGER NOT NULL,
-    "caloriesLoss" INTEGER NOT NULL,
-    "trainingDuration" TEXT NOT NULL,
-    "dateTraining" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
+    "diary" JSONB[],
 
     CONSTRAINT "TrainingDiary_pkey" PRIMARY KEY ("id")
 );
@@ -162,8 +159,8 @@ CREATE TABLE "TrainingDiary" (
 CREATE TABLE "UserBalance" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "trainingId" INTEGER NOT NULL,
-    "trainingCount" INTEGER NOT NULL,
+    "entityType" TEXT NOT NULL,
+    "entityCount" INTEGER NOT NULL,
 
     CONSTRAINT "UserBalance_pkey" PRIMARY KEY ("id")
 );
@@ -199,13 +196,7 @@ ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY
 ALTER TABLE "FoodDiary" ADD CONSTRAINT "FoodDiary_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TrainingDiary" ADD CONSTRAINT "TrainingDiary_trainingId_fkey" FOREIGN KEY ("trainingId") REFERENCES "Training"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "TrainingDiary" ADD CONSTRAINT "TrainingDiary_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserBalance" ADD CONSTRAINT "UserBalance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "UserBalance" ADD CONSTRAINT "UserBalance_trainingId_fkey" FOREIGN KEY ("trainingId") REFERENCES "Training"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

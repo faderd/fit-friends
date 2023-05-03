@@ -21,14 +21,14 @@ export class GymEntity implements EntityInterface<GymEntity>, GymInterface {
   }
 
   public fillEntity(gym: GymInterface) {
-  this.id = gym.id;
-  this.name = gym.name;
-  this.location = gym.location;
-  this.isVerified = gym.isVerified;
-  this.options = gym.options;
-  this.photos = gym.photos;
-  this.description = gym.description;
-  this.price = gym.price;
-  this.createdAt = gym.createdAt;
+    this.id = gym.id;
+    this.name = gym.name;
+    this.location = gym.location;
+    this.isVerified = gym.isVerified;
+    this.options = gym.options;
+    this.photos = gym.photos;
+    this.description = gym.description;
+    this.price = gym.price;
+    this.createdAt = gym.createdAt;
   }
 }

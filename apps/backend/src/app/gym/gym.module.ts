@@ -5,10 +5,18 @@ import { GymController } from './gym.controller';
 import { GymService } from './gym.service';
 import { AuthModule } from '../auth/auth.module';
 import { AuthService } from '../auth/auth.service';
+import { OrderModule } from '../order/order.module';
+import { UserRepository } from '../user/user.repository';
+import { UserModule } from '../user/user.module';
+import { UserQuestionnaireRepository } from '../questionnaire/user-questionnaire.repository';
+import { CoachQuestionnaireRepository } from '../questionnaire/coach-questionnaire.repository';
+import { JwtService } from '@nestjs/jwt';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { RefreshTokenRepository } from '../refresh-token/refresh-token.repository';
 
 @Module({
-  imports: [PrismaModule, AuthModule],
+  imports: [PrismaModule, AuthModule, OrderModule, UserModule],
   controllers: [GymController],
-  providers: [GymRepository, GymService, AuthService],
+  providers: [GymRepository, GymService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository],
 })
 export class GymModule {}

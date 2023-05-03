@@ -44,11 +44,13 @@ export class UpdateUserDto {
     description: 'Список id друзей',
     example: '[1, 2, 3]'
   })
+  @IsOptional()
   public friends?: number[];
 
   @ApiProperty({
     description: 'Список id избранных залов',
     example: '[1, 2, 3]'
   })
+  @IsOptional()
   public myFavoriteGyms?: number[];
 }

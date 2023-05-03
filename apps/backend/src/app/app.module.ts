@@ -12,6 +12,7 @@ import { GymModule } from './gym/gym.module';
 import { OrderModule } from './order/order.module';
 import { FoodDiaryModule } from './food-diary/food-diary.module';
 import { TrainingDiaryModule } from './training-diary/training-diary.module';
+import { UserBalanceModule } from './user-balance/user-balance.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TrainingDiaryModule } from './training-diary/training-diary.module';
     OrderModule,
     FoodDiaryModule,
     TrainingDiaryModule,
+    UserBalanceModule,
   ],
   controllers: [],
   providers: [],

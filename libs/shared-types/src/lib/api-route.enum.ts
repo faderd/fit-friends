@@ -38,7 +38,9 @@ export enum APIRouteGym {
   Create = '/',
   GetAll = '/',
   GetById = '/:id',
-  AddFavoriteGym = '/add-favorite-gym/:id'
+  AddFavoriteGym = '/add-favorite-gym/:id',
+  RemoveFavoriteGym = '/remove-favorite-gym/:id',
+  GetFavoriteGyms = '/get-favorite-gyms',
 }
 
 export enum APIRouteOrder {
@@ -61,5 +63,13 @@ export enum APIRouteFoodDiary {
 export enum APIRouteTrainingDiary {
   Prefix = '/training-diary',
   Get = '/',
+  GetById = '/:id',
+}
+
+export enum APIRouteUserBalance {
+  Prefix = '/user-balance',
+  Get = '/',
+  Create = '/',
+  Update = '/:id',
   GetById = '/:id',
 }

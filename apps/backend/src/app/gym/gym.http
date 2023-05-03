@@ -1,7 +1,7 @@
 # Создание нового зала
 POST http://localhost:3333/api/gym HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImdmanJoc2dkcyIsImlhdCI6MTY4MTEwNzUxMCwiZXhwIjoxNjgxMTA4NDEwfQ.pJ2osJtWIN1SOgWmEVSdSeMmOWjc-6og4BE0PBvmyy8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ItCY0LLQsNC9IiwiaWF0IjoxNjgzMTAzMDQxLCJleHAiOjE2ODMxMDM5NDF9.MeBvsSFkNKBpNb7EKICRTWT4zcrSwzLGBZvJDmtDqIw
 
 {
   "name": "Super Stars",
@@ -16,5 +16,23 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsI
 # Получить список залов
 GET http://localhost:3333/api/gym HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImdmanJoc2dkcyIsImlhdCI6MTY4MTEwNzUxMCwiZXhwIjoxNjgxMTA4NDEwfQ.pJ2osJtWIN1SOgWmEVSdSeMmOWjc-6og4BE0PBvmyy8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MzEwMzA2NCwiZXhwIjoxNjgzMTAzOTY0fQ.rNObzvwWTEuEyk5Oqmg0Fq5ScsekuV1VNdMnur_Uwa4
+###
+
+# Получить список избранных залов
+GET http://localhost:3333/api/gym/get-favorite-gyms HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MzEwMzA2NCwiZXhwIjoxNjgzMTAzOTY0fQ.rNObzvwWTEuEyk5Oqmg0Fq5ScsekuV1VNdMnur_Uwa4
+###
+
+# Добавить зал в избранное
+PATCH http://localhost:3333/api/gym/add-favorite-gym/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MzEwMzA2NCwiZXhwIjoxNjgzMTAzOTY0fQ.rNObzvwWTEuEyk5Oqmg0Fq5ScsekuV1VNdMnur_Uwa4
+###
+
+# Удалить зал из избранного
+PATCH http://localhost:3333/api/gym/remove-favorite-gym/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MzEwMzA2NCwiZXhwIjoxNjgzMTAzOTY0fQ.rNObzvwWTEuEyk5Oqmg0Fq5ScsekuV1VNdMnur_Uwa4
 ###

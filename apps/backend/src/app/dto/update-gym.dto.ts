@@ -8,4 +8,5 @@ export class UpdateGymDto {
   public photos?: string[];
   public description?: string;
   public price?: number;
+  public inFavoriteOfUsers?: number[];
 }

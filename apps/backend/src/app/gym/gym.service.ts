@@ -16,7 +16,9 @@ export class GymService {
   async create(dto: CreateGymDto) {
     const { name, location, isVerified, options, photos, description, price } = dto;
 
-    const gym = { name, location, isVerified, options, photos, description, price, createdAt: new Date() };
+    const gym = {
+      name, location, isVerified, options, photos, description, price, createdAt: new Date(),
+    };
 
     const gymEntity = new GymEntity(gym);
 
@@ -45,9 +47,34 @@ export class GymService {
   }
 
   async addFavoriteGym(userId: number, newFavoriteGymId: number) {
+    const existGym = await this.gymRepository.findById(newFavoriteGymId);
+
+    if (!existGym) {
+      throw new NotFoundException(newFavoriteGymId);
+    }
+
     const existUser = await this.authService.getUser(userId);
     existUser.myFavoriteGyms.push(newFavoriteGymId);
     const myFavoriteGyms = Array.from(new Set(existUser.myFavoriteGyms));
-    return this.authService.updateUser(userId, {myFavoriteGyms});
+    return this.authService.updateUser(userId, { myFavoriteGyms });
+  }
+
+  async removeFavoriteGym(userId: number, removingFavoriteGymId: number) {
+    const existUser = await this.authService.getUser(userId);
+    const myFavoriteGyms = existUser.myFavoriteGyms.filter((gymId) => gymId !== removingFavoriteGymId);
+
+    return this.authService.updateUser(userId, { myFavoriteGyms });
+  }
+
+  async getFavoriteGyms(userId: number, query: GymQuery) {
+    const existUser = await this.authService.getUser(userId);
+
+    const favoriteGyms = [];
+
+    for (const gymId of existUser.myFavoriteGyms) {
+      favoriteGyms.push(await this.gymRepository.findById(gymId));
+    }
+
+    return favoriteGyms;
   }
 }

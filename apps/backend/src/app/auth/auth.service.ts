@@ -20,7 +20,6 @@ import { UserQuestionnaireEntity } from '../questionnaire/user-questionnaire.ent
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UPLOAD_PATH } from '../app.constant';
-import { fillObject } from '@fit-friends/core';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +35,7 @@ export class AuthService {
   async register(dto: CreateUserDto, avatar: Express.Multer.File, certificate: Express.Multer.File) {
     const { name, email, gender, birthDate, role, location, password } = dto;
     const user = {
-      email, passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], myFavoriteGyms: [], avatar: avatar ? `${UPLOAD_PATH}${avatar[0].filename}` : '',
+      email, passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], avatar: avatar ? `${UPLOAD_PATH}${avatar[0].filename}` : '', myFavoriteGyms: []
     };
 
     const existUser = await this.userRepository
@@ -182,8 +181,8 @@ export class AuthService {
       throw new UserNotFoundException(userId);
     }
 
-    const filteredDto = fillObject(UpdateUserDto, dto);
-    const userEntity = new UserEntity({ ...existUser, ...filteredDto });
+    const userEntity = new UserEntity({ ...existUser, ...dto });
+
     return this.userRepository.update(existUser.id, userEntity);
   }
 }

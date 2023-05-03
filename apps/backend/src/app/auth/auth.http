@@ -20,14 +20,14 @@ Content-Type: application/json
 }
 ###
 
-# Создание нового пользователя в multipart формате
+# Создание нового пользователя - тренер в multipart формате
 POST http://localhost:3333/api/auth/register HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="email"
 
-user9@notfound.local
+coach1@notfound.local
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="name"
 
