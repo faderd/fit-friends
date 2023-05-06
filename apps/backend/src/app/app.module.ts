@@ -13,6 +13,9 @@ import { OrderModule } from './order/order.module';
 import { FoodDiaryModule } from './food-diary/food-diary.module';
 import { TrainingDiaryModule } from './training-diary/training-diary.module';
 import { UserBalanceModule } from './user-balance/user-balance.module';
+import { rabbitMqOptions } from '../config/rabbitmq.config';
+import { emailSenderOptions, getSmtpConfig } from '../config/email.config';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -20,7 +23,7 @@ import { UserBalanceModule } from './user-balance/user-balance.module';
       cache: true,
       isGlobal: true,
       envFilePath: ENV_FILE_PATH,
-      load: [jwtConfig],
+      load: [jwtConfig, rabbitMqOptions, emailSenderOptions],
       validationSchema: envSchema,
     }),
     AuthModule,
@@ -33,6 +36,7 @@ import { UserBalanceModule } from './user-balance/user-balance.module';
     FoodDiaryModule,
     TrainingDiaryModule,
     UserBalanceModule,
+    MailerModule.forRootAsync(getSmtpConfig()),
   ],
   controllers: [],
   providers: [],
