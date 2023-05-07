@@ -23,7 +23,7 @@ export * from './lib/order.interface';
 export * from './lib/payment-method.enum';
 export * from './lib/request-personal-training.interface';
 export * from './lib/status-request-training.enum';
-export * from './lib/notification.interface';
+export * from './lib/notify.interface';
 export * from './lib/review.interface';
 export * from './lib/order-sort-type.enum';
 export * from './lib/meal-type.enum';

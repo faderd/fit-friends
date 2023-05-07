@@ -44,6 +44,12 @@ export enum APIRouteReview {
   GetByTrainingId = '/:id',
 }
 
+export enum APIRouteNotify {
+  Prefix = '/notify',
+  Get = '/',
+  Remove = '/:id',
+}
+
 export enum APIRouteGym {
   Prefix = '/gym',
   Create = '/',

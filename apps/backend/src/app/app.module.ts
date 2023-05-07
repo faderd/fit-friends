@@ -17,6 +17,7 @@ import { emailSenderOptions, getSmtpConfig } from '../config/email.config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailSubscriberModule } from './email-subscriber/email-subscriber.module';
 import { EmailSenderModule } from './email-sender/email-sender.module';
+import { NotifyModule } from './notify/review.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { EmailSenderModule } from './email-sender/email-sender.module';
     MailerModule.forRootAsync(getSmtpConfig()),
     EmailSubscriberModule,
     EmailSenderModule,
+    NotifyModule,
   ],
   controllers: [],
   providers: [],

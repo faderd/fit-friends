@@ -1,6 +1,6 @@
-export interface NotificationInterface {
+export interface NotifyInterface {
   id?: number;
   notificationDate: Date;
-  user: number;
+  userId: number;
   text: string;
 }
