@@ -13,10 +13,11 @@ import { CoachQuestionnaireRepository } from '../questionnaire/coach-questionnai
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { RefreshTokenRepository } from '../refresh-token/refresh-token.repository';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [PrismaModule, AuthModule, OrderModule, UserModule],
   controllers: [GymController],
-  providers: [GymRepository, GymService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository],
+  providers: [GymRepository, GymService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository, UserService],
 })
 export class GymModule {}

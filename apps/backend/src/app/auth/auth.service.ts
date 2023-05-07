@@ -20,6 +20,7 @@ import { UserQuestionnaireEntity } from '../questionnaire/user-questionnaire.ent
 import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UPLOAD_PATH } from '../app.constant';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -29,13 +30,14 @@ export class AuthService {
     private readonly coachQuestionnaireRepository: CoachQuestionnaireRepository,
     private readonly jwtService: JwtService,
     private readonly refreshTokenService: RefreshTokenService,
+    private readonly userService: UserService,
     @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
   ) { }
 
   async register(dto: CreateUserDto, avatar: Express.Multer.File, certificate: Express.Multer.File) {
     const { name, email, gender, birthDate, role, location, password } = dto;
     const user = {
-      email, passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], avatar: avatar ? `${UPLOAD_PATH}${avatar[0].filename}` : '', myFavoriteGyms: []
+      email, passwordHash: '', name, gender, role, location, createdAt: dayjs().toDate(), birthDate: birthDate ? dayjs(birthDate).toDate() : '', friends: [], avatar: avatar ? `${UPLOAD_PATH}${avatar[0].filename}` : '', myFavoriteGyms: [], subscribers: []
     };
 
     const existUser = await this.userRepository
@@ -78,12 +80,7 @@ export class AuthService {
   }
 
   async getUser(id: number) {
-    const existUser = await this.userRepository.findById(id);
-    if (!existUser) {
-      throw new UserNotFoundException(id);
-    }
-
-    return existUser;
+    return this.userService.getUser(id);
   }
 
   async loginUser(user: UserInterface) {

@@ -15,4 +15,5 @@ export interface UserInterface {
   createdAt: Date;
   friends: number[];
   myFavoriteGyms: number[];
+  subscribers: number[];
 }

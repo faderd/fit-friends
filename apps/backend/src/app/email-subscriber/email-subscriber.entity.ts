@@ -1,13 +1,10 @@
-import { EntityInterface } from '@readme/core';
-import { SubscriberInterface } from '@readme/shared-types';
+import { EntityInterface } from '@fit-friends/core';
+import { SubscriberInterface } from '@fit-friends/shared-types';
 
 export class EmailSubscriberEntity implements EntityInterface<EmailSubscriberEntity>, SubscriberInterface {
-  public id: string;
-  public email: string;
-  public firstname: string;
-  public lastname: string;
-  public userId: string;
-  public newPosts: string[];
+  public id: number;
+  public userId: number;
+  public newTrainings: number[];
 
   constructor(emailSubscriber: SubscriberInterface) {
     this.fillEntity(emailSubscriber);
@@ -18,11 +15,8 @@ export class EmailSubscriberEntity implements EntityInterface<EmailSubscriberEnt
   }
 
   public fillEntity(emailSubscriber: SubscriberInterface) {
-    this.id = emailSubscriber.id ?? '';
-    this.email = emailSubscriber.email;
-    this.firstname = emailSubscriber.firstname;
-    this.lastname = emailSubscriber.lastname;
+    this.id = emailSubscriber.id;
     this.userId = emailSubscriber.userId;
-    this.newPosts = emailSubscriber.newPosts;
+    this.newTrainings = emailSubscriber.newTrainings;
   }
 }

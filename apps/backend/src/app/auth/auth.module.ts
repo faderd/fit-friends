@@ -13,6 +13,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { MulterModule } from '@nestjs/platform-express';
 import { getMulterOptions } from '../../config/multer.config';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { getMulterOptions } from '../../config/multer.config';
     AuthService,
     JwtStrategy,
     LocalStrategy,
-    JwtRefreshStrategy,
+    JwtRefreshStrategy, UserService
   ],
 })
 export class AuthModule { }

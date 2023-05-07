@@ -11,6 +11,17 @@ export enum APIRouteAuth {
   UpdateUser = '/update',
 }
 
+export enum APIRouteEmailSubscriber {
+  Prefix = '/email-subscriber',
+  AddSubscriber = '/add-subscriber/:coachId',
+  RemoveSubscriber = 'remove-subscriber/:coachId',
+}
+
+export enum APIRouteEmailSender {
+  Prefix = '/email-sender',
+  Send = '/',
+}
+
 export enum APIRouteUser {
   Prefix = '/user',
   GetMyFriends = 'get-my-friends',

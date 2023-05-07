@@ -6,11 +6,13 @@ import { TrainingEntity } from './training.entity';
 import { TrainingRepository } from './training.repository';
 import { TrainingQuery } from './query/training.query';
 import { getTrainingBackground } from '../../helpers';
+import { EmailSubscriberController } from '../email-subscriber/email-subscriber.controller';
 
 @Injectable()
 export class TrainingService {
   constructor(
     private readonly trainingRepository: TrainingRepository,
+    private readonly subscriberController: EmailSubscriberController
   ) { }
 
   async create(dto: CreateTrainingDto, coachId: number) {
@@ -20,6 +22,8 @@ export class TrainingService {
     const trainingEntity = new TrainingEntity(training);
 
     const createdTraining = await this.trainingRepository.create(trainingEntity);
+
+    this.subscriberController.addNewTraining({newTrainingId: createdTraining.id, coachId});
 
     return createdTraining;
   }

@@ -16,10 +16,15 @@ import { CoachQuestionnaireRepository } from '../questionnaire/coach-questionnai
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { RefreshTokenRepository } from '../refresh-token/refresh-token.repository';
+import { EmailSubscriberController } from '../email-subscriber/email-subscriber.controller';
+import { UserService } from '../user/user.service';
+import { EmailSubscriberService } from '../email-subscriber/email-subscriber.service';
+import { EmailSubscriberRepository } from '../email-subscriber/email-subscriber.repository';
+import { EmailSenderService } from '../email-sender/email-sender.service';
 
 @Module({
   imports: [PrismaModule, AuthModule, UserModule],
   controllers: [OrderController],
-  providers: [OrderRepository, OrderService, GymRepository, GymService, TrainingRepository, TrainingService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository],
+  providers: [OrderRepository, OrderService, GymRepository, GymService, TrainingRepository, TrainingService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository, EmailSubscriberController, UserService, EmailSubscriberService, EmailSubscriberRepository, EmailSenderService],
 })
 export class OrderModule {}

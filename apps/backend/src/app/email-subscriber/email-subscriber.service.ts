@@ -1,33 +1,51 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { EMAIL_SUBSCRIBER_EXISTS } from './email-subscriber.constant';
+import { Injectable } from '@nestjs/common';
 import { EmailSubscriberEntity } from './email-subscriber.entity';
+import { UserService } from '../user/user.service';
+import { EmailSenderService } from '../email-sender/email-sender.service';
+import { NewTrainingInfoDto } from '../dto/new-training-info.dto';
+import { EmailSubscriberRepository } from './email-subscriber.repository';
 
 @Injectable()
 export class EmailSubscriberService {
   constructor(
     private readonly emailSubscriberRepository: EmailSubscriberRepository,
     private readonly emailSenderService: EmailSenderService,
+    private readonly userService: UserService,
   ) { }
 
-  async addSubscriber(subscriber: CreateSubscriberDto) {
-    const { email } = subscriber;
-    const existSubscriber = await this.emailSubscriberRepository.findByEmail(email);
+  async addSubscriber(coachId: number, userId: number) {
+    await this.userService.addSubscriber(coachId, userId);
 
-    if (existSubscriber) {
-      throw new ConflictException(EMAIL_SUBSCRIBER_EXISTS);
-    }
-
-    this.emailSenderService.sendNotifyNewSubscriber(subscriber);
-
-    return this.emailSubscriberRepository
-      .create(new EmailSubscriberEntity({ ...subscriber, newPosts: [] }))
+    await this.emailSenderService.sendNotifyNewSubscriber(userId);
   }
 
-  async addTraining(newPostInfo: NewPostInfoDto) {
-    const subscribers = await this.emailSubscriberRepository.findAll();
-    subscribers.forEach((subscriber) => {
-      subscriber.newPosts.push(`${newPostInfo.newPostId}`);
-      this.emailSubscriberRepository.update(subscriber.id, new EmailSubscriberEntity(subscriber));
-    });
+  async removeSubscriber(coachId: number, userId: number) {
+    this.userService.removeSubscriber(coachId, userId);
+  }
+
+  async addTraining(newTrainingInfo: NewTrainingInfoDto) {
+    const { coachId, newTrainingId } = newTrainingInfo;
+
+    const coach = await this.userService.getUser(coachId);
+
+    const subscribersIds = coach.subscribers;
+
+    for (const subscriberId of subscribersIds) {
+      const existSubscribe = await this.emailSubscriberRepository.findByUserId(subscriberId);
+
+      if (!existSubscribe) {
+        const emailSubscriberEntity = new EmailSubscriberEntity({
+          userId: subscriberId,
+          newTrainings: new Array(newTrainingId)
+        });
+
+        await this.emailSubscriberRepository.create(emailSubscriberEntity);
+      } else {
+
+        existSubscribe.newTrainings.push(newTrainingId);
+        const subscribeEntity = new EmailSubscriberEntity(existSubscribe);
+        await this.emailSubscriberRepository.update(existSubscribe.id, subscribeEntity);
+      }
+    }
   }
 }

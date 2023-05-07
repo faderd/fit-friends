@@ -1,0 +1,11 @@
+# Создать подписку
+GET http://localhost:3333/api/email-subscriber/add-subscriber/2 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MzQ2OTAyMSwiZXhwIjoxNjgzNDY5OTIxfQ.hSyqWbl-js-58HFhYrgCVdp8AM6NZju8e7QU6WgvYns
+###
+
+# Удалить подписку
+GET http://localhost:3333/api/email-subscriber/remove-subscriber/2 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MzQ2ODExNCwiZXhwIjoxNjgzNDY5MDE0fQ.Lq99Jex_EcDOp0Y76k1WvPHQ-K8FmMHw5jnyX_YOUmU
+###

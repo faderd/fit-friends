@@ -35,6 +35,15 @@ model User {
   TrainingDiary           TrainingDiary[]
   FoodDiary               FoodDiary[]
   UserBalance             UserBalance[]
+  subscribers             Int[]
+  EmailSubscriber         EmailSubscriber[]
+}
+
+model EmailSubscriber {
+  id           Int      @id @default(autoincrement())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       Int
+  newTrainings Int[]
 }
 
 model UserQuestionnaire {

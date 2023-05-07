@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteReview, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ReviewService } from './review.service';
@@ -67,9 +67,9 @@ export class ReviewController {
   })
   async getByTrainingId(
     @Query() query: ReviewQuery,
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ) {
-    const reviews = await this.reviewService.getByTrainingId(+id, query);
+    const reviews = await this.reviewService.getByTrainingId(id, query);
 
     return reviews.map((review) => fillObject(ReviewRdo, review));
   }

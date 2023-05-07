@@ -26,9 +26,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsI
 ###
 
 # Добавить зал в избранное
-PATCH http://localhost:3333/api/gym/add-favorite-gym/1 HTTP/1.1
+PATCH http://localhost:3333/api/gym/add-favorite-gym/11 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MzEwMzA2NCwiZXhwIjoxNjgzMTAzOTY0fQ.rNObzvwWTEuEyk5Oqmg0Fq5ScsekuV1VNdMnur_Uwa4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQmNCy0LDQvSIsImlhdCI6MTY4MzQ2OTAyMSwiZXhwIjoxNjgzNDY5OTIxfQ.hSyqWbl-js-58HFhYrgCVdp8AM6NZju8e7QU6WgvYns
 ###
 
 # Удалить зал из избранного
