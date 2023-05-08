@@ -18,6 +18,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailSubscriberModule } from './email-subscriber/email-subscriber.module';
 import { EmailSenderModule } from './email-sender/email-sender.module';
 import { NotifyModule } from './notify/review.module';
+import { PersonalTrainingModule } from './personal-training/personal-training.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { NotifyModule } from './notify/review.module';
     EmailSubscriberModule,
     EmailSenderModule,
     NotifyModule,
+    PersonalTrainingModule,
   ],
   controllers: [],
   providers: [],

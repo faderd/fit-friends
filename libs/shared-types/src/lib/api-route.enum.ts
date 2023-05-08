@@ -38,6 +38,14 @@ export enum APIRouteTraining {
   GetById = '/:id',
 }
 
+export enum APIRoutePersonalTraining {
+  Prefix = '/personal-training',
+  Create = '/',
+  GetByTargetUserId = '/',
+  GetById = '/:id',
+  Update = '/:id',
+}
+
 export enum APIRouteReview {
   Prefix = '/review',
   Create = '/',
