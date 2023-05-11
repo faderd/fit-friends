@@ -1,13 +1,11 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteGym, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Controller, Get, Param, ParseIntPipe, Patch, Query, Req, UseGuards } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GymService } from './gym.service';
 import { GymQuery } from './query/gym.query';
 import { GymRdo } from '../rdo/gym.rdo';
-import { CreateGymDto } from '../dto/create-gym.dto';
-import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
 import { UserRdo } from '../rdo/user.rdo';
 import { UserNotUserException } from '../auth/exceptions/user-not-user.exception';
 
@@ -17,39 +15,6 @@ export class GymController {
   constructor(
     private readonly gymService: GymService,
   ) { }
-
-  @Post(APIRouteGym.Create)
-  @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({
-    type: GymRdo,
-    description: 'Новый зал создан',
-  })
-  @ApiBadRequestResponse({
-    description: 'Bad Request',
-  })
-  @UseGuards(JwtAuthGuard)
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token',
-    required: true,
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Пользователь не авторизован',
-  })
-  async create(
-    @Body() dto: CreateGymDto,
-    @Req() request: RequestWithTokenPayload<TokenPayload>
-  ) {
-    const { user: tokenPayload } = request;
-
-    if (tokenPayload.role !== UserRole.Coach) {
-      throw new UserNotCoachException();
-    }
-
-    const newGym = await this.gymService.create(dto);
-    return fillObject(GymRdo, newGym);
-  }
-
   @Get(APIRouteGym.GetAll)
   @ApiOkResponse({
     type: [GymRdo],

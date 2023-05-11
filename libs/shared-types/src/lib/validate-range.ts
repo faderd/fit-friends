@@ -51,3 +51,8 @@ export enum ReviewValueRange {
   Min = 1,
   Max = 5,
 }
+
+export enum GymPriceRange {
+  Min = 100,
+  Max = 5000,
+}
