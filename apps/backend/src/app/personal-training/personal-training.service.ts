@@ -31,8 +31,12 @@ export class PersonalTrainingService {
     return existRequest;
   }
 
-  async getRequestsByCoachId(targetUserId: number, query: PersonalTrainingQuery) {
-    return this.personalTrainingRepository.findByInitiatorId(targetUserId, query);
+  async getRequestsByInitiatorUserId(initiatorUserId: number, query: PersonalTrainingQuery) {
+    return this.personalTrainingRepository.findByInitiatorId(initiatorUserId, query);
+  }
+
+  async getRequestsByTargetUserId(targetUserId: number, query: PersonalTrainingQuery) {
+    return this.personalTrainingRepository.findByTargetId(targetUserId, query);
   }
 
   async updateRequest(requestId: number, dto: UpdatePersonalTrainingDto, userId: number) {

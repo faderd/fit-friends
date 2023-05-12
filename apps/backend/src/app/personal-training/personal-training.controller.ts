@@ -73,7 +73,7 @@ export class PersonalTrainingController {
   ) {
     const { user: tokenPayload } = request;
 
-    const requests = await this.personalTrainingService.getRequestsByCoachId(tokenPayload.sub, query);
+    const requests = await this.personalTrainingService.getRequestsByTargetUserId(tokenPayload.sub, query);
 
     return requests.map((training) => fillObject(PersonalTrainingRdo, training));
   }

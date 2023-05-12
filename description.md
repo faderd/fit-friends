@@ -13,10 +13,17 @@
 В .backend.env должны находиться следующие переменные:
   * `JWT_AT_SECRET` - секрет Access Token;
   * `JWT_AT_EXPIRES_IN` - срок действия Access Token;
-  * `JWT_RT_SECRET` -  - секрет Refresh Token;
+  * `JWT_RT_SECRET` - секрет Refresh Token;
   * `JWT_RT_EXPIRES_IN` - срок действия Refresh Token;
 
+  * `SMTP_HOST=localhost` - адрес почтового сервера;
+  * `SMTP_PORT=5025` - порт почтового сервера;
+
 ## Работа проекта
+
+### Команды для работы с базой
+Чтобы заполнить базу данных тестовыми данными, нужно выполнить команду:
+`nx run backend:db-fill`
 
 ### Запуск приложений
 

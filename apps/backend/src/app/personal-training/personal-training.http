@@ -1,25 +1,25 @@
 # Создание нового запроса на персональную тренировку
 POST http://localhost:3333/api/personal-training HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ItCY0LLQsNC9IiwiaWF0IjoxNjgzNDY5ODI2LCJleHAiOjE2ODM0NzA3MjZ9.0derYjBvd4PDpCgN1NVhTb2ZYRFoilRg5u-5dKxR9ws
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQktCQ0JvQldCg0JjQryIsImlhdCI6MTY4Mzg4NTE3MywiZXhwIjoxNjgzODg2MDczfQ.trfH9ZaTZFY_hgepPdJOPM-EoqyDpO-dOhWMGrINtBI
 
 {
-  "targetUserId": "2",
+  "targetUserId": "2"
 }
 ###
 
 # Редактирование запроса
 PATCH http://localhost:3333/api/personal-training/1 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImdmanJoc2dkcyIsImlhdCI6MTY4MTMyMjUzNywiZXhwIjoxNjgxMzIzNDM3fQ.c53mNKP-1h3X2SKsLUZj0AMz244f8gfgxC2Lk5s7Apk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQktCQ0JvQldCg0JjQryIsImlhdCI6MTY4Mzg4NTE3MywiZXhwIjoxNjgzODg2MDczfQ.trfH9ZaTZFY_hgepPdJOPM-EoqyDpO-dOhWMGrINtBI
 
 {
-  "status": "Отклонён",
+  "status": "Отклонён"
 }
 ###
 
 # Получение списка запросов, предназначенных мне
-GET http://localhost:3333/api/personal-training HTTP/1.1
+GET http://localhost:3333/api/personal-training/i-am-target HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiY29hY2gxQG5vdGZvdW5kLmxvY2FsIiwicm9sZSI6ImNvYWNoIiwibmFtZSI6ImdmanJoc2dkcyIsImlhdCI6MTY4MTMyMjUzNywiZXhwIjoxNjgxMzIzNDM3fQ.c53mNKP-1h3X2SKsLUZj0AMz244f8gfgxC2Lk5s7Apk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQktCQ0JvQldCg0JjQryIsImlhdCI6MTY4Mzg4NTE3MywiZXhwIjoxNjgzODg2MDczfQ.trfH9ZaTZFY_hgepPdJOPM-EoqyDpO-dOhWMGrINtBI
 ###

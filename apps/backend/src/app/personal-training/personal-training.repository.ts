@@ -37,7 +37,18 @@ export class PersonalTrainingRepository implements CRUDRepositoryInterface<Perso
   public async findByInitiatorId(id: number, { limit, sortDirection, page }: PersonalTrainingQuery): Promise<RequestPersonalTrainingInterface[]> {
     return this.prisma.requestPersonalTraining.findMany({
       where: {
-        initiatorId: id,
+        initiatorUserId: id,
+      },
+      take: limit,
+      orderBy: { updatedAt: sortDirection },
+      skip: page > 0 ? limit * (page - 1) : undefined,
+    }) as unknown as RequestPersonalTrainingInterface[];
+  }
+
+  public async findByTargetId(id: number, { limit, sortDirection, page }: PersonalTrainingQuery): Promise<RequestPersonalTrainingInterface[]> {
+    return this.prisma.requestPersonalTraining.findMany({
+      where: {
+        targetUserId: id,
       },
       take: limit,
       orderBy: { updatedAt: sortDirection },
