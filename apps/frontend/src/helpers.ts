@@ -4,10 +4,6 @@ import { UserData } from './app/types/user-data';
 import { UserFilters } from './app/types/user-filters';
 import { gymFilters } from './app/types/gym-filters';
 import { ordersFilters } from './app/types/orders-filters';
-import { fetchTraining } from './app/store/api-actions';
-import { getTraining } from './app/store/app-data/selectors';
-import { useAppSelector } from './app/hooks';
-import { store } from './app/store';
 
 export const applyFilters = (users: UserData[], filters: UserFilters) => {
   let filteredUsers = users.slice();
