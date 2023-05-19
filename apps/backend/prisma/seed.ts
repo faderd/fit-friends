@@ -194,12 +194,14 @@ function getTrainingData() {
     isSpecialOffer: Math.random() < 0.5,
     description: getRandomStringFromArray(TRAINING_DESCRIPTIONS),
     rate: 0,
-    userId: generateRandomNumber(ENTITY_COUNT / 2, ENTITY_COUNT),
+    // userId: generateRandomNumber(ENTITY_COUNT / 2 + 1, ENTITY_COUNT),
+    userId: 6,
     calories: generateRandomNumber(CaloriesLossRange.Min, CaloriesLossRange.Max),
   }
 }
 
 async function fillDb() {
+  // создадим пользователей
   for (let i = 1; i <= ENTITY_COUNT; i++) {
     await prisma.gym.create({ data: getGymData() });
 
@@ -213,7 +215,10 @@ async function fillDb() {
       await prisma.user.create({ data: getCoachData(i) });
       await prisma.coachQuestionnaire.create({ data: getCoachQuestionnaire(i) });
     }
+  }
 
+  // создадим тренировки
+  for (let i = 1; i <= ENTITY_COUNT; i++) {
     await prisma.training.create({ data: getTrainingData() });
   }
 }

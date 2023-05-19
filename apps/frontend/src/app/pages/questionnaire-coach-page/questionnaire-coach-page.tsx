@@ -9,6 +9,7 @@ import TrainingLevelCheckbox from '../../components/training-level-checkbox/trai
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { register as registerUser } from '../../store/api-actions';
 import { getRegisterDataUser, isUserAuthorized } from '../../store/user-process/selectors';
+import { storeIsToQuestionnairePage } from '../../store/user-process/user-process';
 
 type ReactHookFormData = {
   certificate: File;
@@ -54,6 +55,7 @@ function QuestionnaireCoachPage(): JSX.Element {
       const registerData = { registerDataUser, registerDataQuestionnaire };
       dispatch(registerUser(registerData));
       toast.info('Пользователь успешно зарегистрирован');
+      dispatch(storeIsToQuestionnairePage(false));
       navigate(AppRoute.Login)
     }
   };

@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import TrainingLevelCheckbox from '../../components/training-level-checkbox/training-level-checkbox';
 import { useNavigate } from 'react-router-dom';
 import SpecializationCheckbox from '../../components/specialization-checkbox/specialization-checkbox';
+import { storeIsToQuestionnairePage } from '../../store/user-process/user-process';
 
 type ReactHookFormData = {
   caloriesLoss: string;
@@ -54,6 +55,7 @@ function QuestionnaireUserPage(): JSX.Element {
       const registerData = { registerDataUser, registerDataQuestionnaire };
       dispatch(registerUser(registerData));
       toast.info('Пользователь успешно зарегистрирован');
+      dispatch(storeIsToQuestionnairePage(false));
       navigate(AppRoute.Login)
     }
   };

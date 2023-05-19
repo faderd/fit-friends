@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { AppRoute, PageTitle, PageType } from '../../../const';
 import PageHeader from '../../components/page-header/page-header';
+import SpecialForYouTrainings from '../../components/special-for-you-trainings/special-for-you-trainings';
 
 function IndexPage(): JSX.Element {
   document.title = PageTitle.Index;
@@ -17,77 +18,9 @@ function IndexPage(): JSX.Element {
         <PageHeader page={PageType.Index} />
         <main>
           <h1 className="visually-hidden">FitFriends — Время находить тренировки, спортзалы и друзей спортсменов</h1>
-          <section className="special-for-you">
-            <div className="container">
-              <div className="special-for-you__wrapper">
-                <div className="special-for-you__title-wrapper">
-                  <h2 className="special-for-you__title">Специально подобрано для вас</h2>
-                  <div className="special-for-you__controls">
-                    <button className="btn-icon special-for-you__control" type="button" aria-label="previous">
-                      <svg width="16" height="14" aria-hidden="true">
-                        <use xlinkHref="#arrow-left"></use>
-                      </svg>
-                    </button>
-                    <button className="btn-icon special-for-you__control" type="button" aria-label="next">
-                      <svg width="16" height="14" aria-hidden="true">
-                        <use xlinkHref="#arrow-right"></use>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                <ul className="special-for-you__list">
-                  <li className="special-for-you__item">
-                    <div className="thumbnail-preview">
-                      <div className="thumbnail-preview__image">
-                        <picture>
-                          <source type="image/webp" srcSet="img/content/thumbnails/preview-03.webp, img/content/thumbnails/preview-03@2x.webp 2x" />
-                          <img src="img/content/thumbnails/preview-03.jpg" srcSet="img/content/thumbnails/preview-03@2x.jpg 2x" width="452" height="191" alt="" />
-                        </picture>
-                      </div>
-                      <div className="thumbnail-preview__inner">
-                        <h3 className="thumbnail-preview__title">crossfit</h3>
-                        <div className="thumbnail-preview__button-wrapper">
-                          <a className="btn btn--small thumbnail-preview__button" href="#">Подробнее</a>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="special-for-you__item">
-                    <div className="thumbnail-preview">
-                      <div className="thumbnail-preview__image">
-                        <picture>
-                          <source type="image/webp" srcSet="img/content/thumbnails/preview-02.webp, img/content/thumbnails/preview-02@2x.webp 2x" />
-                          <img src="img/content/thumbnails/preview-02.jpg" srcSet="img/content/thumbnails/preview-02@2x.jpg 2x" width="452" height="191" alt="" />
-                        </picture>
-                      </div>
-                      <div className="thumbnail-preview__inner">
-                        <h3 className="thumbnail-preview__title">power</h3>
-                        <div className="thumbnail-preview__button-wrapper">
-                          <a className="btn btn--small thumbnail-preview__button" href="#">Подробнее</a>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="special-for-you__item">
-                    <div className="thumbnail-preview">
-                      <div className="thumbnail-preview__image">
-                        <picture>
-                          <source type="image/webp" srcSet="img/content/thumbnails/preview-01.webp, img/content/thumbnails/preview-01@2x.webp 2x" />
-                          <img src="img/content/thumbnails/preview-01.jpg" srcSet="img/content/thumbnails/preview-01@2x.jpg 2x" width="452" height="191" alt="" />
-                        </picture>
-                      </div>
-                      <div className="thumbnail-preview__inner">
-                        <h3 className="thumbnail-preview__title">boxing</h3>
-                        <div className="thumbnail-preview__button-wrapper">
-                          <a className="btn btn--small thumbnail-preview__button" href="#">Подробнее</a>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
+
+          <SpecialForYouTrainings />
+
           <section className="special-offers">
             <div className="container">
               <div className="special-offers__wrapper">

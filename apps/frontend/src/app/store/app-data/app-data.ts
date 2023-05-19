@@ -14,6 +14,7 @@ export const getInitialStateAppData = (): AppData => ({
   gym: null,
   orders: [],
   coachOrdersInfo: [],
+  trainingsForMe: [],
 });
 
 export const appData = createSlice({
@@ -40,6 +41,9 @@ export const appData = createSlice({
     },
     storeCoachOrdersInfo: (state, action: PayloadAction<CoachOrdersInfo[]>) => {
       state.coachOrdersInfo = action.payload;
+    },
+    storeTrainingsForMe: (state, action: PayloadAction<TrainingInterface[]>) => {
+      state.trainingsForMe = action.payload;
     },
   },
   extraReducers(builder) {
@@ -112,4 +116,4 @@ export const appData = createSlice({
   }
 });
 
-export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo } = appData.actions;
+export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo, storeTrainingsForMe } = appData.actions;

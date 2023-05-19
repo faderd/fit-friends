@@ -97,6 +97,4 @@ export class UpdateTrainingDto {
   @IsBoolean()
   @IsOptional()
   public isSpecialOffer?: boolean;
-
-  // public rate?: number;
 }

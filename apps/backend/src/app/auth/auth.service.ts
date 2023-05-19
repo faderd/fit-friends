@@ -83,13 +83,16 @@ export class AuthService {
     return this.userService.getUser(id);
   }
 
-  async loginUser(user: UserInterface) {
+  async loginUser(user: UserInterface, refreshTokenId?: string) {
     const payload: TokenPayload = {
       sub: user.id,
       email: user.email,
       role: user.role,
       name: user.name,
     };
+
+    await this.refreshTokenService
+      .deleteRefreshSession(refreshTokenId);
 
     const refreshTokenPayload: RefreshTokenPayload = {
       ...payload, refreshTokenId: randomUUID()

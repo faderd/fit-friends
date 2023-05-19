@@ -8,5 +8,5 @@ export type RegisterDataUser = {
   birthDate?: Date,
   role: UserRole,
   location: UserLocation,
-  avatar: null | File,
+  avatar: File,
 }

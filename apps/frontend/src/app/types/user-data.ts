@@ -5,7 +5,7 @@ export type UserData = {
   id: number;
   email: string;
   name: string;
-  avatar: string;
+  avatar: File;
   gender: Gender;
   birthDate: Date | string;
   role: UserRole;

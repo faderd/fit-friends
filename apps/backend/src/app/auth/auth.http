@@ -3,7 +3,7 @@ POST http://localhost:3333/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "user1@notfound.local",
+  "email": "user200@notfound.local",
   "name": "Иван",
   "password": "123456",
   "gender": "мужчина",
@@ -27,7 +27,7 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="email"
 
-coach1@notfound.local
+coach2@notfound.local
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="name"
 
@@ -82,7 +82,7 @@ POST http://localhost:3333/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "user1@notfound.local",
+  "email": "user2@notfound.local",
   "password": "123456"
 }
 ###

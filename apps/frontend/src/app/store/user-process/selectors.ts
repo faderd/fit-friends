@@ -3,6 +3,7 @@ import { State } from '../../types/state';
 import { UserData } from '../../types/user-data';
 
 export const getUser = (state: State) => state[NameSpace.User].user;
+export const getUserId = (state: State) => state[NameSpace.User].user?.id;
 
 export const getFavoriteGyms = (state: State) => state[NameSpace.User].user?.myFavoriteGyms;
 

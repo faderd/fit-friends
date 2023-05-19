@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteTraining, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, ConsoleLogger, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -49,7 +49,7 @@ export class TrainingController {
     return fillObject(TrainingRdo, newTraining);
   }
 
-  @Get(APIRouteTraining.Create)
+  @Get(APIRouteTraining.GetAll)
   @ApiOkResponse({
     type: [TrainingRdo],
     description: 'Данные получены'
@@ -66,10 +66,35 @@ export class TrainingController {
   @ApiUnauthorizedResponse({
     description: 'Пользователь не авторизован',
   })
-  async getMyTrainings(
+  async getTrainings(
     @Query() query: TrainingQuery,
   ) {
     const trainings = await this.trainingService.getTrainings(query);
+
+    return trainings.map((training) => fillObject(TrainingRdo, training));
+  }
+
+  @Get(APIRouteTraining.GetSpecialForMe)
+  @ApiOkResponse({
+    type: [TrainingRdo],
+    description: 'Данные получены'
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  async getSpecialForMeTrainings(
+    @Query() query: TrainingQuery,
+  ) {
+    const trainings = await this.trainingService.getSpecialForMeTrainings(query);
 
     return trainings.map((training) => fillObject(TrainingRdo, training));
   }

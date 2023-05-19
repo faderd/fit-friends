@@ -36,6 +36,7 @@ export enum APIRouteTraining {
   GetAll = '/',
   Update = '/:id',
   GetById = '/:id',
+  GetSpecialForMe = '/get-special-for-me',
 }
 
 export enum APIRoutePersonalTraining {

@@ -69,9 +69,9 @@ function App(): JSX.Element {
       <Route
         path={AppRoute.Index}
         element={
-          <PrivateRoute>
+          <PrivateRouteUser>
             <IndexPage />
-          </PrivateRoute>
+          </PrivateRouteUser>
         }
       />
       <Route

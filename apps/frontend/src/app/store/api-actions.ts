@@ -11,7 +11,7 @@ import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
 import { UserData } from '../types/user-data';
 import { redirectToPrevious } from './app-data/action';
-import { storeCoachOrdersInfo, storeGyms, storeIsDataLoadedStatus, storeOrders, storeReviews, storeTraining, storeTrainings } from './app-data/app-data';
+import { storeCoachOrdersInfo, storeGyms, storeIsDataLoadedStatus, storeOrders, storeReviews, storeTraining, storeTrainings, storeTrainingsForMe } from './app-data/app-data';
 import { storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 import { UpdateTrainingDto } from '../types/update-training.dto';
 import { CreateReviewDto } from '../types/create-review.dto';
@@ -207,6 +207,7 @@ export const fetchTrainings = createAsyncThunk<void,
   {
     sortDirection?: string,
     isOnlyFreeTrainings?: string,
+    limit?: string,
   },
   {
     dispatch: AppDispatch,
@@ -215,12 +216,34 @@ export const fetchTrainings = createAsyncThunk<void,
   }
 >(
   'data/fetchTrainings',
-  async ({ sortDirection, isOnlyFreeTrainings }, { dispatch, extra: api }) => {
+  async ({ sortDirection, isOnlyFreeTrainings, limit }, { dispatch, extra: api }) => {
     const { data } = await api.get<TrainingInterface[]>(`training/?
     ${sortDirection ? `sortType = ${sortDirection}` : ''}
     ${isOnlyFreeTrainings ? `&isOnlyFreeTrainings=${isOnlyFreeTrainings}` : ''}
+    ${limit ? `&limit=${limit}` : ''}
     `);
     dispatch(storeTrainings(data));
+  }
+);
+
+export const fetchSpecialForMeTrainings = createAsyncThunk<void,
+  {
+    trainingType?: string,
+    trainingLevel?: string,
+    limit?: string,
+  },
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchTrainings',
+  async ({ trainingType, trainingLevel, limit }, { dispatch, extra: api }) => {
+    const queryString = `${trainingType ? `&trainingType=${trainingType}` : ''}${trainingLevel ? `&trainingLevel=${trainingLevel}` : ''}${limit ? `&limit=${limit}` : ''}`;
+
+    const { data } = await api.get<TrainingInterface[]>(`training/get-special-for-me/?${queryString}`);
+    dispatch(storeTrainingsForMe(data));
   }
 );
 
@@ -262,7 +285,7 @@ export const fetchReviews = createAsyncThunk<void,
 >(
   'data/fetchReviews',
   async (trainingId, { dispatch, extra: api }) => {
-    const { data } = await api.get<ReviewInterface[]>(generatePath('review/:id', {id: trainingId.toString()}));
+    const { data } = await api.get<ReviewInterface[]>(generatePath('review/:id', { id: trainingId.toString() }));
     dispatch(storeReviews(data));
   }
 );

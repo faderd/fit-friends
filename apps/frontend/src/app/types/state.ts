@@ -17,6 +17,7 @@ export type AppData = {
   gym: GymInterface | null,
   orders: OrderInterface[],
   coachOrdersInfo: CoachOrdersInfo[],
+  trainingsForMe: TrainingInterface[],
 }
 
 export type UserProcess = {

@@ -1,5 +1,5 @@
 import { CRUDRepositoryInterface } from '@fit-friends/core';
-import { TrainingDuration, TrainingInterface } from '@fit-friends/shared-types';
+import { TrainingDuration, TrainingInterface, TrainingLevel, TrainingType } from '@fit-friends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { Training } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -42,7 +42,7 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
     }) as unknown as TrainingInterface[];
   }
 
-  public async findAll({ limit, sortDirection, isOnlyFreeTrainings, page, minPrice, maxPrice, minCalories, maxCalories, minRate, maxRate, trainingDuration }: TrainingQuery): Promise<TrainingInterface[]> {
+  public async findAll({ limit, sortDirection, isOnlyFreeTrainings, page, minPrice, maxPrice, minCalories, maxCalories, minRate, maxRate, trainingDuration, trainingType, trainingLevel }: TrainingQuery): Promise<TrainingInterface[]> {
 
     if (isOnlyFreeTrainings) {
       return this.prisma.training.findMany({
@@ -57,7 +57,9 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
       price?: { gte?: number; lte?: number },
       calories?: { gte?: number; lte?: number },
       rate?: { gte?: number; lte?: number },
-      trainingDuration?: { in: TrainingDuration[] }
+      trainingDuration?: { in: TrainingDuration[] },
+      type?: { in: TrainingType[] },
+      level?: TrainingLevel,
     } = {};
 
     if (minPrice !== undefined) {
@@ -92,6 +94,14 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
 
     if (trainingDuration !== undefined) {
       whereCondition.trainingDuration = { in: trainingDuration }
+    }
+
+    if (trainingType !== undefined) {
+      whereCondition.type = { in: trainingType }
+    }
+
+    if (trainingLevel !== undefined) {
+      whereCondition.level = trainingLevel;
     }
 
     return this.prisma.training.findMany({

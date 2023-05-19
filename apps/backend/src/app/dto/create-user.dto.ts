@@ -68,6 +68,7 @@ export class CreateUserDto {
     example: {},
     required: true
   })
+  @ValidateNested({ each: true })
   @ValidateNested()
   public questionnaire: QuestionnaireDto;
 }

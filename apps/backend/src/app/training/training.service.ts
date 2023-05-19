@@ -23,7 +23,7 @@ export class TrainingService {
 
     const createdTraining = await this.trainingRepository.create(trainingEntity);
 
-    this.subscriberController.addNewTraining({newTrainingId: createdTraining.id, coachId});
+    this.subscriberController.addNewTraining({ newTrainingId: createdTraining.id, coachId });
 
     return createdTraining;
   }
@@ -41,11 +41,24 @@ export class TrainingService {
     return this.trainingRepository.findAll(query);
   }
 
+  async getSpecialForMeTrainings(query: TrainingQuery) {
+    const { limit } = query;
+
+    // сначала получим наиболее подходящие тренировки
+    const firstStageTrainings = await this.trainingRepository.findAll(query);
+
+    const secondStageQuery = { ...query, trainingLevel: undefined };
+    const secondStageTrainings = firstStageTrainings.length >= limit ? [] : await this.trainingRepository.findAll(secondStageQuery);
+
+    // т.о. отсортированы они от наиболее подходящих к наименее подходящим тренировкам
+    return [...firstStageTrainings, ...secondStageTrainings].splice(0, limit);
+  }
+
   async getTrainingsByCoachId(id: number) {
     return this.trainingRepository.findByCoachId(id);
   }
 
-  async updateTraining(trainingId: number, dto: UpdateTrainingDto | {rate: number}, userId: number) {
+  async updateTraining(trainingId: number, dto: UpdateTrainingDto | { rate: number }, userId: number) {
     const existTraining = await this.trainingRepository.findById(trainingId);
 
     if (!existTraining) {
