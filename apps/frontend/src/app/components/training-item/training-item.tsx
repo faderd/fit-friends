@@ -1,9 +1,9 @@
-import { TrainingInterface } from '@fit-friends/shared-types';
 import { AppRoute } from '../../../const';
 import { Link, generatePath } from 'react-router-dom';
+import { TrainingRdo } from '../../types/training-rdo';
 
 type TrainingItemProps = {
-  training: TrainingInterface;
+  training: TrainingRdo;
   liClassName: string;
 }
 

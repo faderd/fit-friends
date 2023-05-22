@@ -1,11 +1,13 @@
-import { GymInterface, OrderInterface, OrderType, TrainingInterface, TrainingType, UserRole } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, OrderType, TrainingType, UserRole } from '@fit-friends/shared-types';
 import { trainingsFilters } from './app/types/my-trainings-filters';
-import { UserData } from './app/types/user-data';
+import { UserRdo } from './app/types/user-rdo';
 import { UserFilters } from './app/types/user-filters';
 import { gymFilters } from './app/types/gym-filters';
 import { ordersFilters } from './app/types/orders-filters';
+import { TrainingRdo } from './app/types/training-rdo';
+import { DISCOUNT_EMOUNT } from './const';
 
-export const applyFilters = (users: UserData[], filters: UserFilters) => {
+export const applyFilters = (users: UserRdo[], filters: UserFilters) => {
   let filteredUsers = users.slice();
 
   if (Array.isArray(filters.searchParamSpecialization)) {
@@ -25,8 +27,8 @@ export const applyFilters = (users: UserData[], filters: UserFilters) => {
   }
 
   if (filters.searchParamUserTypeSorting) {
-    const users: UserData[] = [];
-    const coaches: UserData[] = [];
+    const users: UserRdo[] = [];
+    const coaches: UserRdo[] = [];
     filteredUsers.forEach((user) => {
 
 
@@ -48,7 +50,7 @@ export const applyFilters = (users: UserData[], filters: UserFilters) => {
   return filteredUsers;
 }
 
-export const applyTrainingsFilters = (trainings: TrainingInterface[], filters: trainingsFilters) => {
+export const applyTrainingsFilters = (trainings: TrainingRdo[], filters: trainingsFilters) => {
   let filteredTrainings = trainings.slice();
 
   if (filters.searchParamMaxPrice) {
@@ -56,42 +58,42 @@ export const applyTrainingsFilters = (trainings: TrainingInterface[], filters: t
     filteredTrainings = filteredTrainings.filter((training) => training.price <= maxPrice);
   }
 
-  if (filters.searchParamMinPrice) {
-    const minPrice = +filters.searchParamMinPrice || 0;
-    filteredTrainings = filteredTrainings.filter((training) => training.price >= minPrice);
-  }
+  // if (filters.searchParamMinPrice) {
+  //   const minPrice = +filters.searchParamMinPrice || 0;
+  //   filteredTrainings = filteredTrainings.filter((training) => training.price >= minPrice);
+  // }
 
   if (filters.searchParamMaxCalories) {
     const maxCalories = +filters.searchParamMaxCalories || 0;
     filteredTrainings = filteredTrainings.filter((training) => training.calories <= maxCalories);
   }
 
-  if (filters.searchParamMinCalories) {
-    const minCalories = +filters.searchParamMinCalories || 0;
-    filteredTrainings = filteredTrainings.filter((training) => training.calories >= minCalories);
-  }
+  // if (filters.searchParamMinCalories) {
+  //   const minCalories = +filters.searchParamMinCalories || 0;
+  //   filteredTrainings = filteredTrainings.filter((training) => training.calories >= minCalories);
+  // }
 
   if (filters.searchParamMaxRate) {
     const maxRate = +filters.searchParamMaxRate || 0;
     filteredTrainings = filteredTrainings.filter((training) => training.rate <= maxRate);
   }
 
-  if (filters.searchParamMinRate) {
-    const minRate = +filters.searchParamMinRate || 0;
-    filteredTrainings = filteredTrainings.filter((training) => training.rate >= minRate);
-  }
+  // if (filters.searchParamMinRate) {
+  //   const minRate = +filters.searchParamMinRate || 0;
+  //   filteredTrainings = filteredTrainings.filter((training) => training.rate >= minRate);
+  // }
 
-  if (Array.isArray(filters.searchParamTrainingDuration)) {
-    filteredTrainings = filteredTrainings.filter((training) => {
-      return filters.searchParamTrainingDuration?.includes(training.trainingDuration);
-    });
-  }
+  // if (Array.isArray(filters.searchParamTrainingDuration)) {
+  //   filteredTrainings = filteredTrainings.filter((training) => {
+  //     return filters.searchParamTrainingDuration?.includes(training.trainingDuration);
+  //   });
+  // }
 
-  if (Array.isArray(filters.searchParamTrainingType)) {
-    filteredTrainings = filteredTrainings.filter((training) => {
-      return filters.searchParamTrainingType?.includes(training.type);
-    });
-  }
+  // if (Array.isArray(filters.searchParamTrainingType)) {
+  //   filteredTrainings = filteredTrainings.filter((training) => {
+  //     return filters.searchParamTrainingType?.includes(training.type);
+  //   });
+  // }
 
   return filteredTrainings;
 }
@@ -168,4 +170,29 @@ export const applyOrdersFilters = (orders: OrderInterface[], filters: ordersFilt
   }
 
   return filteredOrders;
+};
+
+export const getTrainingPrice = (training: TrainingRdo | undefined | null) => {
+  if (!training) { return; }
+  if (!training.isSpecialOffer) { return training.price; }
+
+  return Math.floor(training.price * (DISCOUNT_EMOUNT / 100));
+};
+
+export const getIsTrainingOrdered = (orders: OrderInterface[], trainingId: number) => orders.some((order) => order.type === OrderType.Training && order.entityId === trainingId);
+
+export const getIsTrainingStarted = (orders: OrderInterface[], trainingId: number) => orders.some((order) => order.type === OrderType.Training && order.entityId === trainingId && order.isStarted);
+
+export const getOrderIdByTrainingId = (orders: OrderInterface[], trainingId: number) => orders.find((order) => order.type === OrderType.Training && order.entityId === trainingId)?.id;
+
+export const getUrlQueryString = <T extends Record<string, string>>(params: T, url: string): string => {
+  const paramsString = new URLSearchParams();
+
+  for (const key in params) {
+    if (params[key]) {
+      paramsString.append(key, params[key]);
+    }
+  }
+
+  return `${url}?${paramsString.toString()}`;
 };

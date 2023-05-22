@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteOrder, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { OrderService } from './order.service';
@@ -78,7 +78,7 @@ export class OrderController {
     return orders.map((review) => fillObject(OrderRdo, review));
   }
 
-  @Get(APIRouteOrder.getCoachOrders)
+  @Get(APIRouteOrder.GetCoachOrders)
   @ApiOkResponse({
     type: [OrderRdo],
     description: 'Данные получены'
@@ -110,7 +110,7 @@ export class OrderController {
     return orders.map((review) => fillObject(OrderRdo, review));
   }
 
-  @Get(APIRouteOrder.getCoachOrdersInfo)
+  @Get(APIRouteOrder.GetCoachOrdersInfo)
   @ApiOkResponse({
     type: [CoachOrdersInfoRdo],
     description: 'Данные получены'
@@ -141,5 +141,63 @@ export class OrderController {
 
 
     return coachOrdersInfo.map((coachOrderInfo) => fillObject(CoachOrdersInfoRdo, coachOrderInfo));
+  }
+
+  @Get(APIRouteOrder.StartTraining)
+  @ApiOkResponse({
+    description: 'Тренировка начата'
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  async startTraining(
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const { user: tokenPayload } = request;
+
+    if (tokenPayload.role !== UserRole.User) {
+      throw new UserNotUserException();
+    }
+
+    return this.orderService.startTraining(id, tokenPayload.sub);
+  }
+
+  @Get(APIRouteOrder.FinishTraining)
+  @ApiOkResponse({
+    description: 'Тренировка начата'
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  async stopTraining(
+    @Req() request: RequestWithTokenPayload<TokenPayload>,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const { user: tokenPayload } = request;
+
+    if (tokenPayload.role !== UserRole.User) {
+      throw new UserNotUserException();
+    }
+
+    return this.orderService.finishTraining(id, tokenPayload.sub);
   }
 }

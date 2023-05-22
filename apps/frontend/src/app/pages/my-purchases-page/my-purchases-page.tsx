@@ -3,7 +3,7 @@ import { AppRoute, PageTitle, SearchParam } from '../../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { ordersFilters } from '../../types/orders-filters';
 import { useEffect, useState } from 'react';
-import { getOrders } from '../../store/app-data/selectors';
+import { getOpenedOrders, getOrders } from '../../store/app-data/selectors';
 import { applyOrdersFilters } from '../../../helpers';
 import { fetchGyms, fetchUserOrders } from '../../store/api-actions';
 import PageHeader from '../../components/page-header/page-header';
@@ -22,7 +22,7 @@ function MyPurchasesPage(): JSX.Element {
   const searchParamOrderType: string = searchParams.get(SearchParam.OrderType) || DEFAULT_ORDER_TYPE;
   const searchParamIsOnlyActive: string | null = searchParams.get(SearchParam.IsOnlyActiveOrders);
 
-  const orders = useAppSelector(getOrders);
+  const orders = useAppSelector(getOpenedOrders);
 
   let filteredOrders = orders;
   if (filters !== null) {

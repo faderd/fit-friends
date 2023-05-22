@@ -1,6 +1,6 @@
 import { AuthorizationStatus, NameSpace } from '../../../const';
 import { State } from '../../types/state';
-import { UserData } from '../../types/user-data';
+import { UserRdo } from '../../types/user-rdo';
 
 export const getUser = (state: State) => state[NameSpace.User].user;
 export const getUserId = (state: State) => state[NameSpace.User].user?.id;
@@ -8,8 +8,9 @@ export const getUserId = (state: State) => state[NameSpace.User].user?.id;
 export const getFavoriteGyms = (state: State) => state[NameSpace.User].user?.myFavoriteGyms;
 
 export const getUsers = (state: State) => state[NameSpace.User].users;
+export const getLookForCompanyUsers = (state: State) => state[NameSpace.User].lookingForCompanyUsers;
 
-export const getUserById = (id: number) => (state: State) => state[NameSpace.User].users.find((user: UserData) => user.id === id);
+export const getUserById = (id: number) => (state: State) => state[NameSpace.User].users.find((user: UserRdo) => user.id === id);
 
 export const getIsFriend = (id: number) => (state: State) => {
   if (state[NameSpace.User].user && id) {

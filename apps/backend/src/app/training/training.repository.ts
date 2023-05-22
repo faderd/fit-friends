@@ -31,6 +31,9 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
       where: {
         id,
       },
+      include: {
+        coach: true,
+      },
     }) as unknown as TrainingInterface;
   }
 
@@ -39,15 +42,21 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
       where: {
         userId: id,
       },
+      include: {
+        coach: true,
+      },
     }) as unknown as TrainingInterface[];
   }
 
-  public async findAll({ limit, sortDirection, isOnlyFreeTrainings, page, minPrice, maxPrice, minCalories, maxCalories, minRate, maxRate, trainingDuration, trainingType, trainingLevel }: TrainingQuery): Promise<TrainingInterface[]> {
+  public async findAll({ limit, sortDirection, isOnlyFreeTrainings, page, minPrice, maxPrice, minCalories, maxCalories, minRate, maxRate, trainingDuration, trainingType, trainingLevel, sortType }: TrainingQuery): Promise<TrainingInterface[]> {
 
     if (isOnlyFreeTrainings) {
       return this.prisma.training.findMany({
         where: {
           price: 0,
+        },
+        include: {
+          coach: true,
         },
         take: limit,
       }) as unknown as TrainingInterface[];
@@ -60,6 +69,11 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
       trainingDuration?: { in: TrainingDuration[] },
       type?: { in: TrainingType[] },
       level?: TrainingLevel,
+    } = {};
+
+    const orderByCondition: {
+      price?: 'asc' | 'desc',
+      rate?: 'asc' | 'desc',
     } = {};
 
     if (minPrice !== undefined) {
@@ -104,12 +118,19 @@ export class TrainingRepository implements CRUDRepositoryInterface<TrainingEntit
       whereCondition.level = trainingLevel;
     }
 
+    if (!sortType) {
+      orderByCondition.price = sortDirection;
+    } else {
+      orderByCondition.rate = sortDirection;
+    }
+
     return this.prisma.training.findMany({
       where: whereCondition,
-      take: limit,
-      orderBy: {
-        price: sortDirection,
+      include: {
+        coach: true,
       },
+      take: limit,
+      orderBy: orderByCondition,
       skip: page > 0 ? limit * (page - 1) : undefined,
     }) as unknown as TrainingInterface[];
   }

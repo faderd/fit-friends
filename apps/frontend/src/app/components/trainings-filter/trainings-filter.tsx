@@ -3,8 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { TrainingDuration, TrainingType } from '@fit-friends/shared-types';
 import FilterRange from '../filter-range/filter-range';
-import { useAppDispatch } from '../../hooks';
-import { fetchTrainings } from '../../store/api-actions';
 import { trainingsFilters } from '../../types/my-trainings-filters';
 import FilterPrice from '../filter-price/filter-price';
 
@@ -19,7 +17,7 @@ const DEFAULT_MIN_CALORY = '0';
 const MAX_RATE_VALUE = '5';
 const MIN_RATE_VALUE = '0';
 
-type MyTrainingsFilterProps = {
+type TrainingsFilterProps = {
   setFilters: (filters: trainingsFilters) => void;
   maxPrice: string;
   maxCalory: string;
@@ -29,8 +27,7 @@ type MyTrainingsFilterProps = {
   isTrainingTypeBlockActive?: boolean;
 }
 
-function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, isDurationBlockActive, isSortingBlockActive, isTrainingTypeBlockActive }: MyTrainingsFilterProps): JSX.Element {
-  const dispatch = useAppDispatch();
+function TrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, isDurationBlockActive, isSortingBlockActive, isTrainingTypeBlockActive }: TrainingsFilterProps): JSX.Element {
   const formFormClassName = `${classNamePrefix}-form__form`;
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,22 +40,23 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
   const searchParamMaxRate: string | null = searchParams.get(SearchParam.MaxRate);
   let searchParamTrainingDuration: string | string[] | null = searchParams.get(SearchParam.TrainingDuration);
   let searchParamTrainingType: string | string[] | null = searchParams.get(SearchParam.TrainingType);
-  const searchParamSortDirecton: string | null = searchParams.get(SearchParam.SortDirection);
+  const searchParamSortDirection: string | null = searchParams.get(SearchParam.SortDirection);
   const searchParamIsOnlyFreeTrainings: string | null = searchParams.get(SearchParam.IsOnlyFreeTrainings);
 
   useEffect(() => {
-    setFilters({ searchParamMinPrice, searchParamMaxPrice, searchParamMinCalories, searchParamMaxCalories, searchParamMinRate, searchParamMaxRate, searchParamTrainingDuration, searchParamTrainingType });
-  }, [searchParamMaxCalories, searchParamMaxPrice, searchParamMaxRate, searchParamMinCalories, searchParamMinPrice, searchParamMinRate, searchParamTrainingDuration, searchParamTrainingType, setFilters]);
+    setFilters({ searchParamMinPrice, searchParamMaxPrice, searchParamMinCalories, searchParamMaxCalories, searchParamMinRate, searchParamMaxRate, searchParamTrainingDuration, searchParamTrainingType, searchParamIsOnlyFreeTrainings, searchParamSortDirection });
+  }, [searchParamIsOnlyFreeTrainings, searchParamMaxCalories, searchParamMaxPrice, searchParamMaxRate, searchParamMinCalories, searchParamMinPrice, searchParamMinRate, searchParamSortDirection, searchParamTrainingDuration, searchParamTrainingType, setFilters]);
 
-  useEffect(() => {
-    if (searchParamSortDirecton === null) { return; }
-    dispatch(fetchTrainings({ sortDirection: searchParamSortDirecton }));
-  }, [dispatch, searchParamSortDirecton]);
+  // useEffect(() => {
+  //   if (searchParamSortDirecton === null) { return; }
+  //   dispatch(fetchTrainings({ sortDirection: searchParamSortDirecton }));
+  // }, [dispatch, searchParamSortDirecton]);
 
-  useEffect(() => {
-    if (!searchParamIsOnlyFreeTrainings) { return; }
-    dispatch(fetchTrainings({ isOnlyFreeTrainings: searchParamIsOnlyFreeTrainings }));
-  }, [dispatch, searchParamIsOnlyFreeTrainings]);
+  // useEffect(() => {
+  //   if (!searchParamIsOnlyFreeTrainings) { return; }
+  //   dispatch(fetchTrainings({ isOnlyFreeTrainings: searchParamIsOnlyFreeTrainings }));
+  // }, [dispatch, searchParamIsOnlyFreeTrainings]);
+  console.log('point 2, searchParamIsOnlyFreeTrainings: ', searchParamIsOnlyFreeTrainings);
 
   // Длительность тренировки====================================================
   if (searchParamTrainingDuration) {
@@ -93,14 +91,14 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
 
   // Сортировка=================================================================
   useEffect(() => {
-    if (!searchParamSortDirecton && !searchParamIsOnlyFreeTrainings) {
+    if (!searchParamSortDirection && !searchParamIsOnlyFreeTrainings) {
       searchParams.set(SearchParam.SortDirection, DEFAULT_SORT_DIRECTION);
       setSearchParams(searchParams);
     }
-  }, [searchParamIsOnlyFreeTrainings, searchParamSortDirecton, searchParams, setSearchParams]);
+  }, [searchParamIsOnlyFreeTrainings, searchParamSortDirection, searchParams, setSearchParams]);
 
   const getIsSortDirectionChecked = (sortDirection: SortDirection): boolean => {
-    return searchParamSortDirecton === sortDirection;
+    return searchParamSortDirection === sortDirection;
   };
 
   // Максимум калорий===========================================================
@@ -331,4 +329,4 @@ function MyTrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, i
   );
 }
 
-export default MyTrainingsFilter
+export default TrainingsFilter

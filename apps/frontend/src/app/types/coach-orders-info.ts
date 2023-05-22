@@ -1,7 +1,7 @@
-import { TrainingInterface } from '@fit-friends/shared-types'
+import { TrainingRdo } from './training-rdo';
 
 export type CoachOrdersInfo = {
-  training: TrainingInterface,
+  training: TrainingRdo,
   trainingsCount: number,
   price: number,
 }

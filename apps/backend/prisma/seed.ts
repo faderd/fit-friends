@@ -36,11 +36,11 @@ const GYM_IMAGES = [
 ];
 const USER_NAMES = ['ВИКТОРИЯ', 'КРИСТИНА', 'АЛЕКСЕЙ', 'КАТЕРИНА', 'КСЕНИЯ', 'АЛИСА', 'АЛЁНА', 'СОФИЯ', 'ВАЛЕРИЯ', 'ЕЛИЗАВЕТА', 'ТАТЬЯНА', 'ЕВА', 'СТАНИСЛАВ', 'МАРИЯ', 'ДИАНА', 'МАРК'];
 const USER_AVATARS = [
-  'img/content/avatars/user/photo-1',
-  'img/content/avatars/user/photo-2',
-  'img/content/avatars/user/photo-3',
-  'img/content/avatars/user/photo-4',
-  'img/content/avatars/user/photo-5',
+  'img/content/avatars/users/photo-1',
+  'img/content/avatars/users/photo-2',
+  'img/content/avatars/users/photo-3',
+  'img/content/avatars/users/photo-4',
+  'img/content/avatars/users/photo-5',
 ];
 const COACH_CERTIFICATES = [
   'img/content/certificates-and-diplomas/certificate-1',
@@ -61,7 +61,7 @@ const COACH_MERITS = [
   'Привет, я Андрей и я тренер по бодибилдингу. Я помогаю своим клиентам увеличить мышечную массу, улучшить форму тела и достичь наилучших результатов. Я создаю индивидуальные программы для каждого из своих клиентов.',
   'Я Вика, тренер по танцам. Я увлечена танцами с детства и с радостью передаю свою страсть своим клиентам. Я работаю с различными стилями танцев и создаю индивидуальные программы, чтобы каждый из моих клиентов научился танцевать с уверенностью.',
 ];
-const TRAINING_NAMES = ['CROSSFIT', 'ENERGY', 'BOXING', 'POWER', 'ANTISTRESS', 'RUN, FORREST, RUN', 'FITBALL', 'HATHA', 'FULL BODY STRETCH', 'UPPER BODY', 'DEVIL\'S CINDY', 'FLEKSBEND'];
+const TRAINING_NAMES = ['CROSSFIT', 'ENERGY', 'BOXING', 'POWER', 'ANTISTRESS', 'RUN', 'FORREST-RUN', 'FITBALL', 'HATHA', 'FULL BODY STRETCH', 'UPPER BODY', 'DEVIL\'S CINDY', 'FLEKSBEND', 'Железная пятерка', 'Кроссфит-челлендж', 'Функциональный тренинг', 'Силовая тренировка', 'Бодибилдинг-марафон', 'Аэробика в зале', 'Тренировка на выносливость', 'Йога для начинающих', 'Кардиотренировка', 'Секреты фитнес-моделей'];
 const TRAINING_IMAGES = [
   'img/content/thumbnails/preview-01',
   'img/content/thumbnails/preview-02',
@@ -194,8 +194,7 @@ function getTrainingData() {
     isSpecialOffer: Math.random() < 0.5,
     description: getRandomStringFromArray(TRAINING_DESCRIPTIONS),
     rate: 0,
-    // userId: generateRandomNumber(ENTITY_COUNT / 2 + 1, ENTITY_COUNT),
-    userId: 6,
+    userId: generateRandomNumber(ENTITY_COUNT / 2 + 1, ENTITY_COUNT),
     calories: generateRandomNumber(CaloriesLossRange.Min, CaloriesLossRange.Max),
   }
 }
@@ -220,6 +219,11 @@ async function fillDb() {
   // создадим тренировки
   for (let i = 1; i <= ENTITY_COUNT; i++) {
     await prisma.training.create({ data: getTrainingData() });
+  }
+
+  // создадим пустые дневники тренировок
+  for (let i = 1; i <= ENTITY_COUNT / 2; i++) {
+    await prisma.trainingDiary.create({ data: {userId: i, diary: []} });
   }
 }
 

@@ -111,3 +111,5 @@ export enum SortDirection {
   Desc = 'desc',
   Asc = 'asc',
 }
+
+export const DISCOUNT_EMOUNT = 10;

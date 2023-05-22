@@ -45,11 +45,11 @@ function SpecialForYouTrainings(): JSX.Element {
     infinite: false,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToScroll: 1,
     arrows: true,
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1460,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
@@ -62,7 +62,7 @@ function SpecialForYouTrainings(): JSX.Element {
           slidesToScroll: 1,
         }
       },
-    ]
+    ],
   };
 
   return (

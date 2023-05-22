@@ -4623,6 +4623,8 @@ input:active + .custom-textarea__text {
   display: flex;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
+  /* Добавил */
+  min-height: 68px;
 }
 
 .thumbnail-user__hashtags-item {

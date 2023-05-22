@@ -21,6 +21,7 @@ import { UpdateQuestionnaire } from '../dto/questionnaire/update-questionnaire.d
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UPLOAD_PATH } from '../app.constant';
 import { UserService } from '../user/user.service';
+import { TrainingDiaryService } from '../training-diary/training-diary.service';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +32,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly refreshTokenService: RefreshTokenService,
     private readonly userService: UserService,
+    private readonly trainingDiaryService: TrainingDiaryService,
     @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
   ) { }
 
@@ -58,6 +60,9 @@ export class AuthService {
     } else if (role === UserRole.User) {
       const questionnaireEntity = new UserQuestionnaireEntity({ ...dto.questionnaire as UserQuestionnaireDto, userId: createdUser.id, isReadyToTrain: false });
       await this.userQuestionnaireRepository.create(questionnaireEntity);
+
+      // создадим пустой дневник тренировок
+      await this.trainingDiaryService.create(createdUser.id);
     }
 
     return createdUser;

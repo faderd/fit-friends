@@ -10,16 +10,32 @@ export class TrainingDiaryService {
     private readonly trainingDiaryRepository: TrainingDiaryRepository,
   ) { }
 
-  async create(dto: CreateTrainingDiaryDto, userId: number) {
+  // async create(dto: CreateTrainingDiaryDto, userId: number) {
+  //   const existTrainingDiary = await this.trainingDiaryRepository.findByUserId(userId);
+  //   if (existTrainingDiary) {
+  //     throw new ConflictException(userId);
+  //   }
+
+  //   const { diary } = dto;
+  //   const trainingDiary = { diary, userId };
+
+  //   const trainingDiaryEntity = new TrainingDiaryEntity(trainingDiary);
+
+  //   const createdTrainingDiary = await this.trainingDiaryRepository.create(trainingDiaryEntity);
+
+  //   return createdTrainingDiary;
+  // }
+
+  async create(userId: number) {
     const existTrainingDiary = await this.trainingDiaryRepository.findByUserId(userId);
     if (existTrainingDiary) {
       throw new ConflictException(userId);
     }
 
-    const { diary } = dto;
-    const trainingDiary = { diary, userId };
+    // const { diary } = dto;
+    // const trainingDiary = { [], userId };
 
-    const trainingDiaryEntity = new TrainingDiaryEntity(trainingDiary);
+    const trainingDiaryEntity = new TrainingDiaryEntity({ userId, diary: [] });
 
     const createdTrainingDiary = await this.trainingDiaryRepository.create(trainingDiaryEntity);
 
@@ -50,7 +66,9 @@ export class TrainingDiaryService {
       throw new ConflictException('Нельзя редактировать чужие дневники');
     }
 
-    const trainingDiaryEntity = new TrainingDiaryEntity({ ...existTrainingDiary, ...dto });
+    const diary = { ...existTrainingDiary.diary, ...dto.diary }
+
+    const trainingDiaryEntity = new TrainingDiaryEntity({ ...existTrainingDiary, diary });
 
     return this.trainingDiaryRepository.update(existTrainingDiary.id, trainingDiaryEntity);
   }

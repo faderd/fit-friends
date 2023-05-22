@@ -1,26 +1,35 @@
 import { TrainingLevel, UserRole } from '@fit-friends/shared-types';
 import { AppRoute } from '../../../const';
 import { generatePath, Link } from 'react-router-dom';
-import { UserData } from '../../types/user-data';
+import { UserRdo } from '../../types/user-rdo';
 
 type UserCatalogItemProps = {
-  user: UserData;
+  user: UserRdo;
+  isDark?: boolean;
 }
 
-function UserCatalogItem({ user }: UserCatalogItemProps): JSX.Element {
+function UserCatalogItem({ user, isDark }: UserCatalogItemProps): JSX.Element {
   const userRoleClassName = user.role === UserRole.Coach
     ? 'thumbnail-user--role-coach'
     : 'thumbnail-user--role-user';
   const topStatusClassName = user.role === UserRole.Coach
     ? 'thumbnail-user__top-status--role-coach'
     : 'thumbnail-user__top-status--role-user';
+  const darkClassName = isDark
+    ? 'thumbnail-user--dark'
+    : '';
+  const isBtnOutlinedClassName = isDark
+    ? 'btn--outlined'
+    : '';
   const trainingTypes = user.questionnaire?.trainingTypes || [];
   return (
     <li className="users-catalog__item">
-      <div className={`thumbnail-user ${userRoleClassName}`}>
+      <div className={`thumbnail-user ${userRoleClassName} ${darkClassName}`}>
         <div className="thumbnail-user__image">
           <picture>
-            <source type="image/webp" srcSet="img/content/thumbnails/user-03.webp, img/content/thumbnails/user-03@2x.webp 2x" /><img src="img/content/thumbnails/user-03.jpg" srcSet="img/content/thumbnails/user-03@2x.jpg 2x" width="82" height="82" alt="" />
+            <source type="image/webp"
+              srcSet={`${user.avatar}.webp, ${user.avatar}@2x.webp 2x`} />
+            <img src={`${user.avatar}.png`} srcSet={`${user.avatar}@2x.png 2x`} width="82" height="82" alt="" />
           </picture>
         </div>
         {user.questionnaire?.trainingLevel === TrainingLevel.Professional && (
@@ -48,7 +57,7 @@ function UserCatalogItem({ user }: UserCatalogItemProps): JSX.Element {
             </li>
           ))}
         </ul>
-        <Link className="btn btn--dark-bg btn--medium thumbnail-user__button" to={generatePath(AppRoute.UserCard, {id: `${user.id}`})}>Подробнее</Link>
+        <Link className={`btn btn--dark-bg btn--medium thumbnail-user__button ${isBtnOutlinedClassName}`} to={generatePath(AppRoute.UserCard, { id: `${user.id}` })}>Подробнее</Link>
       </div>
     </li>
   );

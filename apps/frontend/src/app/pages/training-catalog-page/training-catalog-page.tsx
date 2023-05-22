@@ -1,17 +1,19 @@
-import { useEffect, useState } from 'react';
-import { PageTitle } from '../../../const';
+import { useEffect, useMemo, useState } from 'react';
+import { AppRoute, PageTitle } from '../../../const';
 import PageHeader from '../../components/page-header/page-header';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getTrainings } from '../../store/app-data/selectors';
 import { applyTrainingsFilters } from '../../../helpers';
 import { fetchTrainings } from '../../store/api-actions';
 import TrainingItem from '../../components/training-item/training-item';
-import MyTrainingsFilter from '../../components/my-trainings-filter/my-trainings-filter';
+import TrainingsFilter from '../../components/trainings-filter/trainings-filter';
 import { trainingsFilters } from '../../types/my-trainings-filters';
+import { useNavigate } from 'react-router-dom';
 
 function TrainingCatalogPage(): JSX.Element {
   document.title = PageTitle.TrainingCatalog;
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [filters, setFilters] = useState<trainingsFilters | null>(null);
   const trainings = useAppSelector(getTrainings);
@@ -21,9 +23,73 @@ function TrainingCatalogPage(): JSX.Element {
     filteredTrainings = applyTrainingsFilters(trainings, filters)
   }
 
+  const queryString = useMemo(() => {
+    const query: {
+      limit?: string,
+      sortDirection?: string,
+      isOnlyFreeTrainings?: string,
+      page?: string,
+      minPrice?: string,
+      // maxPrice?: string,
+      minCalories?: string,
+      // maxCalories?: string,
+      minRate?: string,
+      // maxRate?: string,
+      trainingDuration?: string,
+      trainingType?: string,
+      trainingLevel?: string,
+      sortType?: string,
+    } = {};
+
+    if (filters?.searchParamLimit) {
+      query.limit = filters.searchParamLimit;
+    }
+    if (filters?.searchParamSortDirection) {
+      query.sortDirection = filters.searchParamSortDirection;
+    }
+    if (filters?.searchParamIsOnlyFreeTrainings) {
+      query.isOnlyFreeTrainings = filters.searchParamIsOnlyFreeTrainings;
+    }
+    if (filters?.searchParamPage) {
+      query.page = filters.searchParamPage;
+    }
+    if (filters?.searchParamMinPrice) {
+      query.minPrice = filters.searchParamMinPrice;
+    }
+    // if (filters?.searchParamMaxPrice) {
+    //   query.maxPrice = filters.searchParamMaxPrice;
+    // }
+    if (filters?.searchParamMinCalories) {
+      query.minCalories = filters.searchParamMinCalories;
+    }
+    // if (filters?.searchParamMaxCalories) {
+    //   query.maxCalories = filters.searchParamMaxCalories;
+    // }
+    if (filters?.searchParamMinRate) {
+      query.minRate = filters.searchParamMinRate;
+    }
+    // if (filters?.searchParamMaxRate) {
+    //   query.maxRate = filters.searchParamMaxRate;
+    // }
+    if (filters?.searchParamTrainingDuration) {
+      query.trainingDuration = filters.searchParamTrainingDuration as string;
+    }
+    if (filters?.searchParamTrainingType) {
+      query.trainingType = filters.searchParamTrainingType as string;
+    }
+    if (filters?.searchParamTrainingLevel) {
+      query.trainingLevel = filters.searchParamTrainingLevel;
+    }
+    if (filters?.searchParamSortingType) {
+      query.sortType = filters.searchParamSortingType;
+    }
+
+    return query;
+  }, [filters]);
+
   useEffect(() => {
-    dispatch(fetchTrainings({}));
-  }, [dispatch]);
+    dispatch(fetchTrainings(queryString));
+  }, [dispatch, queryString]);
 
   const getMaxPrice = () => Math.max(...trainings.map((training) => training.price)).toString();
   const getMaxCalory = () => Math.max(...trainings.map((training) => training.calories)).toString();
@@ -41,13 +107,15 @@ function TrainingCatalogPage(): JSX.Element {
                 <div className="gym-catalog-form">
                   <h2 className="visually-hidden">Мои тренировки Фильтр</h2>
                   <div className="gym-catalog-form__wrapper">
-                    <button className="btn-flat btn-flat--underlined gym-catalog-form__btnback" type="button">
+                    <button className="btn-flat btn-flat--underlined gym-catalog-form__btnback" type="button"
+                      onClick={() => { navigate(AppRoute.Index) }}
+                    >
                       <svg width="14" height="10" aria-hidden="true">
                         <use xlinkHref="#arrow-left"></use>
                       </svg><span>Назад</span>
                     </button>
                     <h3 className="gym-catalog-form__title">Фильтры</h3>
-                    <MyTrainingsFilter setFilters={setFilters} maxPrice={getMaxPrice()} maxCalory={getMaxCalory()} classNamePrefix='gym-catalog' isTrainingTypeBlockActive={true} isSortingBlockActive={true} />
+                    <TrainingsFilter setFilters={setFilters} maxPrice={getMaxPrice()} maxCalory={getMaxCalory()} classNamePrefix='gym-catalog' isTrainingTypeBlockActive={true} isSortingBlockActive={true} />
                   </div>
                 </div>
                 <div className="training-catalog">

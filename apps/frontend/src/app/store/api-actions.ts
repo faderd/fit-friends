@@ -1,4 +1,4 @@
-import { GymInterface, OrderInterface, ReviewInterface, TrainingInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, ReviewInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
@@ -9,15 +9,17 @@ import { QuestionnaireData } from '../types/questionnaire-data';
 import { RegisterDataUser } from '../types/register-data-user.dto';
 import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
-import { UserData } from '../types/user-data';
+import { UserRdo } from '../types/user-rdo';
 import { redirectToPrevious } from './app-data/action';
-import { storeCoachOrdersInfo, storeGyms, storeIsDataLoadedStatus, storeOrders, storeReviews, storeTraining, storeTrainings, storeTrainingsForMe } from './app-data/app-data';
-import { storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
+import { storeCoachOrdersInfo, storeGyms, storeIsDataLoadedStatus, storeOrders, storePopularTrainings, storeReviews, storeTraining, storeTrainings, storeTrainingsForMe } from './app-data/app-data';
+import { storeLookingForCompanyUsers, storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 import { UpdateTrainingDto } from '../types/update-training.dto';
 import { CreateReviewDto } from '../types/create-review.dto';
 import { generatePath } from 'react-router-dom';
 import { CreateOrderDto } from '../types/create-order.dto';
 import { CoachOrdersInfo } from '../types/coach-orders-info';
+import { getUrlQueryString } from '../../helpers';
+import { TrainingRdo } from '../types/training-rdo';
 
 export const register = createAsyncThunk<
   UserInterface,
@@ -88,7 +90,7 @@ export const login = createAsyncThunk<void,
   'user/login',
   async (loginData, { dispatch, extra: api }) => {
     dispatch(storeIsDataLoadedStatus(false));
-    const { data } = await api.post<UserData>('auth/login', loginData);
+    const { data } = await api.post<UserRdo>('auth/login', loginData);
     if (data.access_token && data.refresh_token) {
       saveAccessToken(data.access_token);
       saveRefreshToken(data.refresh_token);
@@ -159,7 +161,7 @@ export const updateUser = createAsyncThunk<void, UpdateUserDto,
   'user/updateUser',
   async (updateData, { dispatch, extra: api }) => {
     dispatch(storeIsDataLoadedStatus(false));
-    const { data } = await api.post<UserData>('auth/update', updateData);
+    const { data } = await api.post<UserRdo>('auth/update', updateData);
     dispatch(storeUser(data));
     dispatch(storeIsDataLoadedStatus(true));
   }
@@ -176,9 +178,27 @@ export const fetchUsers = createAsyncThunk<void, undefined,
   async (_, { dispatch, extra: api }) => {
     dispatch(storeIsDataLoadedStatus(false));
 
-    const { data } = await api.get<UserData[]>('user/');
+    const { data } = await api.get<UserRdo[]>('user/');
     dispatch(storeUsers(data));
     dispatch(storeIsDataLoadedStatus(true));
+  }
+);
+
+export const fetchLookingForCompanyUsers = createAsyncThunk<void,
+  {
+    limit?: number,
+  },
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'user/fetchLookingForCompanyUsers',
+  async ({ limit }, { dispatch, extra: api }) => {
+
+    const { data } = await api.get<UserRdo[]>(`user/?isLookForCompany=true${'&limit=' + limit}`);
+    dispatch(storeLookingForCompanyUsers(data));
   }
 );
 
@@ -192,7 +212,7 @@ export const submitNewTraining = createAsyncThunk<void, CreateTrainingDto,
   'data/submitNewTraining',
   async (createTrainingData, { dispatch, extra: api }) => {
     try {
-      const { data } = await api.post<TrainingInterface>('training/', createTrainingData);
+      const { data } = await api.post<TrainingRdo>('training/', createTrainingData);
       dispatch(storeTraining(data));
       toast.info('Новая тренировка создана');
     } catch (err) {
@@ -205,9 +225,20 @@ export const submitNewTraining = createAsyncThunk<void, CreateTrainingDto,
 
 export const fetchTrainings = createAsyncThunk<void,
   {
+    limit?: string,
     sortDirection?: string,
     isOnlyFreeTrainings?: string,
-    limit?: string,
+    page?: string,
+    minPrice?: string,
+    // maxPrice?: string,
+    minCalories?: string,
+    // maxCalories?: string,
+    minRate?: string,
+    // maxRate?: string,
+    trainingDuration?: string,
+    trainingType?: string,
+    trainingLevel?: string,
+    sortType?: string,
   },
   {
     dispatch: AppDispatch,
@@ -216,12 +247,9 @@ export const fetchTrainings = createAsyncThunk<void,
   }
 >(
   'data/fetchTrainings',
-  async ({ sortDirection, isOnlyFreeTrainings, limit }, { dispatch, extra: api }) => {
-    const { data } = await api.get<TrainingInterface[]>(`training/?
-    ${sortDirection ? `sortType = ${sortDirection}` : ''}
-    ${isOnlyFreeTrainings ? `&isOnlyFreeTrainings=${isOnlyFreeTrainings}` : ''}
-    ${limit ? `&limit=${limit}` : ''}
-    `);
+  async (query, { dispatch, extra: api }) => {
+    const urlString = getUrlQueryString(query, 'training/');
+    const { data } = await api.get<TrainingRdo[]>(urlString);
     dispatch(storeTrainings(data));
   }
 );
@@ -238,16 +266,35 @@ export const fetchSpecialForMeTrainings = createAsyncThunk<void,
     extra: AxiosInstance
   }
 >(
-  'data/fetchTrainings',
+  'data/fetchSpecialForMeTrainings',
   async ({ trainingType, trainingLevel, limit }, { dispatch, extra: api }) => {
     const queryString = `${trainingType ? `&trainingType=${trainingType}` : ''}${trainingLevel ? `&trainingLevel=${trainingLevel}` : ''}${limit ? `&limit=${limit}` : ''}`;
 
-    const { data } = await api.get<TrainingInterface[]>(`training/get-special-for-me/?${queryString}`);
+    const { data } = await api.get<TrainingRdo[]>(`training/get-special-for-me/?${queryString}`);
     dispatch(storeTrainingsForMe(data));
   }
 );
 
-export const fetchTraining = createAsyncThunk<TrainingInterface, number,
+export const fetchPopularTrainings = createAsyncThunk<void,
+  {
+    limit?: string,
+  },
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchPopularTrainings',
+  async ({ limit }, { dispatch, extra: api }) => {
+    const queryString = `sortType=byRate${limit ? `&limit=${limit}` : ''}`;
+
+    const { data } = await api.get<TrainingRdo[]>(`training/?${queryString}`);
+    dispatch(storePopularTrainings(data));
+  }
+);
+
+export const fetchTraining = createAsyncThunk<TrainingRdo, number,
   {
     dispatch: AppDispatch,
     state: State,
@@ -256,7 +303,7 @@ export const fetchTraining = createAsyncThunk<TrainingInterface, number,
 >(
   'data/fetchTraining',
   async (id, { dispatch, extra: api }) => {
-    const { data } = await api.get<TrainingInterface>(`training/${id}`);
+    const { data } = await api.get<TrainingRdo>(`training/${id}`);
     return data;
   }
 );
@@ -270,7 +317,7 @@ export const updateTraining = createAsyncThunk<void, UpdateTrainingDto,
 >(
   'data/updateTraining',
   async (updateData, { dispatch, extra: api }) => {
-    const { data } = await api.patch<TrainingInterface>(`training/${updateData.trainingId}`, updateData);
+    const { data } = await api.patch<TrainingRdo>(`training/${updateData.trainingId}`, updateData);
     dispatch(storeTraining(data));
   }
 );
@@ -350,6 +397,36 @@ export const fetchUserOrders = createAsyncThunk<void, undefined,
   async (_, { dispatch, extra: api }) => {
     const { data } = await api.get<OrderInterface[]>('order/');
     dispatch(storeOrders(data));
+  }
+);
+
+export const startTrainingOrder = createAsyncThunk<OrderInterface, {orderId: number},
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/startTrainingOrder',
+  async ({ orderId }, { dispatch, extra: api }) => {
+    const urlString = `order/start/${orderId}`;
+    const { data } = await api.get<OrderInterface>(urlString);
+    return data;
+  }
+);
+
+export const finishTrainingOrder = createAsyncThunk<OrderInterface, {orderId: number},
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/finishTrainingOrder',
+  async ({ orderId }, { dispatch, extra: api }) => {
+    const urlString = `order/finish/${orderId}`;
+    const { data } = await api.get<OrderInterface>(urlString);
+    return data;
   }
 );
 

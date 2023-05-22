@@ -1,5 +1,5 @@
 import { CRUDRepositoryInterface } from '@fit-friends/core';
-import { UserInterface } from '@fit-friends/shared-types';
+import { UserInterface, UserRole } from '@fit-friends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -51,10 +51,23 @@ export class UserRepository implements CRUDRepositoryInterface<UserEntity, numbe
     }) as unknown as UserInterface;
   }
 
-  public async findAll({ limit, sortDirection, page }: UserQuery): Promise<UserInterface[]> {
+  public async findAll({ limit, sortDirection, page, isLookForCompany }: UserQuery): Promise<UserInterface[]> {
+    const whereCondition: {
+      role?: UserRole,
+    } = {}
+
+    if (isLookForCompany) {
+      whereCondition.role = UserRole.User;
+    }
+
     return this.prisma.user.findMany({
+      where: whereCondition,
       include: {
-        UserQuestionnaire: true,
+        UserQuestionnaire: {
+          where: {
+            isReadyToTrain: isLookForCompany || undefined,
+          }
+        },
         CoachQuestionnaire: true,
       },
       take: limit,
@@ -64,6 +77,20 @@ export class UserRepository implements CRUDRepositoryInterface<UserEntity, numbe
       skip: page > 0 ? limit * (page - 1) : undefined,
     }) as unknown as UserInterface[];
   }
+
+  // public async findAll({ limit, sortDirection, page, isReadyTotrain }: UserQuery): Promise<UserInterface[]> {
+  //   return this.prisma.user.findMany({
+  //     include: {
+  //       UserQuestionnaire: true,
+  //       CoachQuestionnaire: true,
+  //     },
+  //     take: limit,
+  //     orderBy: {
+  //       createdAt: sortDirection
+  //     },
+  //     skip: page > 0 ? limit * (page - 1) : undefined,
+  //   }) as unknown as UserInterface[];
+  // }
 
   public async findFriends({ limit, sortDirection, page }: UserQuery, userId: number): Promise<UserInterface[]> {
     return this.prisma.user.findMany({

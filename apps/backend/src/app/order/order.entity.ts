@@ -8,6 +8,8 @@ export class OrderEntity implements EntityInterface<OrderEntity>, OrderInterface
   public count: number;
   public paymentMethod: PaymentMethod;
   public createdAt: Date;
+  public isStarted: boolean;
+  public isClosed: boolean;
   public entityId: number;
   public userId: number;
 
@@ -26,6 +28,8 @@ export class OrderEntity implements EntityInterface<OrderEntity>, OrderInterface
     this.count = order.count;
     this.paymentMethod = order.paymentMethod;
     this.createdAt = order.createdAt;
+    this.isStarted = order.isStarted;
+    this.isClosed = order.isClosed;
     this.entityId = order.entityId;
     this.userId = order.userId;
   }

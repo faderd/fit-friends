@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
 import { OrderQuery } from './query/order.query';
 import { CreateOrderDto } from '../dto/create-order.dto';
@@ -8,6 +8,7 @@ import { OrderType } from '@fit-friends/shared-types';
 import { GymService } from '../gym/gym.service';
 import { TrainingService } from '../training/training.service';
 import { getSortedOrdersInfo } from '../../helpers';
+import { TrainingDiaryService } from '../training-diary/training-diary.service';
 
 @Injectable()
 export class OrderService {
@@ -15,9 +16,10 @@ export class OrderService {
     private readonly orderRepository: OrderRepository,
     private readonly gymService: GymService,
     private readonly trainingService: TrainingService,
+    private readonly trainingDiaryService: TrainingDiaryService,
   ) { }
 
-  async create(dto: CreateOrderDto, userId) {
+  async create(dto: CreateOrderDto, userId: number) {
     const { type, price, count, paymentMethod, entityId } = dto;
 
     // Проверим, существует ли объект с таким id
@@ -27,7 +29,7 @@ export class OrderService {
       await this.trainingService.getTraining(entityId);
     }
 
-    const order = { type, price, count, paymentMethod, entityId, createdAt: new Date(), userId };
+    const order = { type, price, count, paymentMethod, entityId, createdAt: new Date(), userId, isStarted: false, isClosed: false };
 
     const orderEntity = new OrderEntity(order);
 
@@ -83,5 +85,51 @@ export class OrderService {
     }
 
     return getSortedOrdersInfo(query.sortType, query.sortDirection, coachOrdersInfo);
+  }
+
+  async startTraining(orderId: number, userId: number) {
+    const existOrder = await this.orderRepository.findById(orderId);
+
+    if (existOrder.userId !== userId) {
+      throw new ConflictException();
+    }
+    if (existOrder.isStarted === true) {
+      throw new ConflictException();
+    }
+    if (existOrder.count < 1) {
+      throw new ConflictException();
+    }
+
+    const orderEntity = new OrderEntity({ ...existOrder, isStarted: true, count: existOrder.count - 1 });
+
+    return this.orderRepository.update(orderId, orderEntity);
+  }
+
+  async finishTraining(orderId: number, userId: number) {
+    const existOrder = await this.orderRepository.findById(orderId);
+
+    if (existOrder.userId !== userId) {
+      throw new ConflictException();
+    }
+    if (existOrder.isStarted === false) {
+      throw new ConflictException();
+    }
+
+    const isClosed = existOrder.count <= 0;
+
+    const orderEntity = new OrderEntity({ ...existOrder, isStarted: false, isClosed });
+
+    const updatedOrder = await this.orderRepository.update(orderId, orderEntity);
+    const existTraining = await this.trainingService.getTraining(updatedOrder.entityId);
+    console.log('diary: ', await this.trainingDiaryService.update({
+      diary: {
+        trainingId: updatedOrder.entityId,
+        caloriesLoss: existTraining.calories,
+        trainingDuration: existTraining.trainingDuration,
+        dateTraining: new Date()
+      }
+    }, userId));
+
+    return updatedOrder;
   }
 }

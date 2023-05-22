@@ -15,4 +15,8 @@ export class UserQuery {
   @Transform(({ value }) => +value)
   @IsOptional()
   public page: number;
+
+  @Transform(({ value }) => !!value)
+  @IsOptional()
+  public isLookForCompany: boolean;
 }

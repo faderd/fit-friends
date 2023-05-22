@@ -73,9 +73,11 @@ export enum APIRouteOrder {
   Prefix = '/order',
   Create = '/',
   GetAll = '/',
-  getCoachOrders = '/coach-orders',
-  getCoachOrdersInfo = '/coach-orders-info',
+  GetCoachOrders = '/coach-orders',
+  GetCoachOrdersInfo = '/coach-orders-info',
   GetById = '/:id',
+  StartTraining = '/start/:id',
+  FinishTraining = '/finish/:id',
 }
 
 export enum APIRouteFoodDiary {

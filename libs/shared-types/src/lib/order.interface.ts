@@ -8,6 +8,8 @@ export interface OrderInterface {
   count: number;
   paymentMethod: PaymentMethod;
   createdAt: Date;
+  isStarted: boolean;
+  isClosed: boolean;
   entityId: number;
   userId: number;
 }

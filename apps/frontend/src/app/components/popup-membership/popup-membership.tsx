@@ -1,9 +1,10 @@
-import { GymInterface, GymOption, OrderType, PaymentMethod, TrainingInterface } from '@fit-friends/shared-types';
+import { GymInterface, GymOption, OrderType, PaymentMethod } from '@fit-friends/shared-types';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getIsDataLoaded } from '../../store/app-data/selectors';
 import { useState } from 'react';
 import { submitNewOrder } from '../../store/api-actions';
 import { toast } from 'react-toastify';
+import { TrainingRdo } from '../../types/training-rdo';
 
 const DEFAULT_OPTION_PRICE = 1000;
 const DEFAULT_QUANTITY = 1;
@@ -11,7 +12,7 @@ const DEFAULT_PAYMENT_METHOD = PaymentMethod.Mir;
 
 type PopupMembershipProps = {
   setIsPopupMembershipOpen: (isPopupMembershipOpen: boolean) => void;
-  buyEntity: GymInterface | TrainingInterface;
+  buyEntity: GymInterface | TrainingRdo;
   isPurchases?: boolean;
 }
 

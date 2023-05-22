@@ -1,5 +1,6 @@
 import { Gender, TrainingDuration, TrainingLevel, TrainingType } from '@fit-friends/shared-types';
 import { Expose } from 'class-transformer';
+import { UserRdo } from './user.rdo';
 
 export class TrainingRdo {
   @Expose()
@@ -43,4 +44,7 @@ export class TrainingRdo {
 
   @Expose()
   public isSpecialOffer: boolean;
+
+  @Expose()
+  public coach: UserRdo;
 }

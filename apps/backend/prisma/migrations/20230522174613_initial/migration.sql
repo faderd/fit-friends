@@ -119,6 +119,8 @@ CREATE TABLE "Order" (
     "count" INTEGER NOT NULL,
     "paymentMethod" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "isStarted" BOOLEAN NOT NULL,
+    "isClosed" BOOLEAN NOT NULL,
     "entityId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
 

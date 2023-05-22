@@ -1,6 +1,6 @@
 import { fillObject } from '@fit-friends/core';
 import { APIRouteTraining, RequestWithTokenPayload, TokenPayload, UserRole } from '@fit-friends/shared-types';
-import { Body, ConsoleLogger, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UserNotCoachException } from '../auth/exceptions/user-not-coach.exception';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';

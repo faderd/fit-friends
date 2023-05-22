@@ -35,7 +35,11 @@ function FilterRange({ maxValue, searchParamMin, searchParamMax, searchParamMinN
               if (!bar) { return; }
 
               const range = bar.getBoundingClientRect();
-              const newMinValue = Math.floor(((evt.clientX - range.left) / range.width) * (+maxValue ?? 1));
+              let newMinValue = Math.floor(((evt.clientX - range.left) / range.width) * (+maxValue ?? 1));
+
+              if (newMinValue <= +maxValue * 0.01) {
+                newMinValue = 0;
+              }
 
               if (newMinValue >= 0 && newMinValue < ((searchParamMax ? +searchParamMax : 0) ?? +maxValue ?? 1)) {
                 searchParams.set(searchParamMinName, newMinValue.toString());
@@ -64,7 +68,11 @@ function FilterRange({ maxValue, searchParamMin, searchParamMax, searchParamMinN
               if (!bar) { return; }
 
               const range = bar.getBoundingClientRect();
-              const newMaxValue = Math.ceil(((evt.clientX - range.left) / range.width) * (+maxValue ?? 1));
+              let newMaxValue = Math.ceil(((evt.clientX - range.left) / range.width) * (+maxValue ?? 1));
+
+              if (+maxValue - newMaxValue <= +maxValue * 0.01) {
+                newMaxValue = +maxValue;
+              }
 
               if (newMaxValue >= 0 && newMaxValue > ((searchParamMin ? +searchParamMin : 0) ?? +maxValue ?? 1) && newMaxValue <= +maxValue) {
                 searchParams.set(searchParamMaxName, newMaxValue.toString());

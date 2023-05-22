@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchUsers } from '../../store/api-actions';
 import { getIsDataLoaded } from '../../store/app-data/selectors';
 import { getUserById } from '../../store/user-process/selectors';
-import { UserData } from '../../types/user-data';
+import { UserRdo } from '../../types/user-rdo';
 import NotFoundPage from '../not-found-page/not-found-page';
 import UserCardCoach from '../../components/user-card-coach/user-card-coach';
 import UserCardUser from '../../components/user-card-user/user-card-user';
@@ -20,7 +20,7 @@ function UserCardPage(): JSX.Element {
 
   const isDataLoaded = useAppSelector(getIsDataLoaded);
   const userId = useParams().id || '';
-  const user = useAppSelector(getUserById(+userId)) as UserData;
+  const user = useAppSelector(getUserById(+userId)) as UserRdo;
   const role = user?.role;
 
   useEffect(() => {

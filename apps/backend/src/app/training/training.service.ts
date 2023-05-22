@@ -72,4 +72,14 @@ export class TrainingService {
     const trainingEntity = new TrainingEntity({ ...existTraining, ...dto });
     return this.trainingRepository.update(existTraining.id, trainingEntity);
   }
+
+  async setRate(trainingId: number, rate: number) {
+    const existTraining = await this.trainingRepository.findById(trainingId);
+    if (!existTraining) {
+      throw new TrainingNotFoundException(trainingId);
+    }
+
+    const trainingEntity = new TrainingEntity({ ...existTraining, rate });
+    return this.trainingRepository.update(trainingId, trainingEntity);
+  }
 }

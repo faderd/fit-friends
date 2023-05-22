@@ -1,9 +1,10 @@
-import { GymInterface, OrderInterface, ReviewInterface, TrainingInterface } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, ReviewInterface } from '@fit-friends/shared-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../../const';
 import { AppData } from '../../types/state';
 import { submitNewTraining, fetchTrainings, updateTraining, submitNewReview, submitNewOrder, fetchTraining, fetchGym } from '../api-actions';
 import { CoachOrdersInfo } from '../../types/coach-orders-info';
+import { TrainingRdo } from '../../types/training-rdo';
 
 export const getInitialStateAppData = (): AppData => ({
   isDataLoaded: true,
@@ -15,6 +16,7 @@ export const getInitialStateAppData = (): AppData => ({
   orders: [],
   coachOrdersInfo: [],
   trainingsForMe: [],
+  popularTrainings: [],
 });
 
 export const appData = createSlice({
@@ -24,10 +26,10 @@ export const appData = createSlice({
     storeIsDataLoadedStatus: (state, action: PayloadAction<boolean>) => {
       state.isDataLoaded = action.payload;
     },
-    storeTraining: (state, action: PayloadAction<TrainingInterface>) => {
+    storeTraining: (state, action: PayloadAction<TrainingRdo>) => {
       state.trainings = [...state.trainings, action.payload];
     },
-    storeTrainings: (state, action: PayloadAction<TrainingInterface[]>) => {
+    storeTrainings: (state, action: PayloadAction<TrainingRdo[]>) => {
       state.trainings = action.payload;
     },
     storeReviews: (state, action: PayloadAction<ReviewInterface[]>) => {
@@ -42,8 +44,11 @@ export const appData = createSlice({
     storeCoachOrdersInfo: (state, action: PayloadAction<CoachOrdersInfo[]>) => {
       state.coachOrdersInfo = action.payload;
     },
-    storeTrainingsForMe: (state, action: PayloadAction<TrainingInterface[]>) => {
+    storeTrainingsForMe: (state, action: PayloadAction<TrainingRdo[]>) => {
       state.trainingsForMe = action.payload;
+    },
+    storePopularTrainings: (state, action: PayloadAction<TrainingRdo[]>) => {
+      state.popularTrainings = action.payload;
     },
   },
   extraReducers(builder) {
@@ -57,7 +62,7 @@ export const appData = createSlice({
       .addCase(fetchTrainings.pending, (state) => {
         state.isDataLoaded = false;
       })
-      .addCase(fetchTraining.fulfilled, (state, action: PayloadAction<TrainingInterface>) => {
+      .addCase(fetchTraining.fulfilled, (state, action: PayloadAction<TrainingRdo>) => {
         state.training = action.payload;
         state.isDataLoaded = true;
       })
@@ -116,4 +121,4 @@ export const appData = createSlice({
   }
 });
 
-export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo, storeTrainingsForMe } = appData.actions;
+export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo, storeTrainingsForMe, storePopularTrainings } = appData.actions;

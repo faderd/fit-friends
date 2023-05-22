@@ -2,6 +2,7 @@ import { Transform } from 'class-transformer';
 import { IsBoolean, IsIn, IsNumber, IsOptional } from 'class-validator';
 import { DEFAULT_COUNT_LIMIT, DEFAULT_SORT_DIRECTION } from '../../app.constant';
 import { TrainingDuration, TrainingLevel, TrainingType } from '@fit-friends/shared-types';
+import { TrainingSortType } from '../training.const';
 
 export class TrainingQuery {
   @Transform(({ value }) => +value || DEFAULT_COUNT_LIMIT)
@@ -56,4 +57,8 @@ export class TrainingQuery {
 
   @IsOptional()
   public trainingLevel: TrainingLevel;
+
+
+  @IsOptional()
+  public sortType: TrainingSortType;
 }

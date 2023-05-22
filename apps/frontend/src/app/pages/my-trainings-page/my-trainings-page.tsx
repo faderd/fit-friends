@@ -1,8 +1,8 @@
 import { applyTrainingsFilters } from '../../../helpers';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppRoute, PageTitle } from '../../../const';
-import MyTrainingsFilter from '../../components/my-trainings-filter/my-trainings-filter';
+import TrainingsFilter from '../../components/trainings-filter/trainings-filter';
 import PageHeader from '../../components/page-header/page-header';
 import TrainingItem from '../../components/training-item/training-item';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -25,9 +25,61 @@ function MyTrainingsPage(): JSX.Element {
     filteredTrainings = applyTrainingsFilters(userTrainings, filters)
   }
 
+  const queryString = useMemo(() => {
+    const query: {
+      limit?: string,
+      sortDirection?: string,
+      isOnlyFreeTrainings?: string,
+      page?: string,
+      minPrice?: string,
+      minCalories?: string,
+      minRate?: string,
+      trainingDuration?: string,
+      trainingType?: string,
+      trainingLevel?: string,
+      sortType?: string,
+    } = {};
+
+    if (filters?.searchParamLimit) {
+      query.limit = filters.searchParamLimit;
+    }
+    if (filters?.searchParamSortDirection) {
+      query.sortDirection = filters.searchParamSortDirection;
+    }
+    if (filters?.searchParamIsOnlyFreeTrainings) {
+      query.isOnlyFreeTrainings = filters.searchParamIsOnlyFreeTrainings;
+    }
+    if (filters?.searchParamPage) {
+      query.page = filters.searchParamPage;
+    }
+    if (filters?.searchParamMinPrice) {
+      query.minPrice = filters.searchParamMinPrice;
+    }
+    if (filters?.searchParamMinCalories) {
+      query.minCalories = filters.searchParamMinCalories;
+    }
+    if (filters?.searchParamMinRate) {
+      query.minRate = filters.searchParamMinRate;
+    }
+    if (filters?.searchParamTrainingDuration) {
+      query.trainingDuration = filters.searchParamTrainingDuration as string;
+    }
+    if (filters?.searchParamTrainingType) {
+      query.trainingType = filters.searchParamTrainingType as string;
+    }
+    if (filters?.searchParamTrainingLevel) {
+      query.trainingLevel = filters.searchParamTrainingLevel;
+    }
+    if (filters?.searchParamSortingType) {
+      query.sortType = filters.searchParamSortingType;
+    }
+
+    return query;
+  }, [filters]);
+
   useEffect(() => {
-    dispatch(fetchTrainings({}));
-  }, [dispatch]);
+    dispatch(fetchTrainings(queryString));
+  }, [dispatch, queryString]);
 
   const getMaxPrice = () => Math.max(...userTrainings.map((training) => training.price)).toString();
   const getMaxCalory = () => Math.max(...userTrainings.map((training) => training.calories)).toString();
@@ -51,7 +103,7 @@ function MyTrainingsPage(): JSX.Element {
                       </svg><span>Назад</span>
                     </button>
                     <h3 className="my-training-form__title">фильтры</h3>
-                    <MyTrainingsFilter setFilters={setFilters} maxPrice={getMaxPrice()} maxCalory={getMaxCalory()} classNamePrefix='my-training' isDurationBlockActive={true} />
+                    <TrainingsFilter setFilters={setFilters} maxPrice={getMaxPrice()} maxCalory={getMaxCalory()} classNamePrefix='my-training' isDurationBlockActive={true} />
                   </div>
                 </div>
                 <div className="inner-page__content">

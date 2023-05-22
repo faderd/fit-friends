@@ -13,14 +13,12 @@ export class ReviewService {
     private readonly trainingService: TrainingService,
   ) { }
 
-  async setAverageRate(trainingId: number, userId: number) {
+  async setAverageRate(trainingId: number) {
     const reviews = await this.reviewRepository.findAllByTrainingId(trainingId);
     const sum = reviews.reduce((sum, currentItem) => sum + currentItem.rate, 0);
     const newAverageRate = Math.round(sum / reviews.length);
 
-    const existTraining = await this.trainingService.getTraining(trainingId);
-
-    this.trainingService.updateTraining(trainingId, { ...existTraining, rate: newAverageRate }, userId)
+    this.trainingService.setRate(trainingId, newAverageRate)
   }
 
   async create(dto: CreateReviewDto, userId: number) {
@@ -33,7 +31,7 @@ export class ReviewService {
     const reviewEntity = new ReviewEntity(review);
 
     const createdReview = await this.reviewRepository.create(reviewEntity);
-    this.setAverageRate(trainingId, userId);
+    this.setAverageRate(trainingId);
 
     return createdReview;
   }

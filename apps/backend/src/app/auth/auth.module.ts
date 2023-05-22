@@ -14,9 +14,12 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { MulterModule } from '@nestjs/platform-express';
 import { getMulterOptions } from '../../config/multer.config';
 import { UserService } from '../user/user.service';
+import { TrainingDiaryService } from '../training-diary/training-diary.service';
+import { TrainingDiaryModule } from '../training-diary/training-diary.module';
 
 @Module({
   imports: [
+    TrainingDiaryModule,
     UserModule,
     QuestionnaireModule,
     PassportModule,
@@ -35,7 +38,9 @@ import { UserService } from '../user/user.service';
     AuthService,
     JwtStrategy,
     LocalStrategy,
-    JwtRefreshStrategy, UserService
+    JwtRefreshStrategy,
+    UserService,
+    TrainingDiaryService,
   ],
 })
 export class AuthModule { }

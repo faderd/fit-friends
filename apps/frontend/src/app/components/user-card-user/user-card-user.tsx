@@ -1,9 +1,9 @@
 import { TrainingLevel } from '@fit-friends/shared-types';
-import { UserData } from '../../types/user-data';
+import { UserRdo } from '../../types/user-rdo';
 import ButtonAddRemoveFriend from '../button-add-remove-friend/button-add-remove-friend';
 
 type UserCardUserProps = {
-  user: UserData;
+  user: UserRdo;
 }
 
 function UserCardUser({ user }: UserCardUserProps): JSX.Element {

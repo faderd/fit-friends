@@ -2,20 +2,27 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PageTitle } from '../../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getUser, getUserById } from '../../store/user-process/selectors';
-import { useEffect, useState } from 'react';
-import { fetchTrainings, fetchUsers, updateTraining } from '../../store/api-actions';
-import { getIsDataLoaded, getTrainingById } from '../../store/app-data/selectors';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { fetchTraining, fetchTrainings, fetchUserOrders, finishTrainingOrder, startTrainingOrder, updateTraining } from '../../store/api-actions';
+import { getIsDataLoaded, getOpenedOrders, getOrders, getTraining, getTrainingById } from '../../store/app-data/selectors';
 import { Gender, TrainingDescriptionLengthRange, TrainingNameLengthRange, UserRole } from '@fit-friends/shared-types';
 import PageHeader from '../../components/page-header/page-header';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import PopupFeedback from '../../components/popup-feedback/popup-feedback';
 import ReviewsSidebar from '../../components/reviews-sidebar/reviews-sidebar';
 import PopupMembership from '../../components/popup-membership/popup-membership';
+import { getIsTrainingOrdered, getIsTrainingStarted, getOrderIdByTrainingId, getTrainingPrice } from '../../../helpers';
 
 const genderMap = {
   [Gender.Female]: 'для_женщин',
   [Gender.Male]: 'для_мужчин',
   [Gender.NotImportant]: 'для_всех',
+}
+
+enum VideoLoadStatus {
+  Preload = 'preload',
+  Loaded = 'loaded',
+  NotLoaded = 'notLoaded',
 }
 
 type ReactHookFormData = {
@@ -32,24 +39,62 @@ function TrainingCardPage(): JSX.Element {
   const [isPopupFeedbackOpen, setIsPopupFeedbackOpen] = useState(false);
   const [isPopupMembershipOpen, setIsPopupMembershipOpen] = useState(false);
 
+  const [isRedactMode, setIsRedactMode] = useState(false);
+  const redactButtonRef = useRef<HTMLButtonElement | null>(null);
+
   const isDataLoaded = useAppSelector(getIsDataLoaded);
   const trainingId = useParams().id || '';
-  const training = useAppSelector(getTrainingById(+trainingId));
-  const coach = useAppSelector(getUserById(training?.userId || 0));
+  const training = useAppSelector(getTraining);
+  // const coach = useAppSelector(getUserById(training?.userId || 0));
+
+  const orders = useAppSelector(getOpenedOrders);
+  const isTrainingOrdered = getIsTrainingOrdered(orders, +trainingId);
+  const isTrainingStarted = getIsTrainingStarted(orders, +trainingId);
+  const orderId = getOrderIdByTrainingId(orders, +trainingId) || NaN;
+
   const userRole = useAppSelector(getUser)?.role;
   let isRedactAvailable = userRole === UserRole.Coach ? true : false;
 
-  if (userRole === UserRole.Coach && !isDataLoaded) {
+  if (!isDataLoaded) {
+    isRedactAvailable = false;
+  }
+  if (!isRedactMode) {
     isRedactAvailable = false;
   }
 
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
+  if (userRole === UserRole.Coach && isDataLoaded && isRedactMode) {
+    isRedactAvailable = true;
+  }
+
+  console.log('isRedactAvailable: ', isRedactAvailable);
+
+  // useEffect(() => {
+  //   dispatch(fetchUsers());
+  // }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchTrainings({}));
+    dispatch(fetchTraining(+trainingId));
+  }, [dispatch, trainingId]);
+
+  useEffect(() => {
+    dispatch(fetchUserOrders());
   }, [dispatch]);
+
+  const [videoLoadStatus, setVideoLoadStatus] = useState(VideoLoadStatus.NotLoaded);
+  const videoData = new FormData();
+  const uploadFile = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    if (!evt.target.files) { return; }
+
+    const file = evt.target.files[0];
+    console.log(file);
+
+    if (file) {
+      videoData.append('file', file);
+      setVideoLoadStatus(VideoLoadStatus.Preload);
+    }
+  }
+
+  const [isSpecialOffer, setIsSpecialOffer] = useState(training?.isSpecialOffer);
 
   const { register, handleSubmit, formState: { errors } } = useForm<ReactHookFormData>();
 
@@ -58,10 +103,55 @@ function TrainingCardPage(): JSX.Element {
       name: reactHookFormData.name,
       description: reactHookFormData.description,
       price: reactHookFormData.price,
-      trainingId
+      trainingId,
+      isSpecialOffer
     };
 
     dispatch(updateTraining(trainingUpdateData));
+    setIsRedactMode(false);
+    redactButtonRef.current?.classList.remove("training-info__edit--edit");
+  };
+
+  const handleRemoveVideo = () => {
+    if (videoLoadStatus === VideoLoadStatus.Preload) {
+      videoData.delete('file');
+      setVideoLoadStatus(VideoLoadStatus.NotLoaded);
+    }
+  };
+  const handleSaveVideo = () => {
+    if (videoLoadStatus === VideoLoadStatus.Preload) {
+      // отправить видео videoData
+    }
+  };
+
+  // console.log('description: ', training?.description);
+
+  // const handleSpecialOfferClick = () => {
+  //   if (!training) { return; }
+  //   dispatch(updateTraining({ isSpecialOffer: !(training.isSpecialOffer), trainingId }));
+  // }
+  const isPlayVideoDisabled = () => {
+
+    if (isTrainingOrdered && !isTrainingStarted || !isTrainingOrdered) {
+      return true;
+    }
+    if (isTrainingOrdered && isTrainingStarted) {
+      return false;
+    }
+  };
+
+  const handleStartButtonClick = () => {
+    dispatch(startTrainingOrder({ orderId }))
+      .then(() => {
+        dispatch(fetchUserOrders());
+      });
+  };
+
+  const handleStopButtonClick = () => {
+    dispatch(finishTrainingOrder({ orderId }))
+      .then(() => {
+        dispatch(fetchUserOrders());
+      });
   };
 
   return (
@@ -91,25 +181,33 @@ function TrainingCardPage(): JSX.Element {
                     onClick={() => { setIsPopupFeedbackOpen(true) }}
                   >Оставить отзыв</button>
                 </aside>
-                <div className="training-card training-card--edit">
+                <div className={`training-card ${userRole == UserRole.Coach && 'training-card--edit'}`}>
                   <div className="training-info">
                     <h2 className="visually-hidden">Информация о тренировке</h2>
                     <div className="training-info__header">
                       <div className="training-info__coach">
                         <div className="training-info__photo">
                           <picture>
-                            <source type="image/webp" srcSet="img/content/avatars/coaches//photo-1.webp, img/content/avatars/coaches//photo-1@2x.webp 2x" /><img src="img/content/avatars/coaches//photo-1.png" srcSet="img/content/avatars/coaches//photo-1@2x.png 2x" width="64" height="64" alt="Изображение тренера" />
+                            <source type="image/webp" srcSet={`${training?.coach.avatar}.webp, ${training?.coach.avatar}@2x.webp 2x`} /><img src={`${training?.coach.avatar}.png`} srcSet={`${training?.coach.avatar}@2x.png 2x`} width="64" height="64" alt="Изображение тренера" />
                           </picture>
                         </div>
-                        <div className="training-info__coach-info"><span className="training-info__label">Тренер</span><span className="training-info__name">{coach?.name}</span></div>
+                        <div className="training-info__coach-info"><span className="training-info__label">Тренер</span><span className="training-info__name">{training?.coach.name}</span></div>
                       </div>
-                      <button className="btn-flat btn-flat--light training-info__edit training-info__edit--edit" type="button">
-                        <svg width="12" height="12" aria-hidden="true">
-                          <use xlinkHref="#icon-edit"></use>
-                        </svg><span>Редактировать</span>
-                      </button>
                       {userRole === UserRole.Coach && (
-                        <button className="btn-flat btn-flat--light btn-flat--underlined training-info__edit training-info__edit--save" type="submit"
+                        <button className="btn-flat btn-flat--light training-info__edit" type="button"
+                          ref={redactButtonRef}
+                          onClick={() => {
+                            redactButtonRef.current?.classList.add("training-info__edit--edit");
+                            setIsRedactMode(true);
+                          }}
+                        >
+                          <svg width="12" height="12" aria-hidden="true">
+                            <use xlinkHref="#icon-edit"></use>
+                          </svg><span>Редактировать</span>
+                        </button>
+                      )}
+                      {userRole === UserRole.Coach && isRedactMode && (
+                        <button className="btn-flat btn-flat--light training-info__edit training-info__edit--save btn-flat--underlined" type="submit"
                           onClick={handleSubmit(onSubmit)}
                         >
                           <svg width="12" height="12" aria-hidden="true">
@@ -126,7 +224,7 @@ function TrainingCardPage(): JSX.Element {
                               <label><span className="training-info__label">Название тренировки</span>
                                 <input
                                   type="text"
-                                  defaultValue={training?.name ? training.name : ''}
+                                  defaultValue={training?.name || ''}
                                   disabled={!isRedactAvailable}
                                   {...register('name', {
                                     required: true,
@@ -141,12 +239,13 @@ function TrainingCardPage(): JSX.Element {
                               <label><span className="training-info__label">Описание тренировки</span>
                                 <textarea
                                   disabled={!isRedactAvailable}
+                                  value={training?.description || ''}
                                   {...register('description', {
                                     required: true,
                                     minLength: TrainingDescriptionLengthRange.Min,
                                     maxLength: TrainingDescriptionLengthRange.Max,
                                   })}
-                                >{training?.description}
+                                >{training && (training.description)}
                                 </textarea>
                               </label>
                             </div>
@@ -193,15 +292,18 @@ function TrainingCardPage(): JSX.Element {
                               <button
                                 className="btn training-info__buy"
                                 type="button"
-                                onClick={() => {setIsPopupMembershipOpen(true)}}
+                                onClick={() => { setIsPopupMembershipOpen(true) }}
+                                disabled={isTrainingOrdered}
                               >Купить</button>
                             )}
 
-                            {userRole === UserRole.Coach && (
-                              <button className="btn-flat btn-flat--light btn-flat--underlined training-info__discount" type="button">
+                            {userRole === UserRole.Coach && isRedactAvailable && (
+                              <button className="btn-flat btn-flat--light btn-flat--underlined training-info__discount" type="button"
+                                onClick={() => setIsSpecialOffer(!isSpecialOffer)}
+                              >
                                 <svg width="14" height="14" aria-hidden="true">
                                   <use xlinkHref="#icon-discount"></use>
-                                </svg><span>Сделать скидку 10%</span>
+                                </svg><span>{isSpecialOffer ? 'Сделать' : 'Отменить'} скидку 10%</span>
                               </button>
                             )}
                           </div>
@@ -209,7 +311,7 @@ function TrainingCardPage(): JSX.Element {
                       </form>
                     </div>
                   </div>
-                  <div className="training-video">
+                  <div className={`training-video ${isRedactAvailable && videoLoadStatus === VideoLoadStatus.NotLoaded && 'training-video--load'} ${isTrainingStarted && 'training-video--stop'}`}>
                     <h2 className="training-video__title">Видео</h2>
                     <div className="training-video__video">
                       <div className="training-video__thumbnail">
@@ -217,7 +319,9 @@ function TrainingCardPage(): JSX.Element {
                           <source type="image/webp" srcSet="img/content/training-video/video-thumbnail.webp, img/content/training-video/video-thumbnail@2x.webp 2x" /><img src="img/content/training-video/video-thumbnail.png" srcSet="img/content/training-video/video-thumbnail@2x.png 2x" width="922" height="566" alt="Обложка видео" />
                         </picture>
                       </div>
-                      <button className="training-video__play-button btn-reset">
+                      <button className={`training-video__play-button btn-reset ${isPlayVideoDisabled() && 'is-disabled'}`}
+                        disabled={isPlayVideoDisabled()}
+                      >
                         <svg width="18" height="30" aria-hidden="true">
                           <use xlinkHref="#icon-arrow"></use>
                         </svg>
@@ -231,18 +335,31 @@ function TrainingCardPage(): JSX.Element {
                               <svg width="20" height="20" aria-hidden="true">
                                 <use xlinkHref="#icon-import-video"></use>
                               </svg></span>
-                              <input type="file" name="import" tabIndex={-1} accept=".mov, .avi, .mp4" />
+                              <input type="file" name="import" tabIndex={-1} accept=".mov, .avi, .mp4"
+                                disabled={!isRedactAvailable}
+                                onChange={uploadFile}
+                              />
                             </label>
                           </div>
                         </div>
                       </form>
                     </div>
                     <div className="training-video__buttons-wrapper">
-                      <button className="btn training-video__button training-video__button--start" type="button" disabled>Приступить</button>
-                      {userRole === UserRole.Coach && (
+                      <button className="btn training-video__button training-video__button--start" type="button"
+                        disabled={!isTrainingOrdered}
+                        onClick={handleStartButtonClick}
+                      >Приступить</button>
+                      <button className="btn training-video__button training-video__button--stop" type="button"
+                        onClick={handleStopButtonClick}
+                      >Закончить</button>
+                      {userRole === UserRole.Coach && isRedactMode && (
                         <div className="training-video__edit-buttons">
-                          <button className="btn" type="button" onClick={handleSubmit(onSubmit)}>Сохранить</button>
-                          <button className="btn btn--outlined" type="button">Удалить</button>
+                          <button className="btn" type="button"
+                            onClick={handleSaveVideo}
+                          >Сохранить</button>
+                          <button className="btn btn--outlined" type="button"
+                            onClick={handleRemoveVideo}
+                          >Удалить</button>
                         </div>
                       )}
                     </div>

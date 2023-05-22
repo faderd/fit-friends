@@ -1,11 +1,11 @@
 import { Gender, UserLocation, UserRole } from '@fit-friends/shared-types';
 import { QuestionnaireData } from './questionnaire-data';
 
-export type UserData = {
+export type UserRdo = {
   id: number;
   email: string;
   name: string;
-  avatar: File;
+  avatar: string;
   gender: Gender;
   birthDate: Date | string;
   role: UserRole;

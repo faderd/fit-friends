@@ -29,5 +29,5 @@ export class UpdateTrainingDiaryDto {
   @Type(() => TrainingEntryDto)
   @ValidateNested()
   @IsArray()
-  diary: TrainingEntryDto[];
+  diary: TrainingEntryDto;
 }

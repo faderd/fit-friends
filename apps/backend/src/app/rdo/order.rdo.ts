@@ -21,5 +21,11 @@ export class OrderRdo {
   public createdAt: Date;
 
   @Expose()
+  public isStarted: boolean;
+
+  @Expose()
+  public isClosed: boolean;
+
+  @Expose()
   public entityId: number;
 }
