@@ -82,7 +82,7 @@ POST http://localhost:3333/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "coach7@notfound.local",
+  "email": "user1@notfound.local",
   "password": "123456"
 }
 ###

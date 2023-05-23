@@ -1,11 +1,11 @@
-import { GymInterface, OrderInterface, OrderType, TrainingType, UserRole } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, OrderType, TrainingDiaryInterface, TrainingDiaryItem, TrainingType, UserRole } from '@fit-friends/shared-types';
 import { trainingsFilters } from './app/types/my-trainings-filters';
 import { UserRdo } from './app/types/user-rdo';
 import { UserFilters } from './app/types/user-filters';
 import { gymFilters } from './app/types/gym-filters';
 import { ordersFilters } from './app/types/orders-filters';
 import { TrainingRdo } from './app/types/training-rdo';
-import { DISCOUNT_EMOUNT } from './const';
+import { DISCOUNT_EMOUNT, TrainingDurationForDiaryMask } from './const';
 
 export const applyFilters = (users: UserRdo[], filters: UserFilters) => {
   let filteredUsers = users.slice();
@@ -184,6 +184,54 @@ export const getIsTrainingOrdered = (orders: OrderInterface[], trainingId: numbe
 export const getIsTrainingStarted = (orders: OrderInterface[], trainingId: number) => orders.some((order) => order.type === OrderType.Training && order.entityId === trainingId && order.isStarted);
 
 export const getOrderIdByTrainingId = (orders: OrderInterface[], trainingId: number) => orders.find((order) => order.type === OrderType.Training && order.entityId === trainingId)?.id;
+
+export const getMaxTrainigsInDay = (diary: TrainingDiaryItem[] | undefined) => {
+  if (!diary) { return 0; }
+
+  const currentDate = new Date();
+  const currentDay = currentDate.getDay();
+
+  let max = 0;
+
+  for (let i = 1; i <= currentDay; i++) {
+    const localMax = diary.filter((item) => {
+      const dateTraining = new Date(item.dateTraining);
+      const dateComparsion = new Date();
+      dateComparsion.setDate(dateComparsion.getDate() - (i - 1));
+
+      return dateTraining.toDateString() === dateComparsion.toDateString();
+    }).length;
+
+    if (localMax > max) { max = localMax; }
+  }
+
+  return max;
+};
+
+export const getCaloryOrTimeInTrainigByDiary = (day: number, trainingNum: number, diary: TrainingDiaryItem[] | undefined, whatGet: 'calory' | 'time') => {
+  if (!diary) { return 0; }
+
+  const currentDay = (new Date()).getDay();
+  const calculatedDate = new Date();
+  calculatedDate.setDate(calculatedDate.getDate() - (currentDay - day));
+
+  let trainingCalculatedNum = 1;
+
+  for (const diaryItem of diary) {
+    const trainingDate = new Date(diaryItem.dateTraining);
+
+    if (trainingDate.toDateString() !== calculatedDate.toDateString()) { continue; }
+
+    if (trainingCalculatedNum === trainingNum) {
+      if (whatGet === 'time') { return TrainingDurationForDiaryMask[diaryItem.trainingDuration]; }
+      if (whatGet === 'calory') { return diaryItem.caloriesLoss; }
+    }
+
+    trainingCalculatedNum++;
+  };
+
+  return 0;
+};
 
 export const getUrlQueryString = <T extends Record<string, string>>(params: T, url: string): string => {
   const paramsString = new URLSearchParams();

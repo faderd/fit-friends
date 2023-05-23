@@ -66,7 +66,7 @@ export class TrainingDiaryService {
       throw new ConflictException('Нельзя редактировать чужие дневники');
     }
 
-    const diary = { ...existTrainingDiary.diary, ...dto.diary }
+    const diary = [...existTrainingDiary.diary, dto.diary];
 
     const trainingDiaryEntity = new TrainingDiaryEntity({ ...existTrainingDiary, diary });
 

@@ -1,4 +1,4 @@
-import { GymInterface, OrderInterface, ReviewInterface } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, ReviewInterface, TrainingDiaryInterface } from '@fit-friends/shared-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../../const';
 import { AppData } from '../../types/state';
@@ -17,6 +17,7 @@ export const getInitialStateAppData = (): AppData => ({
   coachOrdersInfo: [],
   trainingsForMe: [],
   popularTrainings: [],
+  trainingDiary: null,
 });
 
 export const appData = createSlice({
@@ -50,6 +51,9 @@ export const appData = createSlice({
     storePopularTrainings: (state, action: PayloadAction<TrainingRdo[]>) => {
       state.popularTrainings = action.payload;
     },
+    storeTrainingDiary: (state, action: PayloadAction<TrainingDiaryInterface>) => {
+      state.trainingDiary = action.payload;
+    }
   },
   extraReducers(builder) {
     builder
@@ -121,4 +125,4 @@ export const appData = createSlice({
   }
 });
 
-export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo, storeTrainingsForMe, storePopularTrainings } = appData.actions;
+export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo, storeTrainingsForMe, storePopularTrainings, storeTrainingDiary } = appData.actions;

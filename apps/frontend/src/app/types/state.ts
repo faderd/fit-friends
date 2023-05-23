@@ -1,4 +1,4 @@
-import { GymInterface, OrderInterface, ReviewInterface } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, ReviewInterface, TrainingDiaryInterface } from '@fit-friends/shared-types';
 import { AuthorizationStatus } from '../../const';
 import { store } from '../store';
 import { QuestionnaireData } from './questionnaire-data';
@@ -20,6 +20,7 @@ export type AppData = {
   coachOrdersInfo: CoachOrdersInfo[],
   trainingsForMe: TrainingRdo[],
   popularTrainings: TrainingRdo[],
+  trainingDiary: TrainingDiaryInterface | null,
 }
 
 export type UserProcess = {

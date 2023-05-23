@@ -31,6 +31,7 @@ export enum AppRoute {
   GymCard = '/gym-card/:id',
   MyPurchases = '/my-purchases',
   MyOrders = '/my-orders',
+  TrainingDiary = '/training-diary',
 }
 
 export enum PageTitle {
@@ -50,6 +51,7 @@ export enum PageTitle {
   GymCard = 'Карточка зала — FitFriends',
   MyPurchases = 'Мои покупки - FitFriends',
   MyOrders = 'Мои заказы — FitFriends',
+  TrainingDiary = 'Дневник тренировок — FitFriends',
 }
 
 export enum PageType {
@@ -113,3 +115,10 @@ export enum SortDirection {
 }
 
 export const DISCOUNT_EMOUNT = 10;
+
+export const TrainingDurationForDiaryMask = {
+  [TrainingDuration.Range10to30]: 20,
+  [TrainingDuration.Range30to50]: 40,
+  [TrainingDuration.Range50to80]: 65,
+  [TrainingDuration.RangeMore80]: 90,
+};

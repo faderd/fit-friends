@@ -36,12 +36,12 @@ function PersonalAccountUserPage(): JSX.Element {
                         </div>
                       </form>
                     </div>
-                    <div className="personal-account-user__info"><a className="thumbnail-link thumbnail-link--theme-dark" href="#">
+                    <div className="personal-account-user__info"><Link className="thumbnail-link thumbnail-link--theme-dark" to={AppRoute.TrainingDiary}>
                       <div className="thumbnail-link__icon thumbnail-link__icon--theme-dark">
                         <svg width="30" height="26" aria-hidden="true">
                           <use xlinkHref="#icon-ranking"></use>
                         </svg>
-                      </div><span className="thumbnail-link__text">Дневник тренировок</span></a><a className="thumbnail-link thumbnail-link--theme-dark" href="#">
+                      </div><span className="thumbnail-link__text">Дневник тренировок</span></Link><a className="thumbnail-link thumbnail-link--theme-dark" href="#">
                         <div className="thumbnail-link__icon thumbnail-link__icon--theme-dark">
                           <svg width="30" height="26" aria-hidden="true">
                             <use xlinkHref="#icon-book"></use>
