@@ -1,0 +1,32 @@
+import { MealType } from '@fit-friends/shared-types';
+
+export const EmptyDiary = [
+  { day: 1, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 1, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 1, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 1, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 2, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 2, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 2, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 2, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 3, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 3, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 3, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 3, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 4, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 4, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 4, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 4, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 5, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 5, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 5, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 5, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 6, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 6, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 6, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 6, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 7, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 7, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 7, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 7, mealType: MealType.Snack, caloriesCount: 0 }
+];

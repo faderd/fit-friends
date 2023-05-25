@@ -1,4 +1,4 @@
-import { GymInterface, OrderInterface, ReviewInterface, TrainingDiaryInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
+import { FoodDiaryInterface, FoodDiaryItem, GymInterface, OrderInterface, ReviewInterface, TrainingDiaryInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
@@ -11,7 +11,7 @@ import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
 import { UserRdo } from '../types/user-rdo';
 import { redirectToPrevious } from './app-data/action';
-import { storeCoachOrdersInfo, storeGyms, storeIsDataLoadedStatus, storeOrders, storePopularTrainings, storeReviews, storeTraining, storeTrainingDiary, storeTrainings, storeTrainingsForMe } from './app-data/app-data';
+import { storeCoachOrdersInfo, storeFoodDiary, storeGyms, storeIsDataLoadedStatus, storeOrders, storePopularTrainings, storeReviews, storeTraining, storeTrainingDiary, storeTrainings, storeTrainingsForMe } from './app-data/app-data';
 import { storeLookingForCompanyUsers, storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 import { UpdateTrainingDto } from '../types/update-training.dto';
 import { CreateReviewDto } from '../types/create-review.dto';
@@ -144,6 +144,7 @@ export const updateQuestionnaire = createAsyncThunk<void, QuestionnaireData,
   async (updateData, { dispatch, extra: api }) => {
     dispatch(storeIsDataLoadedStatus(false));
 
+    console.log('updateData: ', updateData);
     const { data } = await api.post<QuestionnaireData>('auth/questionnaire', updateData);
 
     dispatch(storeQuestionnaire(data));
@@ -491,7 +492,35 @@ export const fetchTrainingDiary = createAsyncThunk<void, undefined,
   'data/fetchTrainingDiary',
   async (_, { dispatch, extra: api }) => {
     const { data } = await api.get<TrainingDiaryInterface>('training-diary');
-    console.log('trainingDiary: ', data);
     dispatch(storeTrainingDiary(data));
+  }
+);
+
+export const fetchFoodDiary = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchFoodDiary',
+  async (_, { dispatch, extra: api }) => {
+    const { data } = await api.get<FoodDiaryInterface>('food-diary');
+    dispatch(storeFoodDiary(data));
+  }
+);
+
+export const submitFoodDiary = createAsyncThunk<void, { diary: FoodDiaryItem[] },
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/submitFoodDiary',
+  async ({ diary }, { dispatch, extra: api }) => {
+    const { data } = await api.patch<FoodDiaryInterface>('food-diary', { diary });
+    console.log('submitFoodDiary: ', data);
+    dispatch(storeFoodDiary(data));
   }
 );

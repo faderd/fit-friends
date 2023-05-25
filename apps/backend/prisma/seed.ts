@@ -2,6 +2,7 @@
 import { PrismaClient } from '@prisma/client';
 import { GymPriceRange, MAX_TRAINING_TYPE_LENGTH } from '../../../libs/shared-types/src/lib/validate-range';
 import { CaloriesLossRange, Gender, GymOption, MIN_TRAINING_PRICE, TrainingDuration, TrainingLevel, TrainingType, UserLocation } from '../../../libs/shared-types/src';
+import { EmptyDiary } from '../src/app/food-diary/food-diary.const';
 
 const ENTITY_COUNT = 10;
 const MAX_TRAINING_PRICE = 10000;
@@ -224,6 +225,10 @@ async function fillDb() {
   // создадим пустые дневники тренировок
   for (let i = 1; i <= ENTITY_COUNT / 2; i++) {
     await prisma.trainingDiary.create({ data: {userId: i, diary: []} });
+  }
+  // создадим пустые дневники питания
+  for (let i = 1; i <= ENTITY_COUNT / 2; i++) {
+    await prisma.foodDiary.create({ data: {userId: i, diary: EmptyDiary} });
   }
 }
 

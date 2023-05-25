@@ -44,7 +44,7 @@ export class FoodDiaryController {
       throw new UserNotUserException();
     }
 
-    const newFoodDiary = await this.foodDiaryService.create(dto, tokenPayload.sub);
+    const newFoodDiary = await this.foodDiaryService.create(tokenPayload.sub);
     return fillObject(FoodDiaryRdo, newFoodDiary);
   }
 

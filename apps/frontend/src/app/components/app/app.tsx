@@ -26,6 +26,7 @@ import GymCardPage from '../../pages/gym-card-page/gym-card-page';
 import MyPurchasesPage from '../../pages/my-purchases-page/my-purchases-page';
 import MyOrdersPage from '../../pages/my-orders-page/my-orders-page';
 import TrainingDiaryPage from '../../pages/training-diary-page/training-diary-page';
+import FoodDiaryPage from '../../pages/food-diary-page/food-diary-page';
 
 function App(): JSX.Element {
   const isAuthStatusUnknown = useAppSelector(isAuthUnknown);
@@ -179,9 +180,16 @@ function App(): JSX.Element {
           </PrivateRouteUser>
         }
       />
+      <Route
+        path={AppRoute.FoodDiary}
+        element={
+          <PrivateRouteUser>
+            <FoodDiaryPage />
+          </PrivateRouteUser>
+        }
+      />
     </Routes>
   );
-
 }
 
 export default App;

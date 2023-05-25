@@ -16,10 +16,12 @@ import { RefreshTokenRepository } from '../refresh-token/refresh-token.repositor
 import { UserService } from '../user/user.service';
 import { TrainingDiaryService } from '../training-diary/training-diary.service';
 import { TrainingDiaryRepository } from '../training-diary/training-diary.repository';
+import { FoodDiaryService } from '../food-diary/food-diary.service';
+import { FoodDiaryRepository } from '../food-diary/food-diary.repository';
 
 @Module({
   imports: [PrismaModule, AuthModule, OrderModule, UserModule],
   controllers: [GymController],
-  providers: [GymRepository, GymService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository, UserService, TrainingDiaryService, TrainingDiaryRepository],
+  providers: [GymRepository, GymService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository, UserService, TrainingDiaryService, TrainingDiaryRepository, FoodDiaryService, FoodDiaryRepository],
 })
 export class GymModule {}

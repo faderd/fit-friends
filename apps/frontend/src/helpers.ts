@@ -1,4 +1,4 @@
-import { GymInterface, OrderInterface, OrderType, TrainingDiaryInterface, TrainingDiaryItem, TrainingType, UserRole } from '@fit-friends/shared-types';
+import { GymInterface, OrderInterface, OrderType, TrainingDiaryItem, TrainingType, UserRole } from '@fit-friends/shared-types';
 import { trainingsFilters } from './app/types/my-trainings-filters';
 import { UserRdo } from './app/types/user-rdo';
 import { UserFilters } from './app/types/user-filters';

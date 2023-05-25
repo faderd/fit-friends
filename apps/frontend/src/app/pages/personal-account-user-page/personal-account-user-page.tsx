@@ -1,9 +1,32 @@
 import { Link } from 'react-router-dom';
-import { AppRoute, PageType } from '../../../const';
+import { AppRoute, PageTitle, PageType } from '../../../const';
 import PageHeader from '../../components/page-header/page-header';
 import UserInfo from '../../components/user-info/user-info';
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { getBurnsCaloriesPerDay, getUserId } from '../../store/user-process/selectors';
+import { fetchQuestionnaire } from '../../store/api-actions';
+import MyProgressSection from '../../components/my-progress-section/my-progress-section';
 
 function PersonalAccountUserPage(): JSX.Element {
+  document.title = PageTitle.PersonalAccount;
+
+  const dispatch = useAppDispatch();
+
+  const questionnaireBurnsCaloriesPerDay = useAppSelector(getBurnsCaloriesPerDay);
+  const userId = useAppSelector(getUserId);
+  const [isRedactMode, setIsRedactMode] = useState(false);
+  const [burnsCaloriesPerDay, setBurnsCaloriesPerDay] = useState(questionnaireBurnsCaloriesPerDay ?? 0);
+
+  useEffect(() => {
+    dispatch(fetchQuestionnaire(userId || NaN));
+  }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (!questionnaireBurnsCaloriesPerDay) { return; }
+    setBurnsCaloriesPerDay(questionnaireBurnsCaloriesPerDay);
+  }, [questionnaireBurnsCaloriesPerDay]);
+
   return (
     <>
       <div className="visually-hidden">
@@ -17,7 +40,7 @@ function PersonalAccountUserPage(): JSX.Element {
             <div className="container">
               <div className="inner-page__wrapper">
                 <h1 className="visually-hidden">Личный кабинет</h1>
-                <UserInfo />
+                <UserInfo setParentIsRedactMode={setIsRedactMode} burnsCaloriesPerDay={burnsCaloriesPerDay} />
                 <div className="inner-page__content">
                   <div className="personal-account-user">
                     <div className="personal-account-user__schedule">
@@ -25,12 +48,20 @@ function PersonalAccountUserPage(): JSX.Element {
                         <div className="personal-account-user__form">
                           <div className="personal-account-user__input">
                             <label><span className="personal-account-user__label">План на день, ккал</span>
-                              <input type="text" name="schedule-for-the-day" value="3 300" />
+                              <input type="number" name="schedule-for-the-day"
+                                disabled={!isRedactMode}
+                                value={burnsCaloriesPerDay.toString()}
+                                onChange={(evt) => {
+                                  setBurnsCaloriesPerDay(+evt.target.value);
+                                }}
+                              />
                             </label>
                           </div>
                           <div className="personal-account-user__input">
                             <label><span className="personal-account-user__label">План на неделю, ккал</span>
-                              <input type="text" name="schedule-for-the-week" value="23 100" />
+                              <input type="text" name="schedule-for-the-week"
+                                disabled
+                                value={burnsCaloriesPerDay * 7} />
                             </label>
                           </div>
                         </div>
@@ -41,79 +72,14 @@ function PersonalAccountUserPage(): JSX.Element {
                         <svg width="30" height="26" aria-hidden="true">
                           <use xlinkHref="#icon-ranking"></use>
                         </svg>
-                      </div><span className="thumbnail-link__text">Дневник тренировок</span></Link><a className="thumbnail-link thumbnail-link--theme-dark" href="#">
+                      </div><span className="thumbnail-link__text">Дневник тренировок</span></Link>
+                      <Link className="thumbnail-link thumbnail-link--theme-dark" to={AppRoute.FoodDiary}>
                         <div className="thumbnail-link__icon thumbnail-link__icon--theme-dark">
                           <svg width="30" height="26" aria-hidden="true">
                             <use xlinkHref="#icon-book"></use>
                           </svg>
-                        </div><span className="thumbnail-link__text">Дневник питания</span></a>
-                      <section className="my-progress personal-account-user__my-progress">
-                        <div className="my-progress__sidebar">
-                          <svg className="my-progress__icon" width="46" height="51" aria-hidden="true">
-                            <use xlinkHref="#icon-chart-filled"></use>
-                          </svg>
-                          <ul className="my-progress__list">
-                            <li className="my-progress__item"><span>поступило, Ккал</span></li>
-                            <li className="my-progress__item"><span>ушло,<br /> Ккал</span></li>
-                            <li className="my-progress__item"><span>Итого за&nbsp;день, Ккал</span></li>
-                          </ul>
-                        </div>
-                        <div className="my-progress__content">
-                          <div className="my-progress__title-wrapper">
-                            <h2 className="my-progress__title">Мой прогресс</h2>
-                            <div className="my-progress__controls">
-                              <button className="btn-icon btn-icon--outlined my-progress__control" type="button" aria-label="previous">
-                                <svg width="11" height="8" aria-hidden="true">
-                                  <use xlinkHref="#arrow-left"></use>
-                                </svg>
-                              </button>
-                              <button className="btn-icon btn-icon--outlined my-progress__control" type="button" aria-label="next">
-                                <svg width="11" height="8" aria-hidden="true">
-                                  <use xlinkHref="#arrow-right"></use>
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                          <table className="my-progress__table">
-                            <tr className="my-progress__row my-progress__row--head">
-                              <th className="my-progress__cell my-progress__cell--head">пн</th>
-                              <th className="my-progress__cell my-progress__cell--head">вт</th>
-                              <th className="my-progress__cell my-progress__cell--head">ср</th>
-                              <th className="my-progress__cell my-progress__cell--head">чт</th>
-                              <th className="my-progress__cell my-progress__cell--head">пт</th>
-                              <th className="my-progress__cell my-progress__cell--head">сб</th>
-                              <th className="my-progress__cell my-progress__cell--head">вс</th>
-                            </tr>
-                            <tr className="my-progress__row">
-                              <td className="my-progress__cell">3000</td>
-                              <td className="my-progress__cell">1000</td>
-                              <td className="my-progress__cell">3000</td>
-                              <td className="my-progress__cell">1000</td>
-                              <td className="my-progress__cell">3000</td>
-                              <td className="my-progress__cell">1000</td>
-                              <td className="my-progress__cell">3000</td>
-                            </tr>
-                            <tr className="my-progress__row">
-                              <td className="my-progress__cell">2000</td>
-                              <td className="my-progress__cell">4500</td>
-                              <td className="my-progress__cell">2000</td>
-                              <td className="my-progress__cell">4500</td>
-                              <td className="my-progress__cell">2000</td>
-                              <td className="my-progress__cell">4500</td>
-                              <td className="my-progress__cell">2000</td>
-                            </tr>
-                            <tr className="my-progress__row">
-                              <td className="my-progress__cell my-progress__cell--red">1000</td>
-                              <td className="my-progress__cell my-progress__cell--green">3500</td>
-                              <td className="my-progress__cell my-progress__cell--red">1000</td>
-                              <td className="my-progress__cell my-progress__cell--green">3500</td>
-                              <td className="my-progress__cell my-progress__cell--red">1000</td>
-                              <td className="my-progress__cell my-progress__cell--green">3500</td>
-                              <td className="my-progress__cell my-progress__cell--red">1000</td>
-                            </tr>
-                          </table>
-                        </div>
-                      </section>
+                        </div><span className="thumbnail-link__text">Дневник питания</span></Link>
+                      <MyProgressSection />
                       <div className="personal-account-user__diagram"></div>
                     </div>
                     <div className="personal-account-user__additional-info"><a className="thumbnail-link thumbnail-link--theme-light" href="#">

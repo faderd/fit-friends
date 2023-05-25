@@ -23,10 +23,12 @@ import { EmailSubscriberRepository } from '../email-subscriber/email-subscriber.
 import { EmailSenderService } from '../email-sender/email-sender.service';
 import { TrainingDiaryService } from '../training-diary/training-diary.service';
 import { TrainingDiaryRepository } from '../training-diary/training-diary.repository';
+import { FoodDiaryService } from '../food-diary/food-diary.service';
+import { FoodDiaryRepository } from '../food-diary/food-diary.repository';
 
 @Module({
   imports: [PrismaModule, AuthModule, UserModule],
   controllers: [OrderController],
-  providers: [OrderRepository, OrderService, GymRepository, GymService, TrainingRepository, TrainingService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository, EmailSubscriberController, UserService, EmailSubscriberService, EmailSubscriberRepository, EmailSenderService, TrainingDiaryService, TrainingDiaryRepository],
+  providers: [OrderRepository, OrderService, GymRepository, GymService, TrainingRepository, TrainingService, AuthService, UserRepository, UserQuestionnaireRepository, CoachQuestionnaireRepository, JwtService, RefreshTokenService, RefreshTokenRepository, EmailSubscriberController, UserService, EmailSubscriberService, EmailSubscriberRepository, EmailSenderService, TrainingDiaryService, TrainingDiaryRepository, FoodDiaryService, FoodDiaryRepository],
 })
 export class OrderModule {}

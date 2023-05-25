@@ -1,7 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { TrainingDiaryRepository } from './training-diary.repository';
 import { TrainingDiaryEntity } from './training-diary.entity';
-import { CreateTrainingDiaryDto } from '../dto/create-training-diary.dto';
 import { UpdateTrainingDiaryDto } from '../dto/update-training-diary.dto';
 
 @Injectable()
@@ -10,30 +9,11 @@ export class TrainingDiaryService {
     private readonly trainingDiaryRepository: TrainingDiaryRepository,
   ) { }
 
-  // async create(dto: CreateTrainingDiaryDto, userId: number) {
-  //   const existTrainingDiary = await this.trainingDiaryRepository.findByUserId(userId);
-  //   if (existTrainingDiary) {
-  //     throw new ConflictException(userId);
-  //   }
-
-  //   const { diary } = dto;
-  //   const trainingDiary = { diary, userId };
-
-  //   const trainingDiaryEntity = new TrainingDiaryEntity(trainingDiary);
-
-  //   const createdTrainingDiary = await this.trainingDiaryRepository.create(trainingDiaryEntity);
-
-  //   return createdTrainingDiary;
-  // }
-
   async create(userId: number) {
     const existTrainingDiary = await this.trainingDiaryRepository.findByUserId(userId);
     if (existTrainingDiary) {
       throw new ConflictException(userId);
     }
-
-    // const { diary } = dto;
-    // const trainingDiary = { [], userId };
 
     const trainingDiaryEntity = new TrainingDiaryEntity({ userId, diary: [] });
 

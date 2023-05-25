@@ -1,33 +1,72 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AppRoute, PageTitle } from '../../../const';
 import PageHeader from '../../components/page-header/page-header';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getTrainingDiary } from '../../store/app-data/selectors';
-import { fetchTrainingDiary } from '../../store/api-actions';
-import { getCaloryOrTimeInTrainigByDiary, getMaxTrainigsInDay } from '../../../helpers';
+import { getFoodDiary } from '../../store/app-data/selectors';
+import { fetchFoodDiary, submitFoodDiary } from '../../store/api-actions';
+import { MealType } from '@fit-friends/shared-types';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-function TrainingDiaryPage(): JSX.Element {
-  document.title = PageTitle.TrainingDiary;
+function FoodDiaryPage(): JSX.Element {
+  document.title = PageTitle.FoodDiary;
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const trainingDiary = useAppSelector(getTrainingDiary);
-  const maxTrainingsInDay = getMaxTrainigsInDay(trainingDiary?.diary);
-  const maxTrainingsIterable = Array(maxTrainingsInDay).fill(0);
-  const weekDays = Array(7).fill(0);
-  const calories = [0, 0, 0, 0, 0, 0, 0];
-  const times = [0, 0, 0, 0, 0, 0, 0];
+  const diary = useAppSelector(getFoodDiary);
+  const [stateDiary, setStateDiary] = useState(diary?.diary);
 
   useEffect(() => {
-    dispatch(fetchTrainingDiary());
+    dispatch(fetchFoodDiary());
   }, [dispatch]);
 
-  const setSumInDay = (day: number, caloriesOrTime: number[], meaning: number) => {
-    caloriesOrTime[day] = caloriesOrTime[day] + meaning;
-    return meaning;
+  useEffect(() => {
+    setStateDiary(diary?.diary);
+  }, [diary?.diary]);
+
+  const getDiaryValue = (day: number, mealType: MealType) => {
+    if (!stateDiary) { return; }
+
+    for (const diaryItem of stateDiary) {
+      if (diaryItem.day === day && diaryItem.mealType === mealType) {
+        return diaryItem.caloriesCount;
+      }
+    }
+  }
+  const handleSetState = (day: number, mealType: MealType, caloriesCount: number) => {
+    if (!stateDiary) { return; }
+
+    setStateDiary(stateDiary.map((stateDiaryItem) => {
+      if (stateDiaryItem.day === day && stateDiaryItem.mealType === mealType) {
+        return { caloriesCount, day, mealType };
+      }
+      return stateDiaryItem;
+    }
+    ))
   };
-  const getSumInWeek = (caloriesOrTime: number[]) => caloriesOrTime.reduce((acc, curr) => acc + curr, 0);
+
+  const getCaloryInDay = (day: number) => {
+    let sum = 0;
+
+    stateDiary?.forEach((stateDiaryItem) => {
+      if (stateDiaryItem.day === day) {
+        sum = sum + stateDiaryItem.caloriesCount;
+      }
+    });
+
+    return sum;
+  };
+
+  const getCaloryInWeek = () => stateDiary?.reduce((prev, item) => item.caloriesCount + prev, 0);
+
+  const handleSubmit = () => {
+    if (!stateDiary) { return; }
+    dispatch(submitFoodDiary({ diary: stateDiary }))
+      .then(() => {
+        toast.info('Дневник сохранен');
+      });
+  };
 
   return (
     <>
@@ -46,151 +85,506 @@ function TrainingDiaryPage(): JSX.Element {
                   </svg><span>Назад</span>
                 </button>
                 <div className="inner-page__content">
-                  <section className="training-diary">
-                    <div className="training-diary__wrapper">
-                      <h1 className="training-diary__title">Дневник тренировок</h1>
-                      <div className="training-diary__block">
-                        <div className="training-diary__sidebar">
-                          <svg className="training-diary__icon" width="17" height="18" aria-hidden="true">
-                            <use xlinkHref="#icon-ranking"></use>
+                  <section className="food-diary">
+                    <div className="food-diary__wrapper">
+                      <h1 className="food-diary__title">Дневник питания</h1>
+                      <div className="food-diary__block">
+                        <div className="food-diary__sidebar">
+                          <svg className="food-diary__icon" width="21" height="18" aria-hidden="true">
+                            <use xlinkHref="#icon-book"></use>
                           </svg>
-                          <ul className="training-diary__list">
-                            {
-                              maxTrainingsIterable.map((_, index) => (
-                                <li className="training-diary__item"><span>Тренировка {index + 1}</span>
-                                  <ul className="training-diary__sublist">
-                                    <li className="training-diary__subitem"><span>Калории</span></li>
-                                    <li className="training-diary__subitem"><span>Время</span></li>
-                                  </ul>
-                                </li>
-                              ))
-                            }
-                            {/* <li className="training-diary__item"><span>Тренировка 1</span>
-                              <ul className="training-diary__sublist">
-                                <li className="training-diary__subitem"><span>Калории</span></li>
-                                <li className="training-diary__subitem"><span>Время</span></li>
-                              </ul>
-                            </li>
-                            <li className="training-diary__item"><span>Тренировка 2</span>
-                              <ul className="training-diary__sublist">
-                                <li className="training-diary__subitem"><span>Калории</span></li>
-                                <li className="training-diary__subitem"><span>Время</span></li>
-                              </ul>
-                            </li>
-                            <li className="training-diary__item"><span>Тренировка 3</span>
-                              <ul className="training-diary__sublist">
-                                <li className="training-diary__subitem"><span>Калории</span></li>
-                                <li className="training-diary__subitem"><span>Время</span></li>
-                              </ul>
-                            </li> */}
+                          <ul className="food-diary__list">
+                            <li className="food-diary__item"><span>Завтрак</span></li>
+                            <li className="food-diary__item"><span>Обед</span></li>
+                            <li className="food-diary__item"><span>Ужин</span></li>
+                            <li className="food-diary__item"><span>Перекус</span></li>
                           </ul>
-                          <div className="training-diary__total">
-                            <p className="training-diary__total-label">Итого</p>
-                            <ul className="training-diary__total-list">
-                              <li className="training-diary__total-item"><span>Калории</span></li>
-                              <li className="training-diary__total-item"><span>Время</span></li>
-                            </ul>
-                          </div>
+                          <p className="food-diary__total">Итого</p>
                         </div>
-                        <div className="training-diary__content">
-                          <table className="training-diary__table">
-                            <tr className="training-diary__row training-diary__row--head">
-                              <th className="training-diary__cell training-diary__cell--head">пн</th>
-                              <th className="training-diary__cell training-diary__cell--head">вт</th>
-                              <th className="training-diary__cell training-diary__cell--head">ср</th>
-                              <th className="training-diary__cell training-diary__cell--head">чт</th>
-                              <th className="training-diary__cell training-diary__cell--head">пт</th>
-                              <th className="training-diary__cell training-diary__cell--head">сб</th>
-                              <th className="training-diary__cell training-diary__cell--head">вс</th>
-                            </tr>
-
-                            {
-                              maxTrainingsIterable.map((_, trainingIndex) => (
-                                <><tr className="training-diary__row">
-                                  {weekDays.map((_, caloriesDayIndex) => (
-                                    <td className="training-diary__cell">
-                                      <div className="training-diary__data"><span>{setSumInDay(caloriesDayIndex, calories, getCaloryOrTimeInTrainigByDiary(caloriesDayIndex + 1, trainingIndex + 1, trainingDiary?.diary, 'calory'))}</span></div>
-                                    </td>
-                                  ))}
-
-                                </tr><tr className="training-diary__row">
-                                    {weekDays.map((_, timeDayIndex) => (
-                                      <td className="training-diary__cell">
-                                        <div className="training-diary__data"><span>{setSumInDay(timeDayIndex, times, getCaloryOrTimeInTrainigByDiary(timeDayIndex + 1, trainingIndex + 1, trainingDiary?.diary, 'time'))}</span></div>
-                                      </td>
-                                    ))}
-                                  </tr></>
-                              ))
-
-                            }
-
-                            <tr className="training-diary__row">
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{calories[0]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{calories[1]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{calories[2]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{calories[3]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{calories[4]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{calories[5]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{calories[6]}</span></div>
-                              </td>
-                            </tr>
-                            <tr className="training-diary__row">
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{times[0]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{times[1]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{times[2]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{times[3]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{times[4]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{times[5]}</span></div>
-                              </td>
-                              <td className="training-diary__cell">
-                                <div className="training-diary__data training-diary__data--total"><span>{times[6]}</span></div>
-                              </td>
-                            </tr>
-                          </table>
+                        <div className="food-diary__content">
+                          <form action="#" method="get">
+                            <table className="food-diary__table">
+                              <tr className="food-diary__row food-diary__row--head">
+                                <th className="food-diary__cell food-diary__cell--head">пн</th>
+                                <th className="food-diary__cell food-diary__cell--head">вт</th>
+                                <th className="food-diary__cell food-diary__cell--head">ср</th>
+                                <th className="food-diary__cell food-diary__cell--head">чт</th>
+                                <th className="food-diary__cell food-diary__cell--head">пт</th>
+                                <th className="food-diary__cell food-diary__cell--head">сб</th>
+                                <th className="food-diary__cell food-diary__cell--head">вс</th>
+                              </tr>
+                              <tr className="food-diary__row">
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories"
+                                        value={getDiaryValue(1, MealType.Breakfast)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(1, MealType.Breakfast, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }}
+                                      />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories"
+                                        value={getDiaryValue(2, MealType.Breakfast)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(2, MealType.Breakfast, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }}
+                                      />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(3, MealType.Breakfast)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(3, MealType.Breakfast, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(4, MealType.Breakfast)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(4, MealType.Breakfast, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(5, MealType.Breakfast)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(5, MealType.Breakfast, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(6, MealType.Breakfast)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(6, MealType.Breakfast, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories"
+                                        value={getDiaryValue(7, MealType.Breakfast)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(7, MealType.Breakfast, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr className="food-diary__row">
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(1, MealType.Lunch)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(1, MealType.Lunch, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(2, MealType.Lunch)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(2, MealType.Lunch, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(3, MealType.Lunch)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(3, MealType.Lunch, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(4, MealType.Lunch)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(4, MealType.Lunch, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(5, MealType.Lunch)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(5, MealType.Lunch, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(6, MealType.Lunch)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(6, MealType.Lunch, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(7, MealType.Lunch)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(7, MealType.Lunch, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr className="food-diary__row">
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(1, MealType.Dinner)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(1, MealType.Dinner, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(2, MealType.Dinner)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(2, MealType.Dinner, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(3, MealType.Dinner)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(3, MealType.Dinner, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(4, MealType.Dinner)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(4, MealType.Dinner, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(5, MealType.Dinner)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(5, MealType.Dinner, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(6, MealType.Dinner)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(6, MealType.Dinner, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(7, MealType.Dinner)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(7, MealType.Dinner, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr className="food-diary__row">
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(1, MealType.Snack)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(1, MealType.Snack, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(2, MealType.Snack)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(2, MealType.Snack, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(3, MealType.Snack)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(3, MealType.Snack, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(4, MealType.Snack)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(4, MealType.Snack, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(5, MealType.Snack)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(5, MealType.Snack, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(6, MealType.Snack)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(6, MealType.Snack, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__input">
+                                    <label>
+                                      <input type="number" name="calories" value={getDiaryValue(7, MealType.Snack)?.toString()}
+                                        onChange={(evt) => {
+                                          handleSetState(7, MealType.Snack, +evt.target.value)
+                                        }}
+                                        onKeyDown={(evt) => {
+                                          if (evt.key.toLowerCase() === 'enter') {
+                                            evt.currentTarget.blur();
+                                          }
+                                        }} />
+                                    </label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr className="food-diary__row">
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__total-value"><span>{getCaloryInDay(1)}</span></div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__total-value"><span>{getCaloryInDay(2)}</span></div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__total-value"><span>{getCaloryInDay(3)}</span></div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__total-value"><span>{getCaloryInDay(4)}</span></div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__total-value"><span>{getCaloryInDay(5)}</span></div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__total-value"><span>{getCaloryInDay(6)}</span></div>
+                                </td>
+                                <td className="food-diary__cell">
+                                  <div className="food-diary__total-value"><span>{getCaloryInDay(7)}</span></div>
+                                </td>
+                              </tr>
+                            </table>
+                          </form>
                         </div>
                       </div>
-                      <div className="total training-diary__total-per-week">
+                      <div className="total food-diary__total-per-week">
                         <div className="total__title-wrapper">
                           <div className="total__title">Итого за неделю</div>
                           <svg className="total__icon" width="30" height="30" aria-hidden="true">
                             <use xlinkHref="#icon-chart-with-arrow"></use>
                           </svg>
                         </div>
-                        <dl className="total__result">
-                          <div className="total__item">
-                            <dt className="total__label">Калории</dt>
-                            <dd className="total__number">{getSumInWeek(calories)}</dd>
-                          </div>
-                          <div className="total__item">
-                            <dt className="total__label">Время</dt>
-                            <dd className="total__number">{getSumInWeek(times)}</dd>
-                          </div>
-                        </dl>
+                        <p className="total__number">{getCaloryInWeek()}</p>
                       </div>
+                      <button className="btn food-diary__button" type="button"
+                        onClick={handleSubmit}
+                      >Сохранить</button>
                     </div>
                   </section>
                 </div>
@@ -205,4 +599,4 @@ function TrainingDiaryPage(): JSX.Element {
   );
 }
 
-export default TrainingDiaryPage;
+export default FoodDiaryPage;

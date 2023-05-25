@@ -21,6 +21,8 @@ export const getIsFriend = (id: number) => (state: State) => {
 
 export const getQuestionnaire = (state: State) => state[NameSpace.User].questionnaire;
 
+export const getBurnsCaloriesPerDay = (state: State) => state[NameSpace.User].questionnaire?.burnsCaloriesPerDay;
+
 export const getAuthorizationStatus = (state: State) => state[NameSpace.User].authorizationStatus;
 
 export const isUserAuthorized = (state: State) => state[NameSpace.User].authorizationStatus === AuthorizationStatus.Auth;

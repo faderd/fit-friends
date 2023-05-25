@@ -2,7 +2,7 @@ import { MealType } from './meal-type.enum';
 
 export type FoodDiaryItem = {
   caloriesCount: number;
-  date: Date;
+  day: number;
   mealType: MealType;
 }
 

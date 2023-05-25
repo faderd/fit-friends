@@ -16,6 +16,8 @@ import { getMulterOptions } from '../../config/multer.config';
 import { UserService } from '../user/user.service';
 import { TrainingDiaryService } from '../training-diary/training-diary.service';
 import { TrainingDiaryModule } from '../training-diary/training-diary.module';
+import { FoodDiaryService } from '../food-diary/food-diary.service';
+import { FoodDiaryRepository } from '../food-diary/food-diary.repository';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { TrainingDiaryModule } from '../training-diary/training-diary.module';
     JwtRefreshStrategy,
     UserService,
     TrainingDiaryService,
+    FoodDiaryService,
+    FoodDiaryRepository
   ],
 })
 export class AuthModule { }

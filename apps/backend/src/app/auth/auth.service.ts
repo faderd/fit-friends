@@ -22,6 +22,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { UPLOAD_PATH } from '../app.constant';
 import { UserService } from '../user/user.service';
 import { TrainingDiaryService } from '../training-diary/training-diary.service';
+import { FoodDiaryService } from '../food-diary/food-diary.service';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +34,7 @@ export class AuthService {
     private readonly refreshTokenService: RefreshTokenService,
     private readonly userService: UserService,
     private readonly trainingDiaryService: TrainingDiaryService,
+    private readonly foodDiaryService: FoodDiaryService,
     @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
   ) { }
 
@@ -63,6 +65,9 @@ export class AuthService {
 
       // создадим пустой дневник тренировок
       await this.trainingDiaryService.create(createdUser.id);
+
+      // создадим пустой дневник питания
+      await this.foodDiaryService.create(createdUser.id);
     }
 
     return createdUser;

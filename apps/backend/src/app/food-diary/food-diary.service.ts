@@ -1,8 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { FoodDiaryRepository } from './food-diary.repository';
-import { CreateFoodDiaryDto } from '../dto/create-food-diary.dto';
 import { FoodDiaryEntity } from './food-diary.entity';
 import { UpdateFoodDiaryDto } from '../dto/update-food-diary.dto';
+import { EmptyDiary } from './food-diary.const';
 
 @Injectable()
 export class FoodDiaryService {
@@ -10,16 +10,15 @@ export class FoodDiaryService {
     private readonly foodDiaryRepository: FoodDiaryRepository,
   ) { }
 
-  async create(dto: CreateFoodDiaryDto, userId: number) {
+  async create(userId: number) {
     const existFoodDiary = await this.foodDiaryRepository.findByUserId(userId);
     if (existFoodDiary) {
       throw new ConflictException(userId);
     }
 
-    const { diary } = dto;
-    const foodDiary = { diary, userId };
-
-    const foodDiaryEntity = new FoodDiaryEntity(foodDiary);
+    const foodDiaryEntity = new FoodDiaryEntity({
+      userId, diary: EmptyDiary
+    });
 
     const createdFoodDiary = await this.foodDiaryRepository.create(foodDiaryEntity);
 

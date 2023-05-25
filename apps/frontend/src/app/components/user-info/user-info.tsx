@@ -8,12 +8,17 @@ import { getQuestionnaire, getUser } from '../../store/user-process/selectors';
 import { QuestionnaireData } from '../../types/questionnaire-data';
 import SpecializationCheckbox from '../specialization-checkbox/specialization-checkbox';
 
+type UserInfoProps = {
+  setParentIsRedactMode?: (isRedactMode: boolean) => void,
+  burnsCaloriesPerDay?: number,
+}
+
 type ReactHookFormData = {
   name: string,
   merits: string,
 }
 
-function UserInfo(): JSX.Element {
+function UserInfo({setParentIsRedactMode, burnsCaloriesPerDay}: UserInfoProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(getUser);
@@ -131,6 +136,7 @@ function UserInfo(): JSX.Element {
     };
     const questionnaireUpdateData: QuestionnaireData = {
       trainingLevel,
+      burnsCaloriesPerDay
     };
     if (user?.role === UserRole.Coach) {
       questionnaireUpdateData.merits = reactHookFormData.merits;
@@ -140,6 +146,7 @@ function UserInfo(): JSX.Element {
     dispatch(updateQuestionnaire(questionnaireUpdateData));
 
     setIsRedactMode(false);
+    setParentIsRedactMode && setParentIsRedactMode(false);
   };
 
   const getForm = () => (
@@ -176,7 +183,10 @@ function UserInfo(): JSX.Element {
         </button>)}
 
         {!isRedactMode && (<button className='btn-flat btn-flat--underlined user-info__edit-button' type="button" aria-label="Редактировать"
-          onClick={() => setIsRedactMode(true)}>
+          onClick={() => {
+            setIsRedactMode(true);
+            setParentIsRedactMode && setParentIsRedactMode(true);
+          }}>
           <svg width="12" height="12" aria-hidden="true">
             <use xlinkHref="#icon-edit"></use>
           </svg><span>Редактировать</span>
