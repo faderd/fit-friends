@@ -10,6 +10,7 @@ export const getInitialStateUserProcess = (): UserProcess => ({
   authorizationStatus: AuthorizationStatus.Unknown,
   user: null,
   users: [],
+  friends: [],
   questionnaire: null,
   lookingForCompanyUsers: [],
 
@@ -27,6 +28,9 @@ export const userProcess = createSlice({
     },
     storeUsers: (state, action: PayloadAction<UserRdo[]>) => {
       state.users = action.payload;
+    },
+    storeFriends: (state, action: PayloadAction<UserRdo[]>) => {
+      state.friends = action.payload;
     },
     storeQuestionnaire: (state, action: PayloadAction<QuestionnaireData>) => {
       state.questionnaire = action.payload;
@@ -63,4 +67,4 @@ export const userProcess = createSlice({
   }
 });
 
-export const { storeUser, storeUsers, storeIsToQuestionnairePage, storeRegisterDataUser, storeQuestionnaire, storeLookingForCompanyUsers } = userProcess.actions;
+export const { storeUser, storeUsers, storeIsToQuestionnairePage, storeRegisterDataUser, storeQuestionnaire, storeLookingForCompanyUsers, storeFriends } = userProcess.actions;

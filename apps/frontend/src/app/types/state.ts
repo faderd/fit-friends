@@ -1,4 +1,4 @@
-import { FoodDiaryInterface, GymInterface, OrderInterface, ReviewInterface, TrainingDiaryInterface } from '@fit-friends/shared-types';
+import { FoodDiaryInterface, GymInterface, NotifyInterface, OrderInterface, RequestPersonalTrainingInterface, ReviewInterface, TrainingDiaryInterface } from '@fit-friends/shared-types';
 import { AuthorizationStatus } from '../../const';
 import { store } from '../store';
 import { QuestionnaireData } from './questionnaire-data';
@@ -22,12 +22,16 @@ export type AppData = {
   popularTrainings: TrainingRdo[],
   trainingDiary: TrainingDiaryInterface | null,
   foodDiary: FoodDiaryInterface | null,
+  myPersonalTrainingRequests: RequestPersonalTrainingInterface[],
+  personalTrainingRequestsForMe: RequestPersonalTrainingInterface[],
+  notifications: NotifyInterface[],
 }
 
 export type UserProcess = {
   authorizationStatus: AuthorizationStatus,
   user: UserRdo | null,
   users: UserRdo[],
+  friends: UserRdo[],
   questionnaire: QuestionnaireData | null;
   isToQuestionnairePage: boolean,
   registerDataUser: RegisterDataUser | null,

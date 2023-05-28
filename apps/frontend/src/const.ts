@@ -33,6 +33,7 @@ export enum AppRoute {
   MyOrders = '/my-orders',
   TrainingDiary = '/training-diary',
   FoodDiary = '/food-diary',
+  FriendList = '/friend-list',
 }
 
 export enum PageTitle {
@@ -54,6 +55,7 @@ export enum PageTitle {
   MyOrders = 'Мои заказы — FitFriends',
   TrainingDiary = 'Дневник тренировок — FitFriends',
   FoodDiary = 'Дневник питания — FitFriends',
+  FriendList = 'Список друзей — FitFriends',
 }
 
 export enum PageType {

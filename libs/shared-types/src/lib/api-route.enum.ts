@@ -43,6 +43,7 @@ export enum APIRoutePersonalTraining {
   Prefix = '/personal-training',
   Create = '/',
   GetByTargetUserId = '/i-am-target',
+  GetByInitiatorUserId = '/i-am-initiator',
   GetById = '/:id',
   Update = '/:id',
 }

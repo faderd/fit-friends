@@ -38,3 +38,6 @@ export const getNearestGym = (location: UserLocation | undefined) => (state: Sta
 }
 export const getTrainingDiary = (state: State) => state[NameSpace.Data].trainingDiary;
 export const getFoodDiary = (state: State) => state[NameSpace.Data].foodDiary;
+export const getMyPersonalTrainingRequests = (state: State) => state[NameSpace.Data].myPersonalTrainingRequests;
+export const getPersonalTrainingRequestsForMe = (state: State) => state[NameSpace.Data].personalTrainingRequestsForMe;
+export const getNotifications = (state: State) => state[NameSpace.Data].notifications;

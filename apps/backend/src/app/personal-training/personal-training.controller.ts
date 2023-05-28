@@ -78,6 +78,34 @@ export class PersonalTrainingController {
     return requests.map((training) => fillObject(PersonalTrainingRdo, training));
   }
 
+  @Get(APIRoutePersonalTraining.GetByInitiatorUserId)
+  @ApiOkResponse({
+    type: [PersonalTrainingRdo],
+    description: 'Данные получены'
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+  })
+  @UseGuards(JwtAuthGuard)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token',
+    required: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Пользователь не авторизован',
+  })
+  async getRequestsByInitiatorUserId(
+    @Query() query: PersonalTrainingQuery,
+    @Req() request: RequestWithTokenPayload<TokenPayload>
+  ) {
+    const { user: tokenPayload } = request;
+
+    const requests = await this.personalTrainingService.getRequestsByInitiatorUserId(tokenPayload.sub, query);
+
+    return requests.map((training) => fillObject(PersonalTrainingRdo, training));
+  }
+
   @Patch(APIRoutePersonalTraining.Update)
   @UseGuards(JwtAuthGuard)
   @ApiUnauthorizedResponse({ description: 'Пользователь не авторизован' })
@@ -93,10 +121,6 @@ export class PersonalTrainingController {
     @Param('id', ParseIntPipe) requestId: number,
   ) {
     const { user: tokenPayload } = request;
-
-    if (tokenPayload.role !== UserRole.Coach) {
-      throw new UserNotCoachException();
-    }
 
     const updatedRequest = await this.personalTrainingService.updateRequest(requestId, dto, tokenPayload.sub);
 

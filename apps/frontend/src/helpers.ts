@@ -98,27 +98,27 @@ export const applyTrainingsFilters = (trainings: TrainingRdo[], filters: trainin
   return filteredTrainings;
 }
 
-export const makeNewFriendsList = (
-  action: 'add' | 'remove',
-  id: number,
-  friendsList: number[]
-): number[] => {
-  let updatedFriendsList = [...friendsList];
+// export const makeNewFriendsList = (
+//   action: 'add' | 'remove',
+//   id: number,
+//   friendsList: number[]
+// ): number[] => {
+//   let updatedFriendsList = [...friendsList];
 
-  switch (action) {
-    case 'add':
-      updatedFriendsList.push(id);
-      break;
-    case 'remove':
-      updatedFriendsList = updatedFriendsList.filter((friendId) => friendId !== id);
-      break;
-    default:
-      console.error(`Unsupported action: ${action}`);
-      break;
-  }
+//   switch (action) {
+//     case 'add':
+//       updatedFriendsList.push(id);
+//       break;
+//     case 'remove':
+//       updatedFriendsList = updatedFriendsList.filter((friendId) => friendId !== id);
+//       break;
+//     default:
+//       console.error(`Unsupported action: ${action}`);
+//       break;
+//   }
 
-  return updatedFriendsList;
-};
+//   return updatedFriendsList;
+// };
 
 export const applyGymFilters = (gyms: GymInterface[], filters: gymFilters) => {
   let filteredGyms = gyms.slice();

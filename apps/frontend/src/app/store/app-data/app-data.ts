@@ -1,4 +1,4 @@
-import { FoodDiaryInterface, GymInterface, OrderInterface, ReviewInterface, TrainingDiaryInterface } from '@fit-friends/shared-types';
+import { FoodDiaryInterface, GymInterface, NotifyInterface, OrderInterface, RequestPersonalTrainingInterface, ReviewInterface, TrainingDiaryInterface } from '@fit-friends/shared-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../../const';
 import { AppData } from '../../types/state';
@@ -19,6 +19,9 @@ export const getInitialStateAppData = (): AppData => ({
   popularTrainings: [],
   trainingDiary: null,
   foodDiary: null,
+  myPersonalTrainingRequests: [],
+  personalTrainingRequestsForMe: [],
+  notifications: [],
 });
 
 export const appData = createSlice({
@@ -57,6 +60,15 @@ export const appData = createSlice({
     },
     storeFoodDiary: (state, action: PayloadAction<FoodDiaryInterface>) => {
       state.foodDiary = action.payload;
+    },
+    storePersonalTrainingRequests: (state, action: PayloadAction<RequestPersonalTrainingInterface[]>) => {
+      state.myPersonalTrainingRequests = action.payload;
+    },
+    storePersonalTrainingsReqForMe: (state, action: PayloadAction<RequestPersonalTrainingInterface[]>) => {
+      state.personalTrainingRequestsForMe = action.payload;
+    },
+    storeNotifications: (state, action: PayloadAction<NotifyInterface[]>) => {
+      state.notifications = action.payload;
     },
   },
   extraReducers(builder) {
@@ -129,4 +141,4 @@ export const appData = createSlice({
   }
 });
 
-export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo, storeTrainingsForMe, storePopularTrainings, storeTrainingDiary, storeFoodDiary } = appData.actions;
+export const { storeIsDataLoadedStatus, storeTraining, storeTrainings, storeReviews, storeGyms, storeOrders, storeCoachOrdersInfo, storeTrainingsForMe, storePopularTrainings, storeTrainingDiary, storeFoodDiary, storePersonalTrainingRequests, storePersonalTrainingsReqForMe, storeNotifications } = appData.actions;

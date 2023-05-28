@@ -82,12 +82,14 @@ function PersonalAccountUserPage(): JSX.Element {
                       <MyProgressSection />
                       <div className="personal-account-user__diagram"></div>
                     </div>
-                    <div className="personal-account-user__additional-info"><a className="thumbnail-link thumbnail-link--theme-light" href="#">
+                    <div className="personal-account-user__additional-info">
+                      <Link className="thumbnail-link thumbnail-link--theme-light" to={AppRoute.FriendList}>
                       <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
                         <svg width="30" height="26" aria-hidden="true">
                           <use xlinkHref="#icon-friends"></use>
                         </svg>
-                      </div><span className="thumbnail-link__text">Мои друзья</span></a><a className="thumbnail-link thumbnail-link--theme-light" href="#">
+                        </div><span className="thumbnail-link__text">Мои друзья</span></Link>
+                      <a className="thumbnail-link thumbnail-link--theme-light" href="#">
                         <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
                           <svg width="30" height="26" aria-hidden="true">
                             <use xlinkHref="#icon-weight"></use>

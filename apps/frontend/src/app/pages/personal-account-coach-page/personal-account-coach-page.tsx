@@ -36,13 +36,13 @@ function PersonalAccountCoachPage(): JSX.Element {
                           </svg>
                         </div><span className="thumbnail-link__text">Создать тренировку</span>
                       </Link>
-                      <a className="thumbnail-link thumbnail-link--theme-light" href="#">
+                      <Link className="thumbnail-link thumbnail-link--theme-light" to={AppRoute.FriendList}>
                         <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
                           <svg width="30" height="26" aria-hidden="true">
                             <use xlinkHref="#icon-friends"></use>
                           </svg>
                         </div><span className="thumbnail-link__text">Мои друзья</span>
-                      </a>
+                      </Link>
                       <Link className="thumbnail-link thumbnail-link--theme-light" to={AppRoute.MyOrders}>
                         <div className="thumbnail-link__icon thumbnail-link__icon--theme-light">
                           <svg width="30" height="26" aria-hidden="true">

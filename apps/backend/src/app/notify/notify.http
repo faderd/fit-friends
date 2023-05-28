@@ -1,10 +1,10 @@
-# Создание нового отзыва
+# Получить уведомления
 GET http://localhost:3333/api/notify HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQv9GA0LXQv9GD0YbQutC10YPQutC_0LLQsNC_0LIiLCJpYXQiOjE2ODA3NjcxODYsImV4cCI6MTY4MDc2ODA4Nn0.JfqUCAqeaXOKAg0-6cNfHLGzQgAQC_G9bw-xvm41lEs
 ###
 
-# Получить список отзывов
+# Удалить уведомление
 DELETE http://localhost:3333/api/notify/2 HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlcjFAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsIm5hbWUiOiLQv9GA0LXQv9GD0YbQutC10YPQutC_0LLQsNC_0LIiLCJpYXQiOjE2ODA3ODE4MDUsImV4cCI6MTY4MDc4MjcwNX0.Ih7hN-ToS9a9OfmHyR9uspQ87vBz2ltUqMEreEt8FF4

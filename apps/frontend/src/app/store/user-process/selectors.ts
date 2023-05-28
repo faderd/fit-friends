@@ -8,6 +8,7 @@ export const getUserId = (state: State) => state[NameSpace.User].user?.id;
 export const getFavoriteGyms = (state: State) => state[NameSpace.User].user?.myFavoriteGyms;
 
 export const getUsers = (state: State) => state[NameSpace.User].users;
+export const getFriends = (state: State) => state[NameSpace.User].friends;
 export const getLookForCompanyUsers = (state: State) => state[NameSpace.User].lookingForCompanyUsers;
 
 export const getUserById = (id: number) => (state: State) => state[NameSpace.User].users.find((user: UserRdo) => user.id === id);

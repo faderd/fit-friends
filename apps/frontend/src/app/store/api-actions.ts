@@ -1,4 +1,4 @@
-import { FoodDiaryInterface, FoodDiaryItem, GymInterface, OrderInterface, ReviewInterface, TrainingDiaryInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
+import { FoodDiaryInterface, FoodDiaryItem, GymInterface, NotifyInterface, OrderInterface, RequestPersonalTrainingInterface, ReviewInterface, StatusRequestTraining, TrainingDiaryInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
@@ -11,8 +11,8 @@ import { AppDispatch, State } from '../types/state';
 import { UpdateUserDto } from '../types/update-user.dto';
 import { UserRdo } from '../types/user-rdo';
 import { redirectToPrevious } from './app-data/action';
-import { storeCoachOrdersInfo, storeFoodDiary, storeGyms, storeIsDataLoadedStatus, storeOrders, storePopularTrainings, storeReviews, storeTraining, storeTrainingDiary, storeTrainings, storeTrainingsForMe } from './app-data/app-data';
-import { storeLookingForCompanyUsers, storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
+import { storeCoachOrdersInfo, storeFoodDiary, storeGyms, storeIsDataLoadedStatus, storeNotifications, storeOrders, storePersonalTrainingRequests, storePersonalTrainingsReqForMe, storePopularTrainings, storeReviews, storeTraining, storeTrainingDiary, storeTrainings, storeTrainingsForMe } from './app-data/app-data';
+import { storeFriends, storeLookingForCompanyUsers, storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 import { UpdateTrainingDto } from '../types/update-training.dto';
 import { CreateReviewDto } from '../types/create-review.dto';
 import { generatePath } from 'react-router-dom';
@@ -182,6 +182,45 @@ export const fetchUsers = createAsyncThunk<void, undefined,
     const { data } = await api.get<UserRdo[]>('user/');
     dispatch(storeUsers(data));
     dispatch(storeIsDataLoadedStatus(true));
+  }
+);
+
+export const fetchFriends = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'user/fetchFriends',
+  async (_, { dispatch, extra: api }) => {
+    dispatch(storeIsDataLoadedStatus(false));
+
+    const { data } = await api.get<UserRdo[]>('user/get-my-friends');
+    dispatch(storeFriends(data));
+    dispatch(storeIsDataLoadedStatus(true));
+  }
+);
+
+export const addOrRemoveFriend = createAsyncThunk<UserRdo, {
+  action: 'add' | 'remove',
+  friendId: number
+},
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'user/addFriend',
+  async ({ action, friendId }, { dispatch, extra: api }) => {
+    const urlString = `user/${action === 'add' ? 'add' : 'remove'}-friend/${friendId}`;
+    dispatch(storeIsDataLoadedStatus(false));
+
+    const { data } = await api.patch<UserRdo>(urlString);
+    dispatch(storeUser(data));
+    dispatch(storeIsDataLoadedStatus(true));
+    return data;
   }
 );
 
@@ -472,6 +511,7 @@ export const submitNewOrder = createAsyncThunk<OrderInterface | void, CreateOrde
     try {
       const { data } = await api.post<OrderInterface>('order/', { ...createOrderData });
       dispatch(fetchUserOrders());
+      toast.info('Заказ создан');
       return data;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -520,7 +560,94 @@ export const submitFoodDiary = createAsyncThunk<void, { diary: FoodDiaryItem[] }
   'data/submitFoodDiary',
   async ({ diary }, { dispatch, extra: api }) => {
     const { data } = await api.patch<FoodDiaryInterface>('food-diary', { diary });
-    console.log('submitFoodDiary: ', data);
     dispatch(storeFoodDiary(data));
+    toast.info('Дневник сохранен');
+  }
+);
+
+export const submitPersonalTrainingRequest = createAsyncThunk<
+  RequestPersonalTrainingInterface | void,
+  { targetUserId: number },
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/submitPersonalTrainingRequest',
+  async (trainingRequestData, { dispatch, extra: api }) => {
+    try {
+      const { data } = await api.post<RequestPersonalTrainingInterface>('personal-training/', trainingRequestData);
+      toast.info('Запрос на тренировку создан');
+      return data;
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        toast.warn(`Ошибка: ${err.response.data.message}\n Код ошибки: ${err.response.status}`);
+      }
+    }
+  }
+);
+
+export const fetchPersonalTrainingRequests = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchPersonalTrainingRequests',
+  async (_, { dispatch, extra: api }) => {
+    const { data } = await api.get<RequestPersonalTrainingInterface[]>('personal-training/i-am-initiator');
+    dispatch(storePersonalTrainingRequests(data));
+  }
+);
+
+export const fetchPersonalTrainingRequestsForMe = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchPersonalTrainingRequestsForMe',
+  async (_, { dispatch, extra: api }) => {
+    const { data } = await api.get<RequestPersonalTrainingInterface[]>('personal-training/i-am-target');
+    dispatch(storePersonalTrainingsReqForMe(data));
+  }
+);
+
+export const fetchNotifications = createAsyncThunk<void, undefined,
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/fetchNotifications',
+  async (_, { dispatch, extra: api }) => {
+    const { data } = await api.get<NotifyInterface[]>('notify');
+    dispatch(storeNotifications(data));
+  }
+);
+
+export const submitUpdatedPersonalTrainingRequest = createAsyncThunk<RequestPersonalTrainingInterface | void, { status: StatusRequestTraining, id: number },
+  {
+    dispatch: AppDispatch,
+    state: State,
+    extra: AxiosInstance
+  }
+>(
+  'data/submitUpdatedPersonalTrainingRequest',
+  async (updateRequestData, { dispatch, extra: api }) => {
+    const urlString = `personal-training/${updateRequestData.id}`;
+    try {
+      const { data } = await api.patch<RequestPersonalTrainingInterface>(urlString, { status: updateRequestData.status });
+      toast.info('Статус запроса обновлен');
+      return data;
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        toast.warn(`Ошибка: ${err.response.data.message}\n Код ошибки: ${err.response.status}`);
+      }
+    }
   }
 );

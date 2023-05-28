@@ -3,16 +3,23 @@ import { AppRoute, PageType } from '../../../const';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getUser } from '../../store/user-process/selectors';
-import { logout } from '../../store/api-actions';
+import { fetchNotifications, logout } from '../../store/api-actions';
+import { getNotifications } from '../../store/app-data/selectors';
+import { useEffect } from 'react';
 
 type MainNavProps = {
   page?: PageType,
 }
 
-function MainNav({page}: MainNavProps): JSX.Element {
+function MainNav({ page }: MainNavProps): JSX.Element {
   const dispatch = useAppDispatch();
   const userRole = useAppSelector(getUser)?.role;
   const navigate = useNavigate();
+  const notifications = useAppSelector(getNotifications);
+
+  useEffect(() => {
+    dispatch(fetchNotifications());
+  }, [dispatch]);
 
   return (
     <nav className="main-nav">
@@ -61,22 +68,14 @@ function MainNav({page}: MainNavProps): JSX.Element {
           <div className="main-nav__dropdown">
             <p className="main-nav__label">Оповещения</p>
             <ul className="main-nav__sublist">
-              <li className="main-nav__subitem"><a className="notification is-active" href="#">
-                <p className="notification__text">Катерина пригласила вас на&nbsp;тренировку</p>
-                <time className="notification__time" dateTime="2023-12-23 12:35">23 декабря, 12:35</time></a>
-              </li>
-              <li className="main-nav__subitem"><a className="notification is-active" href="#">
-                <p className="notification__text">Никита отклонил приглашение на&nbsp;совместную тренировку</p>
-                <time className="notification__time" dateTime="2023-12-22 09:22">22 декабря, 09:22</time></a>
-              </li>
-              <li className="main-nav__subitem"><a className="notification is-active" href="#">
-                <p className="notification__text">Татьяна добавила вас в&nbsp;друзья</p>
-                <time className="notification__time" dateTime="2023-12-18 18:50">18 декабря, 18:50</time></a>
-              </li>
-              <li className="main-nav__subitem"><a className="notification" href="#">
-                <p className="notification__text">Наталья приняла приглашение на&nbsp;совместную тренировку</p>
-                <time className="notification__time" dateTime="2023-12-14 08:15">14 декабря, 08:15</time></a>
-              </li>
+              {
+                notifications.map((notification) => (
+                  <li className="main-nav__subitem"><a className="notification is-active" href="#">
+                    <p className="notification__text">{notification.text}</p>
+                    <time className="notification__time" dateTime="2023-12-23 12:35">{notification.notificationDate.toDateString()}</time></a>
+                  </li>
+                ))
+              }
             </ul>
           </div>
         </li>
