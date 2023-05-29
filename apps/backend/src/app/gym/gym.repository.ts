@@ -1,5 +1,5 @@
 import { CRUDRepositoryInterface } from '@fit-friends/core';
-import { GymInterface } from '@fit-friends/shared-types';
+import { GymInterface, GymOption, UserLocation } from '@fit-friends/shared-types';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GymEntity } from './gym.entity';
@@ -34,8 +34,26 @@ export class GymRepository implements CRUDRepositoryInterface<GymEntity, number,
     }) as unknown as GymInterface;
   }
 
-  public async findAll({ limit, sortDirection, page }: GymQuery): Promise<GymInterface[]> {
+  public async findAll({ limit, sortDirection, page, minPrice, location, options }: GymQuery): Promise<GymInterface[]> {
+
+    const whereCondition: {
+      price?: { gte?: number; lte?: number },
+      location?: { in: UserLocation[] },
+      options?: { hasEvery: GymOption[] },
+    } = {};
+
+    if (minPrice !== undefined) {
+      whereCondition.price = { gte: minPrice };
+    }
+    if (location !== undefined) {
+      whereCondition.location = { in: location };
+    }
+    if (options !== undefined) {
+      whereCondition.options = { hasEvery: options };
+    }
+
     return this.prisma.gym.findMany({
+      where: whereCondition,
       take: limit,
       orderBy: {
         createdAt: sortDirection,

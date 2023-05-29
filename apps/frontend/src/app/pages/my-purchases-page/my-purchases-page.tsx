@@ -34,7 +34,7 @@ function MyPurchasesPage(): JSX.Element {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchGyms());
+    dispatch(fetchGyms({}));
   }, [dispatch]);
 
   useEffect(() => {

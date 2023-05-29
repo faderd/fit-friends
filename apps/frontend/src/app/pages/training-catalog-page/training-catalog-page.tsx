@@ -30,11 +30,8 @@ function TrainingCatalogPage(): JSX.Element {
       isOnlyFreeTrainings?: string,
       page?: string,
       minPrice?: string,
-      // maxPrice?: string,
       minCalories?: string,
-      // maxCalories?: string,
       minRate?: string,
-      // maxRate?: string,
       trainingDuration?: string,
       trainingType?: string,
       trainingLevel?: string,
@@ -56,21 +53,12 @@ function TrainingCatalogPage(): JSX.Element {
     if (filters?.searchParamMinPrice) {
       query.minPrice = filters.searchParamMinPrice;
     }
-    // if (filters?.searchParamMaxPrice) {
-    //   query.maxPrice = filters.searchParamMaxPrice;
-    // }
     if (filters?.searchParamMinCalories) {
       query.minCalories = filters.searchParamMinCalories;
     }
-    // if (filters?.searchParamMaxCalories) {
-    //   query.maxCalories = filters.searchParamMaxCalories;
-    // }
     if (filters?.searchParamMinRate) {
       query.minRate = filters.searchParamMinRate;
     }
-    // if (filters?.searchParamMaxRate) {
-    //   query.maxRate = filters.searchParamMaxRate;
-    // }
     if (filters?.searchParamTrainingDuration) {
       query.trainingDuration = filters.searchParamTrainingDuration as string;
     }

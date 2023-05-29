@@ -20,7 +20,7 @@ function GymCardPage(): JSX.Element {
   const [isPopupMembershipOpen, setIsPopupMembershipOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchGyms());
+    dispatch(fetchGyms({}));
   }, [dispatch]);
 
   return (

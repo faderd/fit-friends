@@ -1,17 +1,17 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { PageTitle } from '../../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getUser, getUserById } from '../../store/user-process/selectors';
-import { FormEvent, useEffect, useRef, useState } from 'react';
-import { fetchTraining, fetchTrainings, fetchUserOrders, finishTrainingOrder, startTrainingOrder, updateTraining } from '../../store/api-actions';
-import { getIsDataLoaded, getOpenedOrders, getOrders, getTraining, getTrainingById } from '../../store/app-data/selectors';
+import { getUser } from '../../store/user-process/selectors';
+import { useEffect, useRef, useState } from 'react';
+import { fetchTraining, fetchUserOrders, finishTrainingOrder, startTrainingOrder, updateTraining } from '../../store/api-actions';
+import { getIsDataLoaded, getOpenedOrders, getTraining } from '../../store/app-data/selectors';
 import { Gender, TrainingDescriptionLengthRange, TrainingNameLengthRange, UserRole } from '@fit-friends/shared-types';
 import PageHeader from '../../components/page-header/page-header';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import PopupFeedback from '../../components/popup-feedback/popup-feedback';
 import ReviewsSidebar from '../../components/reviews-sidebar/reviews-sidebar';
 import PopupMembership from '../../components/popup-membership/popup-membership';
-import { getIsTrainingOrdered, getIsTrainingStarted, getOrderIdByTrainingId, getTrainingPrice } from '../../../helpers';
+import { getIsTrainingOrdered, getIsTrainingStarted, getOrderIdByTrainingId } from '../../../helpers';
 
 const genderMap = {
   [Gender.Female]: 'для_женщин',
@@ -45,7 +45,6 @@ function TrainingCardPage(): JSX.Element {
   const isDataLoaded = useAppSelector(getIsDataLoaded);
   const trainingId = useParams().id || '';
   const training = useAppSelector(getTraining);
-  // const coach = useAppSelector(getUserById(training?.userId || 0));
 
   const orders = useAppSelector(getOpenedOrders);
   const isTrainingOrdered = getIsTrainingOrdered(orders, +trainingId);

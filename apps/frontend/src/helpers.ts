@@ -127,33 +127,33 @@ export const applyGymFilters = (gyms: GymInterface[], filters: gymFilters) => {
     filteredGyms = filteredGyms.filter((gym) => gym.isVerified);
   }
 
-  if (filters.searchParamLocation) {
-    filteredGyms = filteredGyms.filter((gym) => filters.searchParamLocation?.includes(gym.location));
-  }
+  // if (filters.searchParamLocation) {
+  //   filteredGyms = filteredGyms.filter((gym) => filters.searchParamLocation?.includes(gym.location));
+  // }
 
   if (filters.searchParamMaxPrice) {
     const maxPrice = +filters.searchParamMaxPrice || 0;
     filteredGyms = filteredGyms.filter((gym) => gym.price <= maxPrice);
   }
 
-  if (filters.searchParamMinPrice) {
-    const minPrice = +filters.searchParamMinPrice || 0;
-    filteredGyms = filteredGyms.filter((gym) => gym.price >= minPrice);
-  }
+  // if (filters.searchParamMinPrice) {
+  //   const minPrice = +filters.searchParamMinPrice || 0;
+  //   filteredGyms = filteredGyms.filter((gym) => gym.price >= minPrice);
+  // }
 
-  if (filters.searchParamOptions) {
-    filteredGyms = filteredGyms.filter((gym) => {
-      let isInclude = false;
-      gym.options.forEach((option) => {
-        if (filters.searchParamOptions?.includes(option)) {
-          isInclude = true;
-          return;
-        }
-      })
+  // if (filters.searchParamOptions) {
+  //   filteredGyms = filteredGyms.filter((gym) => {
+  //     let isInclude = false;
+  //     gym.options.forEach((option) => {
+  //       if (filters.searchParamOptions?.includes(option)) {
+  //         isInclude = true;
+  //         return;
+  //       }
+  //     })
 
-      return isInclude;
-    })
-  }
+  //     return isInclude;
+  //   })
+  // }
   return filteredGyms;
 };
 

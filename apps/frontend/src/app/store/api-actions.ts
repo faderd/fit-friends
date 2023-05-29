@@ -270,11 +270,8 @@ export const fetchTrainings = createAsyncThunk<void,
     isOnlyFreeTrainings?: string,
     page?: string,
     minPrice?: string,
-    // maxPrice?: string,
     minCalories?: string,
-    // maxCalories?: string,
     minRate?: string,
-    // maxRate?: string,
     trainingDuration?: string,
     trainingType?: string,
     trainingLevel?: string,
@@ -398,7 +395,13 @@ export const submitNewReview = createAsyncThunk<ReviewInterface | void, CreateRe
   }
 );
 
-export const fetchGyms = createAsyncThunk<void, undefined,
+export const fetchGyms = createAsyncThunk<void,
+  {
+    limit?: string,
+    sortDirection?: string,
+    minPrice?: string,
+    location?: string,
+  },
   {
     dispatch: AppDispatch,
     state: State,
@@ -406,8 +409,10 @@ export const fetchGyms = createAsyncThunk<void, undefined,
   }
 >(
   'data/fetchGyms',
-  async (_, { dispatch, extra: api }) => {
-    const { data } = await api.get<GymInterface[]>('gym/');
+  async (query, { dispatch, extra: api }) => {
+    console.log('location ', query.location);
+    const urlString = getUrlQueryString(query, 'gym/');
+    const { data } = await api.get<GymInterface[]>(urlString);
     dispatch(storeGyms(data));
   }
 );

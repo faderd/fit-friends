@@ -21,7 +21,7 @@ function SpecialOffers(): JSX.Element {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchGyms());
+    dispatch(fetchGyms({}));
   }, [dispatch]);
 
   const [activeSlide, setActiveSlide] = useState(1);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AppRoute, PageTitle } from '../../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchGyms } from '../../store/api-actions';
@@ -16,7 +16,6 @@ function GymsCatalogPage(): JSX.Element {
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState<gymFilters | null>(null);
-
   const gyms = useAppSelector(getGyms);
 
   let filteredGyms = gyms;
@@ -24,9 +23,37 @@ function GymsCatalogPage(): JSX.Element {
     filteredGyms = applyGymFilters(gyms, filters);
   }
 
+  const queryString = useMemo(() => {
+    const query: {
+      limit?: string,
+      sortDirection?: string,
+      minPrice?: string,
+      location?: string,
+      options?: string,
+    } = {};
+
+    if (filters?.searchParamLimit) {
+      query.limit = filters.searchParamLimit;
+    }
+    if (filters?.searchParamSortDirection) {
+      query.sortDirection = filters.searchParamSortDirection;
+    }
+    if (filters?.searchParamMinPrice) {
+      query.minPrice = filters.searchParamMinPrice;
+    }
+    if (filters?.searchParamLocation) {
+      query.location = filters.searchParamLocation as string;
+    }
+    if (filters?.searchParamOptions) {
+      query.options = filters.searchParamOptions as string;
+    }
+
+    return query;
+  }, [filters]);
+
   useEffect(() => {
-    dispatch(fetchGyms());
-  }, [dispatch]);
+    dispatch(fetchGyms(queryString));
+  }, [dispatch, queryString]);
 
   const getMaxPrice = () => Math.max(...gyms.map((gym) => gym.price)).toString();
 

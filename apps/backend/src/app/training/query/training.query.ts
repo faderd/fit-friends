@@ -47,11 +47,11 @@ export class TrainingQuery {
   @IsOptional()
   public maxRate: number;
 
-  @Transform(({ value }) => value.split(';'))
+  @Transform(({ value }) => value.split(','))
   @IsOptional()
   public trainingDuration: TrainingDuration[];
 
-  @Transform(({ value }) => value.split(';'))
+  @Transform(({ value }) => value.split(','))
   @IsOptional()
   public trainingType: TrainingType[];
 
