@@ -12,7 +12,7 @@ import { UpdateUserDto } from '../types/update-user.dto';
 import { UserRdo } from '../types/user-rdo';
 import { redirectToPrevious } from './app-data/action';
 import { storeCoachOrdersInfo, storeFoodDiary, storeGyms, storeIsDataLoadedStatus, storeNotifications, storeOrders, storePersonalTrainingRequests, storePersonalTrainingsReqForMe, storePopularTrainings, storeReviews, storeTraining, storeTrainingDiary, storeTrainings, storeTrainingsForMe } from './app-data/app-data';
-import { storeFriends, storeLookingForCompanyUsers, storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
+import { storeFriends, storeIsToQuestionnairePage, storeLookingForCompanyUsers, storeQuestionnaire, storeUser, storeUsers } from './user-process/user-process';
 import { UpdateTrainingDto } from '../types/update-training.dto';
 import { CreateReviewDto } from '../types/create-review.dto';
 import { generatePath } from 'react-router-dom';
@@ -43,7 +43,8 @@ export const register = createAsyncThunk<
 
       dispatch(storeIsDataLoadedStatus(false));
       dispatch(storeIsDataLoadedStatus(true));
-
+      toast.info('Пользователь успешно зарегистрирован');
+      dispatch(storeIsToQuestionnairePage(false));
       return data;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {

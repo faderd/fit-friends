@@ -1,5 +1,5 @@
 import { fillObject } from '@fit-friends/core';
-import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser, TokenPayload, UserRole } from '@fit-friends/shared-types';
+import { APIRouteAuth, RefreshTokenPayload, RequestWithTokenPayload, RequestWithUser, TokenPayload } from '@fit-friends/shared-types';
 import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -68,10 +68,6 @@ export class AuthController {
     },
   ) {
     const certificate = files ? files['questionnaire[certificate]'] : undefined;
-
-    if (dto.role === UserRole.Coach && !certificate) {
-      throw new BadRequestException('Наличие файла сертификата обязательно');
-    }
 
     const newUser = await this.authService.register(dto, files?.avatar, certificate);
     return fillObject(UserRdo, newUser);
