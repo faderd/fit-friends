@@ -29,7 +29,7 @@ function GymCatalogItem({ gym, itemClassName }: GymCatalogItemProps): JSX.Elemen
   };
 
   return (
-    <li key={gym.id} className={itemClassName}>
+    <li className={itemClassName}>
       <div className="thumbnail-gym">
         <div className="thumbnail-gym__image">
           <picture>

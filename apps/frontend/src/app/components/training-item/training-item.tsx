@@ -9,7 +9,7 @@ type TrainingItemProps = {
 
 function TrainingItem({ training, liClassName }: TrainingItemProps): JSX.Element {
   return (
-    <li key={training.id} className={liClassName}>
+    <li className={liClassName}>
       <div className="thumbnail-training">
         <div className="thumbnail-training__inner">
           <div className="thumbnail-training__image">

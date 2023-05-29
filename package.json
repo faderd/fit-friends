@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@hookform/resolvers": "^3.1.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "2.3.1",
     "@nestjs/core": "^9.0.0",
@@ -35,7 +36,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "slick-carousel": "^1.8.1",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",

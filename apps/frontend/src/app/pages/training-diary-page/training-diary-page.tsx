@@ -65,24 +65,6 @@ function TrainingDiaryPage(): JSX.Element {
                                 </li>
                               ))
                             }
-                            {/* <li className="training-diary__item"><span>Тренировка 1</span>
-                              <ul className="training-diary__sublist">
-                                <li className="training-diary__subitem"><span>Калории</span></li>
-                                <li className="training-diary__subitem"><span>Время</span></li>
-                              </ul>
-                            </li>
-                            <li className="training-diary__item"><span>Тренировка 2</span>
-                              <ul className="training-diary__sublist">
-                                <li className="training-diary__subitem"><span>Калории</span></li>
-                                <li className="training-diary__subitem"><span>Время</span></li>
-                              </ul>
-                            </li>
-                            <li className="training-diary__item"><span>Тренировка 3</span>
-                              <ul className="training-diary__sublist">
-                                <li className="training-diary__subitem"><span>Калории</span></li>
-                                <li className="training-diary__subitem"><span>Время</span></li>
-                              </ul>
-                            </li> */}
                           </ul>
                           <div className="training-diary__total">
                             <p className="training-diary__total-label">Итого</p>
@@ -121,7 +103,6 @@ function TrainingDiaryPage(): JSX.Element {
                                     ))}
                                   </tr></>
                               ))
-
                             }
 
                             <tr className="training-diary__row">

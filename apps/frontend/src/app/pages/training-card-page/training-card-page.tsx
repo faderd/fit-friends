@@ -65,12 +65,6 @@ function TrainingCardPage(): JSX.Element {
     isRedactAvailable = true;
   }
 
-  console.log('isRedactAvailable: ', isRedactAvailable);
-
-  // useEffect(() => {
-  //   dispatch(fetchUsers());
-  // }, [dispatch]);
-
   useEffect(() => {
     dispatch(fetchTraining(+trainingId));
   }, [dispatch, trainingId]);
@@ -85,7 +79,6 @@ function TrainingCardPage(): JSX.Element {
     if (!evt.target.files) { return; }
 
     const file = evt.target.files[0];
-    console.log(file);
 
     if (file) {
       videoData.append('file', file);
@@ -123,12 +116,6 @@ function TrainingCardPage(): JSX.Element {
     }
   };
 
-  // console.log('description: ', training?.description);
-
-  // const handleSpecialOfferClick = () => {
-  //   if (!training) { return; }
-  //   dispatch(updateTraining({ isSpecialOffer: !(training.isSpecialOffer), trainingId }));
-  // }
   const isPlayVideoDisabled = () => {
 
     if (isTrainingOrdered && !isTrainingStarted || !isTrainingOrdered) {
@@ -180,7 +167,7 @@ function TrainingCardPage(): JSX.Element {
                     onClick={() => { setIsPopupFeedbackOpen(true) }}
                   >Оставить отзыв</button>
                 </aside>
-                <div className={`training-card ${userRole == UserRole.Coach && 'training-card--edit'}`}>
+                <div className={`training-card ${userRole === UserRole.Coach && 'training-card--edit'}`}>
                   <div className="training-info">
                     <h2 className="visually-hidden">Информация о тренировке</h2>
                     <div className="training-info__header">

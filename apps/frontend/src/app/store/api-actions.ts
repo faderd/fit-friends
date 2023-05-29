@@ -1,4 +1,4 @@
-import { FoodDiaryInterface, FoodDiaryItem, GymInterface, NotifyInterface, OrderInterface, RequestPersonalTrainingInterface, ReviewInterface, StatusRequestTraining, TrainingDiaryInterface, UserInterface, UserRole } from '@fit-friends/shared-types';
+import { FoodDiaryInterface, FoodDiaryItem, GymInterface, NotifyInterface, OrderInterface, RequestPersonalTrainingInterface, ReviewInterface, StatusRequestTraining, TrainingDiaryInterface, UserInterface } from '@fit-friends/shared-types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
@@ -37,21 +37,11 @@ export const register = createAsyncThunk<
   async (registerData, { dispatch, extra: api }) => {
     const userRegisterDto = { ...registerData.registerDataUser, questionnaire: registerData.registerDataQuestionnaire };
 
-    const formData = new FormData();
     try {
-      const { data } = await api.post('auth/register', userRegisterDto);
-
-      if (registerData.registerDataUser.avatar) {
-        formData.append('avatar', registerData.registerDataUser.avatar as File);
-      }
-
-      if (registerData.registerDataUser.role === UserRole.Coach) {
-        const questionnaireData = registerData.registerDataQuestionnaire as RegisterDataQuestionnaireCoach;
-        formData.append('certificate', questionnaireData.certificate as File);
-      }
+      const { data } = await api.post('auth/register', userRegisterDto, {
+      });
 
       dispatch(storeIsDataLoadedStatus(false));
-      await api.post(`auth/upload/${data.id}`, formData);
       dispatch(storeIsDataLoadedStatus(true));
 
       return data;
@@ -144,7 +134,6 @@ export const updateQuestionnaire = createAsyncThunk<void, QuestionnaireData,
   async (updateData, { dispatch, extra: api }) => {
     dispatch(storeIsDataLoadedStatus(false));
 
-    console.log('updateData: ', updateData);
     const { data } = await api.post<QuestionnaireData>('auth/questionnaire', updateData);
 
     dispatch(storeQuestionnaire(data));
@@ -410,7 +399,6 @@ export const fetchGyms = createAsyncThunk<void,
 >(
   'data/fetchGyms',
   async (query, { dispatch, extra: api }) => {
-    console.log('location ', query.location);
     const urlString = getUrlQueryString(query, 'gym/');
     const { data } = await api.get<GymInterface[]>(urlString);
     dispatch(storeGyms(data));
@@ -499,7 +487,6 @@ export const fetchCoachOrdersInfo = createAsyncThunk<void, undefined,
   'data/fetchCoachOrdersInfo',
   async (_, { dispatch, extra: api }) => {
     const { data } = await api.get<CoachOrdersInfo[]>('order/coach-orders-info');
-    console.log('orderData: ', data);
     dispatch(storeCoachOrdersInfo(data));
   }
 );

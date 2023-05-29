@@ -126,3 +126,5 @@ export const TrainingDurationForDiaryMask = {
   [TrainingDuration.Range50to80]: 65,
   [TrainingDuration.RangeMore80]: 90,
 };
+
+export const FIELD_IS_REQUIRED = 'Это поле обязательно';

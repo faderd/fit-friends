@@ -47,17 +47,6 @@ function TrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, isD
     setFilters({ searchParamMinPrice, searchParamMaxPrice, searchParamMinCalories, searchParamMaxCalories, searchParamMinRate, searchParamMaxRate, searchParamTrainingDuration, searchParamTrainingType, searchParamIsOnlyFreeTrainings, searchParamSortDirection });
   }, [searchParamIsOnlyFreeTrainings, searchParamMaxCalories, searchParamMaxPrice, searchParamMaxRate, searchParamMinCalories, searchParamMinPrice, searchParamMinRate, searchParamSortDirection, searchParamTrainingDuration, searchParamTrainingType, setFilters]);
 
-  // useEffect(() => {
-  //   if (searchParamSortDirecton === null) { return; }
-  //   dispatch(fetchTrainings({ sortDirection: searchParamSortDirecton }));
-  // }, [dispatch, searchParamSortDirecton]);
-
-  // useEffect(() => {
-  //   if (!searchParamIsOnlyFreeTrainings) { return; }
-  //   dispatch(fetchTrainings({ isOnlyFreeTrainings: searchParamIsOnlyFreeTrainings }));
-  // }, [dispatch, searchParamIsOnlyFreeTrainings]);
-  console.log('point 2, searchParamIsOnlyFreeTrainings: ', searchParamIsOnlyFreeTrainings);
-
   // Длительность тренировки====================================================
   if (searchParamTrainingDuration) {
     searchParamTrainingDuration = searchParamTrainingDuration.split(';');
@@ -72,22 +61,6 @@ function TrainingsFilter({ setFilters, maxPrice, maxCalory, classNamePrefix, isD
     }
     return false;
   }
-
-  // Максимальная цена==========================================================
-  // useEffect(() => {
-  //   if (!searchParamMaxPrice && +maxPrice >= 0) {
-  //     searchParams.set(SearchParam.MaxPrice, maxPrice);
-  //     setSearchParams(searchParams);
-  //   }
-  // }, [maxPrice, searchParamMaxPrice, searchParams, setSearchParams]);
-
-  // Минимальная цена===========================================================
-  // useEffect(() => {
-  //   if (!searchParamMinPrice) {
-  //     searchParams.set(SearchParam.MinPrice, DEFAULT_MIN_PRICE);
-  //     setSearchParams(searchParams);
-  //   }
-  // }, [searchParamMinPrice, searchParams, setSearchParams]);
 
   // Сортировка=================================================================
   useEffect(() => {

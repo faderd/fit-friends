@@ -9,8 +9,9 @@ import dayjs from 'dayjs';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { RegisterDataUser } from '../../types/register-data-user.dto';
+import InputLoadFvatar from '../../components/input-load-avatar/input-load-avatar';
 
-type ReactHookFormData = {
+export type ReactHookFormData = {
   name: string,
   email: string,
   password: string,
@@ -32,7 +33,8 @@ function RegisterPage(): JSX.Element {
     }
   });
 
-  const { register, handleSubmit, formState: { errors } } = useForm<ReactHookFormData>();
+  const form = useForm<ReactHookFormData>();
+  const { register, handleSubmit, formState: { errors }, setValue } = form;
 
   const onSumbit: SubmitHandler<ReactHookFormData> = (reactHookFormData) => {
     if (!agreement) {
@@ -128,22 +130,7 @@ function RegisterPage(): JSX.Element {
                   <form onSubmit={handleSubmit(onSumbit)}>
                     <div className="sign-up">
                       <div className="sign-up__load-photo">
-                        <div className="input-load-avatar">
-                          <label>
-                            <input
-                              className="visually-hidden"
-                              type="file"
-                              accept="image/png, image/jpeg"
-                              {...register('avatar')}
-                            /><span className="input-load-avatar__btn">
-                              <svg width="20" height="20" aria-hidden="true">
-                                <use xlinkHref="#icon-import"></use>
-                              </svg></span>
-                          </label>
-                        </div>
-                        <div className="sign-up__description">
-                          <h2 className="sign-up__legend">Загрузите фото профиля</h2><span className="sign-up__text">JPG, PNG, оптимальный размер 100&times;100&nbsp;px</span>
-                        </div>
+                        <InputLoadFvatar form={form} />
                       </div>
                       <div className="sign-up__data">
                         <div className={`custom-input ${errors.name && 'custom-input--error'}`}>
@@ -187,7 +174,7 @@ function RegisterPage(): JSX.Element {
                           </label>
                         </div>
                         <div
-                          className="custom-select custom-select--not-selected"
+                          className="custom-select not-empty"
                           ref={locationWrapperRef}
                         ><span className="custom-select__label">Ваша локация</span>
                           <button
@@ -198,8 +185,7 @@ function RegisterPage(): JSX.Element {
                           >
                             <span className="custom-select__text"
                               ref={locationSelectTextRef}
-                            // {...register('location')}
-                            ></span>
+                            >{location}</span>
                             <span className="custom-select__icon">
                               <svg width="15" height="6" aria-hidden="true">
                                 <use xlinkHref="#arrow-down"></use>

@@ -1,8 +1,7 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { PrismaClient } from '@prisma/client';
 import { GymPriceRange, MAX_TRAINING_TYPE_LENGTH } from '../../../libs/shared-types/src/lib/validate-range';
-import { CaloriesLossRange, Gender, GymOption, MIN_TRAINING_PRICE, TrainingDuration, TrainingLevel, TrainingType, UserLocation } from '../../../libs/shared-types/src';
-import { EmptyDiary } from '../src/app/food-diary/food-diary.const';
+import { CaloriesLossRange, Gender, GymOption, MIN_TRAINING_PRICE, MealType, TrainingDuration, TrainingLevel, TrainingType, UserLocation } from '../../../libs/shared-types/src';
 
 const ENTITY_COUNT = 10;
 const MAX_TRAINING_PRICE = 10000;
@@ -81,6 +80,37 @@ const TRAINING_DESCRIPTIONS = [
   'Проработка мышц груди для профи, экспериментируем с уровнем наклона скамьи и различной шириной хвата.',
   'Знаменитый кроссфит комплекс. Синди — универсальная тренировка для развития функциональной силы.',
   'Тренируясь с резинкой для фитнеса, вы можете проработать почти все мышечные группы и разнообразить тренировки.'
+];
+
+const EmptyDiary = [
+  { day: 1, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 1, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 1, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 1, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 2, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 2, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 2, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 2, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 3, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 3, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 3, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 3, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 4, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 4, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 4, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 4, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 5, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 5, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 5, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 5, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 6, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 6, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 6, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 6, mealType: MealType.Snack, caloriesCount: 0 },
+  { day: 7, mealType: MealType.Breakfast, caloriesCount: 0 },
+  { day: 7, mealType: MealType.Dinner, caloriesCount: 0 },
+  { day: 7, mealType: MealType.Lunch, caloriesCount: 0 },
+  { day: 7, mealType: MealType.Snack, caloriesCount: 0 }
 ];
 
 const prisma = new PrismaClient();

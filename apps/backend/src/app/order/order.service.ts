@@ -121,14 +121,14 @@ export class OrderService {
 
     const updatedOrder = await this.orderRepository.update(orderId, orderEntity);
     const existTraining = await this.trainingService.getTraining(updatedOrder.entityId);
-    console.log('diary: ', await this.trainingDiaryService.update({
+    await this.trainingDiaryService.update({
       diary: {
         trainingId: updatedOrder.entityId,
         caloriesLoss: existTraining.calories,
         trainingDuration: existTraining.trainingDuration,
         dateTraining: new Date()
       }
-    }, userId));
+    }, userId);
 
     return updatedOrder;
   }
